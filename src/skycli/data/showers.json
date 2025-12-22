@@ -1,0 +1,11 @@
+[
+  {"name": "Quadrantids", "peak_month": 1, "peak_day": 3, "active_start": {"month": 1, "day": 1}, "active_end": {"month": 1, "day": 6}, "zhr": 120, "radiant_constellation": "Bootes"},
+  {"name": "Lyrids", "peak_month": 4, "peak_day": 22, "active_start": {"month": 4, "day": 16}, "active_end": {"month": 4, "day": 25}, "zhr": 18, "radiant_constellation": "Lyra"},
+  {"name": "Eta Aquariids", "peak_month": 5, "peak_day": 6, "active_start": {"month": 4, "day": 19}, "active_end": {"month": 5, "day": 28}, "zhr": 50, "radiant_constellation": "Aquarius"},
+  {"name": "Delta Aquariids", "peak_month": 7, "peak_day": 30, "active_start": {"month": 7, "day": 12}, "active_end": {"month": 8, "day": 23}, "zhr": 25, "radiant_constellation": "Aquarius"},
+  {"name": "Perseids", "peak_month": 8, "peak_day": 12, "active_start": {"month": 7, "day": 17}, "active_end": {"month": 8, "day": 24}, "zhr": 100, "radiant_constellation": "Perseus"},
+  {"name": "Orionids", "peak_month": 10, "peak_day": 21, "active_start": {"month": 10, "day": 2}, "active_end": {"month": 11, "day": 7}, "zhr": 20, "radiant_constellation": "Orion"},
+  {"name": "Leonids", "peak_month": 11, "peak_day": 17, "active_start": {"month": 11, "day": 6}, "active_end": {"month": 11, "day": 30}, "zhr": 15, "radiant_constellation": "Leo"},
+  {"name": "Geminids", "peak_month": 12, "peak_day": 14, "active_start": {"month": 12, "day": 4}, "active_end": {"month": 12, "day": 17}, "zhr": 150, "radiant_constellation": "Gemini"},
+  {"name": "Ursids", "peak_month": 12, "peak_day": 22, "active_start": {"month": 12, "day": 17}, "active_end": {"month": 12, "day": 26}, "zhr": 10, "radiant_constellation": "Ursa Minor"}
+]
