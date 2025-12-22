@@ -24,3 +24,24 @@ def save_locations(data: dict) -> None:
 
     with open(config_file, "w") as f:
         json.dump(data, f, indent=2)
+
+
+def get_location(name: str) -> tuple[float, float]:
+    """Get coordinates for a saved location. Raises KeyError if not found."""
+    data = load_locations()
+    if name not in data["locations"]:
+        raise KeyError(name)
+    loc = data["locations"][name]
+    return loc["lat"], loc["lon"]
+
+
+def get_default_location() -> tuple[str, float, float] | None:
+    """Get the default location. Returns (name, lat, lon) or None."""
+    data = load_locations()
+    default_name = data.get("default")
+    if not default_name:
+        return None
+    if default_name not in data["locations"]:
+        return None
+    loc = data["locations"][default_name]
+    return default_name, loc["lat"], loc["lon"]
