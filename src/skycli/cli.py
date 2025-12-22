@@ -106,6 +106,21 @@ def add(name: str, lat: float, lon: float, set_default: bool) -> None:
         click.echo(f"Saved location '{name}' ({coord_str})")
 
 
+@location.command("list")
+def list_locations() -> None:
+    """List all saved locations."""
+    data = load_locations()
+
+    if not data["locations"]:
+        click.echo("No saved locations. Add one with: skycli location add <name> <lat> <lon>")
+        return
+
+    for name, coords in data["locations"].items():
+        marker = "* " if name == data.get("default") else "  "
+        coord_str = format_coord(coords["lat"], coords["lon"])
+        click.echo(f"{marker}{name}  {coord_str}")
+
+
 @main.command()
 @click.option("--lat", type=LATITUDE, required=True, help="Latitude (-90 to 90)")
 @click.option("--lon", type=LONGITUDE, required=True, help="Longitude (-180 to 180)")

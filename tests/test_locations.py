@@ -114,3 +114,29 @@ def test_location_add_with_default(tmp_path, monkeypatch):
 
     name, lat, lon = get_default_location()
     assert name == "home"
+
+
+def test_location_list_shows_locations(tmp_path, monkeypatch):
+    """location list shows all saved locations."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    runner.invoke(main, ["location", "add", "--default", "home", "40.7", "-74.0"])
+    runner.invoke(main, ["location", "add", "cabin", "44.26", "-72.58"])
+    result = runner.invoke(main, ["location", "list"])
+
+    assert result.exit_code == 0
+    assert "home" in result.output
+    assert "cabin" in result.output
+    assert "*" in result.output  # Default marker
+
+
+def test_location_list_empty(tmp_path, monkeypatch):
+    """location list shows message when no locations."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["location", "list"])
+
+    assert result.exit_code == 0
+    assert "no saved locations" in result.output.lower()
