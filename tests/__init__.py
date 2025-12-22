@@ -1,0 +1,1 @@
+"""SkyCLI test suite."""
