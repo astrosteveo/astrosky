@@ -140,3 +140,40 @@ def test_location_list_empty(tmp_path, monkeypatch):
 
     assert result.exit_code == 0
     assert "no saved locations" in result.output.lower()
+
+
+def test_location_remove_deletes_location(tmp_path, monkeypatch):
+    """location remove deletes a saved location."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    runner.invoke(main, ["location", "add", "home", "40.7", "-74.0"])
+    result = runner.invoke(main, ["location", "remove", "home"])
+
+    assert result.exit_code == 0
+    assert "removed" in result.output.lower()
+
+    with pytest.raises(KeyError):
+        get_location("home")
+
+
+def test_location_remove_not_found(tmp_path, monkeypatch):
+    """location remove fails if name doesn't exist."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["location", "remove", "nowhere"])
+
+    assert result.exit_code != 0
+    assert "not found" in result.output.lower()
+
+
+def test_location_remove_clears_default(tmp_path, monkeypatch):
+    """location remove clears default if removing default location."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    runner.invoke(main, ["location", "add", "--default", "home", "40.7", "-74.0"])
+    runner.invoke(main, ["location", "remove", "home"])
+
+    assert get_default_location() is None

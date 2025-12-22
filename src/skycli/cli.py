@@ -121,6 +121,23 @@ def list_locations() -> None:
         click.echo(f"{marker}{name}  {coord_str}")
 
 
+@location.command()
+@click.argument("name")
+def remove(name: str) -> None:
+    """Remove a saved location."""
+    data = load_locations()
+
+    if name not in data["locations"]:
+        raise click.ClickException(f"Location '{name}' not found.")
+
+    del data["locations"][name]
+    if data.get("default") == name:
+        data["default"] = None
+    save_locations(data)
+
+    click.echo(f"Removed location '{name}'")
+
+
 @main.command()
 @click.option("--lat", type=LATITUDE, required=True, help="Latitude (-90 to 90)")
 @click.option("--lon", type=LONGITUDE, required=True, help="Longitude (-180 to 180)")
