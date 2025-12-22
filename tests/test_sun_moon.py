@@ -50,3 +50,15 @@ def test_get_moon_info_full_moon():
 
     assert result["phase_name"] == "Full Moon"
     assert result["illumination"] > 95  # More than 95%
+
+
+def test_darkness_quality_new_moon():
+    """New moon = excellent darkness."""
+    result = get_moon_info(NYC_LAT, NYC_LON, datetime(2025, 1, 29, 12, 0, tzinfo=timezone.utc))
+    assert result["darkness_quality"] == "Excellent"
+
+
+def test_darkness_quality_full_moon():
+    """Full moon = poor darkness."""
+    result = get_moon_info(NYC_LAT, NYC_LON, datetime(2025, 1, 13, 12, 0, tzinfo=timezone.utc))
+    assert result["darkness_quality"] == "Poor"

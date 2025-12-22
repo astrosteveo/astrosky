@@ -21,6 +21,7 @@ class MoonInfo(TypedDict):
 
     phase_name: str
     illumination: float  # 0-100
+    darkness_quality: str  # Excellent, Good, Fair, Poor
     moonrise: datetime | None
     moonset: datetime | None
 
@@ -133,9 +134,20 @@ def get_moon_info(lat: float, lon: float, date: datetime) -> MoonInfo:
         else:  # Set
             moonset = dt
 
+    # Determine darkness quality based on illumination
+    if illumination < 25:
+        darkness_quality = "Excellent"
+    elif illumination < 50:
+        darkness_quality = "Good"
+    elif illumination < 75:
+        darkness_quality = "Fair"
+    else:
+        darkness_quality = "Poor"
+
     return MoonInfo(
         phase_name=phase_name,
         illumination=round(illumination, 1),
+        darkness_quality=darkness_quality,
         moonrise=moonrise,
         moonset=moonset,
     )
