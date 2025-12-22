@@ -1,6 +1,8 @@
 """Tests for location storage."""
 
 import pytest
+from click.testing import CliRunner
+from skycli.cli import main
 from skycli.locations import load_locations, save_locations, get_location, get_default_location
 
 
@@ -71,3 +73,44 @@ def test_get_default_location_returns_none(tmp_path, monkeypatch):
     result = get_default_location()
 
     assert result is None
+
+
+def test_location_add_saves_location(tmp_path, monkeypatch):
+    """location add saves a new location."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["location", "add", "home", "40.7", "-74.0"])
+
+    assert result.exit_code == 0
+    assert "home" in result.output.lower() or "saved" in result.output.lower()
+
+    lat, lon = get_location("home")
+    assert lat == 40.7
+    assert lon == -74.0
+
+
+def test_location_add_duplicate_fails(tmp_path, monkeypatch):
+    """location add fails if name already exists."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    runner.invoke(main, ["location", "add", "home", "40.7", "-74.0"])
+    result = runner.invoke(main, ["location", "add", "home", "41.0", "-75.0"])
+
+    assert result.exit_code != 0
+    assert "already exists" in result.output.lower()
+
+
+def test_location_add_with_default(tmp_path, monkeypatch):
+    """location add --default sets as default."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["location", "add", "--default", "home", "40.7", "-74.0"])
+
+    assert result.exit_code == 0
+    assert "default" in result.output.lower()
+
+    name, lat, lon = get_default_location()
+    assert name == "home"

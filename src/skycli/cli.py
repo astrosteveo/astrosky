@@ -7,6 +7,12 @@ import click
 
 from skycli.report import build_report
 from skycli.display import render_report, render_json
+from skycli.locations import (
+    load_locations,
+    save_locations,
+    get_location,
+    get_default_location,
+)
 
 
 class LatitudeType(click.ParamType):
@@ -59,6 +65,45 @@ def parse_sections(value: str) -> list[str]:
 def main() -> None:
     """SkyCLI - See what's visible in the night sky tonight."""
     pass
+
+
+@main.group()
+def location() -> None:
+    """Manage saved observation locations."""
+    pass
+
+
+def format_coord(lat: float, lon: float) -> str:
+    """Format coordinates as human-readable string."""
+    lat_dir = "N" if lat >= 0 else "S"
+    lon_dir = "E" if lon >= 0 else "W"
+    return f"{abs(lat):.4f}°{lat_dir}, {abs(lon):.4f}°{lon_dir}"
+
+
+@location.command(context_settings={"ignore_unknown_options": True, "allow_interspersed_args": False})
+@click.argument("name")
+@click.argument("lat", type=LATITUDE)
+@click.argument("lon", type=LONGITUDE)
+@click.option("--default", "set_default", is_flag=True, help="Set as default location")
+def add(name: str, lat: float, lon: float, set_default: bool) -> None:
+    """Add a saved location."""
+    data = load_locations()
+
+    if name in data["locations"]:
+        raise click.ClickException(
+            f"Location '{name}' already exists. Remove it first with: skycli location remove {name}"
+        )
+
+    data["locations"][name] = {"lat": lat, "lon": lon}
+    if set_default:
+        data["default"] = name
+    save_locations(data)
+
+    coord_str = format_coord(lat, lon)
+    if set_default:
+        click.echo(f"Saved location '{name}' ({coord_str}) as default")
+    else:
+        click.echo(f"Saved location '{name}' ({coord_str})")
 
 
 @main.command()
