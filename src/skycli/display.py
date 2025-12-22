@@ -40,7 +40,7 @@ def render_report(data: dict[str, Any], no_color: bool = False) -> str:
 
     header_text = Text()
     header_text.append(f"Tonight's Sky · {date_str}\n", style="bold")
-    header_text.append(f"{location_str} · Sunset {sunset_str} · Sunrise {sunrise_str}\n")
+    header_text.append(f"{location_str} · Sunset {sunset_str} · Sunrise {sunrise_str} UTC\n")
     header_text.append(f"{moon_str} · {darkness_str}")
 
     console.print(Panel(header_text, expand=True))
@@ -51,7 +51,7 @@ def render_report(data: dict[str, Any], no_color: bool = False) -> str:
         console.print("[bold]PLANETS[/bold]")
         for p in data["planets"]:
             set_time = _format_time(p.get("set_time"))
-            console.print(f"  {p['name']:<10} {p['direction']:<3} {p['altitude']:>3.0f}°  Sets {set_time}   {p['description']}")
+            console.print(f"  {p['name']:<10} {p['direction']:<3} {p['altitude']:>3.0f}°  Sets {set_time}Z  {p['description']}")
         console.print()
 
     # ISS passes section
@@ -59,7 +59,7 @@ def render_report(data: dict[str, Any], no_color: bool = False) -> str:
         console.print("[bold]ISS PASSES[/bold]")
         for p in data["iss_passes"]:
             time_str = _format_time(p["start_time"])
-            console.print(f"  {time_str}  {p['duration_minutes']} min  {p['brightness']:<8} {p['start_direction']} → {p['end_direction']}  Max {p['max_altitude']:.0f}°")
+            console.print(f"  {time_str}Z  {p['duration_minutes']} min  {p['brightness']:<8} {p['start_direction']} → {p['end_direction']}  Max {p['max_altitude']:.0f}°")
         console.print()
     elif "iss_passes" in data:
         console.print("[bold]ISS PASSES[/bold]")
