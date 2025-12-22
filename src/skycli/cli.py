@@ -138,6 +138,23 @@ def remove(name: str) -> None:
     click.echo(f"Removed location '{name}'")
 
 
+@location.command("set-default")
+@click.argument("name")
+def set_default(name: str) -> None:
+    """Set the default location."""
+    data = load_locations()
+
+    if name not in data["locations"]:
+        raise click.ClickException(
+            f"Location '{name}' not found. Add it first with: skycli location add {name} <lat> <lon>"
+        )
+
+    data["default"] = name
+    save_locations(data)
+
+    click.echo(f"Default location set to '{name}'")
+
+
 @main.command()
 @click.option("--lat", type=LATITUDE, required=True, help="Latitude (-90 to 90)")
 @click.option("--lon", type=LONGITUDE, required=True, help="Longitude (-180 to 180)")

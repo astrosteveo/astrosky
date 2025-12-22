@@ -177,3 +177,29 @@ def test_location_remove_clears_default(tmp_path, monkeypatch):
     runner.invoke(main, ["location", "remove", "home"])
 
     assert get_default_location() is None
+
+
+def test_location_set_default(tmp_path, monkeypatch):
+    """location set-default changes the default."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    runner.invoke(main, ["location", "add", "home", "40.7", "-74.0"])
+    runner.invoke(main, ["location", "add", "cabin", "44.26", "-72.58"])
+    result = runner.invoke(main, ["location", "set-default", "cabin"])
+
+    assert result.exit_code == 0
+
+    name, _, _ = get_default_location()
+    assert name == "cabin"
+
+
+def test_location_set_default_not_found(tmp_path, monkeypatch):
+    """location set-default fails if name doesn't exist."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["location", "set-default", "nowhere"])
+
+    assert result.exit_code != 0
+    assert "not found" in result.output.lower()
