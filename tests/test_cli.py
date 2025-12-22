@@ -1,5 +1,6 @@
 """Tests for CLI argument parsing."""
 
+import time_machine
 from click.testing import CliRunner
 
 from skycli.cli import main
@@ -88,3 +89,27 @@ def test_tonight_accepts_no_color():
         main, ["tonight", "--lat", "40.7", "--lon", "-74.0", "--no-color"]
     )
     assert result.exit_code == 0
+
+
+@time_machine.travel("2025-01-15 22:00:00", tick=False)
+def test_tonight_produces_output():
+    """Tonight command produces formatted output."""
+    runner = CliRunner()
+    result = runner.invoke(main, ["tonight", "--lat", "40.7", "--lon", "-74.0"])
+
+    assert result.exit_code == 0
+    assert "Tonight's Sky" in result.output or "tonight" in result.output.lower()
+
+
+@time_machine.travel("2025-01-15 22:00:00", tick=False)
+def test_tonight_json_output():
+    """Tonight command with --json produces JSON."""
+    runner = CliRunner()
+    result = runner.invoke(main, ["tonight", "--lat", "40.7", "--lon", "-74.0", "--json"])
+
+    assert result.exit_code == 0
+    # Should be valid JSON
+    import json
+    data = json.loads(result.output)
+    assert "date" in data
+    assert "moon" in data

@@ -1,9 +1,12 @@
 """Command-line interface for SkyCLI."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import click
+
+from skycli.report import build_report
+from skycli.display import render_report, render_json
 
 
 class LatitudeType(click.ParamType):
@@ -82,20 +85,29 @@ def tonight(
     only = parse_sections(only_sections) if only_sections else None
     exclude = parse_sections(exclude_sections) if exclude_sections else None
 
-    # For now, just echo the configuration
-    click.echo(f"Location: {lat}°N, {lon}°E")
-    if date:
-        click.echo(f"Date: {date.strftime('%Y-%m-%d')}")
-    if at_time:
-        click.echo(f"Time: {at_time}")
-    if only:
-        click.echo(f"Only: {only}")
-    if exclude:
-        click.echo(f"Exclude: {exclude}")
+    # Use provided date or today
+    if date is None:
+        date = datetime.now(timezone.utc)
+    else:
+        date = date.replace(tzinfo=timezone.utc)
+
+    # Build the report
+    report_data = build_report(
+        lat=lat,
+        lon=lon,
+        date=date,
+        at_time=at_time,
+        only=only,
+        exclude=exclude,
+    )
+
+    # Render output
     if json_output:
-        click.echo("Format: JSON")
-    if no_color:
-        click.echo("Color: disabled")
+        output = render_json(report_data)
+    else:
+        output = render_report(report_data, no_color=no_color)
+
+    click.echo(output)
 
 
 if __name__ == "__main__":
