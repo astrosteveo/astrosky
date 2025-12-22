@@ -4,14 +4,18 @@ import time_machine
 from click.testing import CliRunner
 
 from skycli.cli import main
+from skycli.locations import save_locations
 
 
-def test_tonight_requires_location():
-    """Tonight command requires --lat and --lon."""
+def test_tonight_requires_location(tmp_path, monkeypatch):
+    """Tonight command requires location (explicit or saved)."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    save_locations({"default": None, "locations": {}})
+
     runner = CliRunner()
     result = runner.invoke(main, ["tonight"])
     assert result.exit_code != 0
-    assert "Missing option" in result.output or "required" in result.output.lower()
+    assert "location required" in result.output.lower()
 
 
 def test_tonight_accepts_valid_location():
@@ -113,3 +117,89 @@ def test_tonight_json_output():
     data = json.loads(result.output)
     assert "date" in data
     assert "moon" in data
+
+
+def test_tonight_with_location_flag(tmp_path, monkeypatch):
+    """tonight --location uses saved location."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    save_locations({
+        "default": None,
+        "locations": {"home": {"lat": 40.7, "lon": -74.0}}
+    })
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["tonight", "--location", "home"])
+
+    assert result.exit_code == 0
+
+
+def test_tonight_with_short_location_flag(tmp_path, monkeypatch):
+    """tonight -l uses saved location."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    save_locations({
+        "default": None,
+        "locations": {"home": {"lat": 40.7, "lon": -74.0}}
+    })
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["tonight", "-l", "home"])
+
+    assert result.exit_code == 0
+
+
+def test_tonight_uses_default_location(tmp_path, monkeypatch):
+    """tonight with no args uses default location."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    save_locations({
+        "default": "home",
+        "locations": {"home": {"lat": 40.7, "lon": -74.0}}
+    })
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["tonight"])
+
+    assert result.exit_code == 0
+
+
+@time_machine.travel("2025-01-15 22:00:00", tick=False)
+def test_tonight_explicit_overrides_default(tmp_path, monkeypatch):
+    """tonight --lat/--lon overrides default."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    save_locations({
+        "default": "home",
+        "locations": {"home": {"lat": 40.7, "lon": -74.0}}
+    })
+    runner = CliRunner()
+
+    # Use Sydney instead of NYC default
+    result = runner.invoke(main, ["tonight", "--lat", "-33.9", "--lon", "151.2", "--json"])
+
+    assert result.exit_code == 0
+    import json
+    data = json.loads(result.output)
+    assert data["location"]["lat"] == -33.9
+    assert data["location"]["lon"] == 151.2
+
+
+def test_tonight_location_not_found(tmp_path, monkeypatch):
+    """tonight --location shows error for unknown location."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    save_locations({"default": None, "locations": {}})
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["tonight", "--location", "nowhere"])
+
+    assert result.exit_code != 0
+    assert "not found" in result.output.lower()
+
+
+def test_tonight_no_location_shows_help(tmp_path, monkeypatch):
+    """tonight with no location shows helpful error."""
+    monkeypatch.setattr("skycli.locations.CONFIG_DIR", tmp_path / "skycli")
+    save_locations({"default": None, "locations": {}})
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["tonight"])
+
+    assert result.exit_code != 0
+    assert "location required" in result.output.lower()

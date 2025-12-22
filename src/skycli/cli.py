@@ -156,8 +156,9 @@ def set_default(name: str) -> None:
 
 
 @main.command()
-@click.option("--lat", type=LATITUDE, required=True, help="Latitude (-90 to 90)")
-@click.option("--lon", type=LONGITUDE, required=True, help="Longitude (-180 to 180)")
+@click.option("--lat", type=LATITUDE, default=None, help="Latitude (-90 to 90)")
+@click.option("--lon", type=LONGITUDE, default=None, help="Longitude (-180 to 180)")
+@click.option("-l", "--location", "location_name", type=str, default=None, help="Use saved location")
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), default=None, help="Date (YYYY-MM-DD)")
 @click.option("--at", "at_time", type=str, default=None, help="Time (HH:MM)")
 @click.option("--only", "only_sections", type=str, default=None, help="Only show these sections (comma-separated)")
@@ -165,8 +166,9 @@ def set_default(name: str) -> None:
 @click.option("--json", "json_output", is_flag=True, help="Output as JSON")
 @click.option("--no-color", is_flag=True, help="Disable colored output")
 def tonight(
-    lat: float,
-    lon: float,
+    lat: Optional[float],
+    lon: Optional[float],
+    location_name: Optional[str],
     date: Optional[datetime],
     at_time: Optional[str],
     only_sections: Optional[str],
@@ -175,6 +177,24 @@ def tonight(
     no_color: bool,
 ) -> None:
     """Show what's visible in the night sky tonight."""
+    # Resolve location
+    if lat is not None and lon is not None:
+        pass  # Use explicit coordinates
+    elif location_name:
+        try:
+            lat, lon = get_location(location_name)
+        except KeyError:
+            raise click.ClickException(
+                f"Location '{location_name}' not found. Run 'skycli location list' to see saved locations."
+            )
+    elif default := get_default_location():
+        _, lat, lon = default
+    else:
+        raise click.UsageError(
+            "Location required. Use --lat/--lon, --location <name>, or set a default with:\n"
+            "  skycli location add <name> <lat> <lon> --default"
+        )
+
     # Parse section filters
     only = parse_sections(only_sections) if only_sections else None
     exclude = parse_sections(exclude_sections) if exclude_sections else None
