@@ -87,3 +87,17 @@ def test_finds_solstice_in_december():
     assert len(seasonal) == 1
     assert "Winter" in seasonal[0]["title"] or "Solstice" in seasonal[0]["title"]
     assert seasonal[0]["date"].day in [20, 21, 22]  # Usually Dec 21
+
+
+def test_graceful_degradation_on_error(monkeypatch):
+    """Should return empty list if astronomy-engine fails."""
+    def mock_seasons(year):
+        raise RuntimeError("Simulated failure")
+
+    monkeypatch.setattr("astronomy.Seasons", mock_seasons)
+
+    date = datetime(2025, 12, 15, 12, 0, tzinfo=timezone.utc)
+    events = get_upcoming_events(lat=40.7, lon=-74.0, start=date, days=7)
+
+    # Should not raise, should return list (may be partial or empty)
+    assert isinstance(events, list)
