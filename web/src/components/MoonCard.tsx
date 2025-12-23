@@ -1,4 +1,4 @@
-import { MoonInfo } from '../types'
+import type { MoonInfo } from '../types'
 import { GlassCard } from './GlassCard'
 
 interface MoonCardProps {

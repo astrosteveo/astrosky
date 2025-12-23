@@ -31,7 +31,7 @@ describe('useReport', () => {
   })
 
   it('fetches report for given coordinates', async () => {
-    global.fetch = vi.fn().mockResolvedValueOnce({
+    globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve(mockReport),
     })
@@ -52,7 +52,7 @@ describe('useReport', () => {
   })
 
   it('handles fetch errors', async () => {
-    global.fetch = vi.fn().mockRejectedValueOnce(new Error('Network error'))
+    globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Network error'))
 
     const { result } = renderHook(() => useReport(40.7128, -74.006))
 
@@ -65,7 +65,7 @@ describe('useReport', () => {
   })
 
   it('does not fetch when coordinates are null', () => {
-    global.fetch = vi.fn()
+    globalThis.fetch = vi.fn()
 
     const { result } = renderHook(() => useReport(null, null))
 

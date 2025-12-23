@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { DeepSkyCard } from './DeepSkyCard'
-import { DSOInfo } from '../types'
+import type { DSOInfo } from '../types'
 
 const mockObjects: DSOInfo[] = [
   {

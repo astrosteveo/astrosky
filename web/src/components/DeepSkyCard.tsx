@@ -1,4 +1,4 @@
-import { DSOInfo } from '../types'
+import type { DSOInfo } from '../types'
 import { GlassCard } from './GlassCard'
 
 interface DeepSkyCardProps {

@@ -1,4 +1,4 @@
-import { ShowerInfo } from '../types'
+import type { ShowerInfo } from '../types'
 import { GlassCard } from './GlassCard'
 
 interface MeteorsCardProps {

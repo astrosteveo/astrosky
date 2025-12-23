@@ -1,4 +1,4 @@
-import { ISSPass } from '../types'
+import type { ISSPass } from '../types'
 import { GlassCard } from './GlassCard'
 
 interface ISSCardProps {

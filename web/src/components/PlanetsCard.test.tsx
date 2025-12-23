@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { PlanetsCard } from './PlanetsCard'
-import { PlanetInfo } from '../types'
+import type { PlanetInfo } from '../types'
 
 const mockPlanets: PlanetInfo[] = [
   {

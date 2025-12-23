@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { renderHook, waitFor, act } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { useGeolocation } from './useGeolocation'
 
 describe('useGeolocation', () => {
@@ -19,7 +19,7 @@ describe('useGeolocation', () => {
       success(mockPosition)
     })
 
-    Object.defineProperty(global.navigator, 'geolocation', {
+    Object.defineProperty(globalThis.navigator, 'geolocation', {
       value: { getCurrentPosition: mockGetCurrentPosition },
       configurable: true,
     })
@@ -39,7 +39,7 @@ describe('useGeolocation', () => {
       error({ message: 'User denied geolocation' })
     })
 
-    Object.defineProperty(global.navigator, 'geolocation', {
+    Object.defineProperty(globalThis.navigator, 'geolocation', {
       value: { getCurrentPosition: mockGetCurrentPosition },
       configurable: true,
     })

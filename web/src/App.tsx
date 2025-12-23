@@ -5,6 +5,7 @@ import { ISSCard } from './components/ISSCard'
 import { MeteorsCard } from './components/MeteorsCard'
 import { DeepSkyCard } from './components/DeepSkyCard'
 import { EventsCard } from './components/EventsCard'
+import { LoadingSkeleton } from './components/LoadingSkeleton'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 
@@ -30,11 +31,7 @@ function App() {
         </header>
 
         {/* Loading state */}
-        {(geoLoading || reportLoading) && (
-          <div className="text-center text-slate-400 py-12">
-            Loading sky data...
-          </div>
-        )}
+        {(geoLoading || reportLoading) && <LoadingSkeleton />}
 
         {/* Error state */}
         {(geoError || reportError) && (

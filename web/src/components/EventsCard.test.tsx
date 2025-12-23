@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { EventsCard } from './EventsCard'
-import { AstroEvent } from '../types'
+import type { AstroEvent } from '../types'
 
 const mockEvents: AstroEvent[] = [
   {

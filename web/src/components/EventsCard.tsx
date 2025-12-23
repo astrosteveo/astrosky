@@ -1,4 +1,4 @@
-import { AstroEvent } from '../types'
+import type { AstroEvent } from '../types'
 import { GlassCard } from './GlassCard'
 
 interface EventsCardProps {

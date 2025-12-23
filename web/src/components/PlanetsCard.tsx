@@ -1,4 +1,4 @@
-import { PlanetInfo } from '../types'
+import type { PlanetInfo } from '../types'
 import { GlassCard } from './GlassCard'
 
 interface PlanetsCardProps {

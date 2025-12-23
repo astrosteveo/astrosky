@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ISSCard } from './ISSCard'
-import { ISSPass } from '../types'
+import type { ISSPass } from '../types'
 
 const mockPasses: ISSPass[] = [
   {

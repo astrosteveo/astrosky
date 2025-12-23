@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MoonCard } from './MoonCard'
-import { MoonInfo } from '../types'
+import type { MoonInfo } from '../types'
 
 const mockMoon: MoonInfo = {
   phase_name: 'Waxing Crescent',

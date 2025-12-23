@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { SkyReport } from '../types'
+import type { SkyReport } from '../types'
 import { fetchReport } from '../lib/api'
 
 interface UseReportResult {
