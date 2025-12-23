@@ -82,6 +82,16 @@ def render_report(data: dict[str, Any], no_color: bool = False) -> str:
             console.print(f"  {obj['id']:<5} {obj['name']:<20} {obj['constellation']:<12} Mag {obj['mag']:<4}  {obj['tip']}")
         console.print()
 
+    # Events section
+    if data.get("events"):
+        console.print("[bold]UPCOMING EVENTS[/bold]")
+        for event in data["events"]:
+            date_str = event["date"].strftime("%b %d")
+            console.print(f"  {date_str}  {event['title']}")
+            if event["description"]:
+                console.print(f"          {event['description']}")
+        console.print()
+
     return output.getvalue()
 
 
