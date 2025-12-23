@@ -52,6 +52,14 @@ PLANET_NAMES = {
     astronomy.Body.Neptune: "Neptune",
 }
 
+OUTER_PLANETS = [
+    astronomy.Body.Mars,
+    astronomy.Body.Jupiter,
+    astronomy.Body.Saturn,
+    astronomy.Body.Uranus,
+    astronomy.Body.Neptune,
+]
+
 CONJUNCTION_THRESHOLD = 5.0  # degrees
 
 
@@ -155,6 +163,35 @@ def _find_conjunctions(start: datetime, days: int) -> list[AstroEvent]:
     return unique_events
 
 
+def _find_oppositions(start: datetime, days: int) -> list[AstroEvent]:
+    """Find planetary oppositions (outer planets only)."""
+    events = []
+    start_time = astronomy.Time.Make(start.year, start.month, start.day, start.hour, start.minute, 0)
+
+    for planet in OUTER_PLANETS:
+        try:
+            opposition = astronomy.SearchRelativeLongitude(planet, 180, start_time)
+            if opposition is not None:
+                # opposition.Utc() returns a datetime object
+                event_date = opposition.Utc().replace(tzinfo=start.tzinfo)
+
+                # Check if within our window
+                end_date = start + timedelta(days=days)
+                if start <= event_date <= end_date:
+                    planet_name = PLANET_NAMES[planet]
+                    events.append(AstroEvent(
+                        type="opposition",
+                        date=event_date,
+                        title=f"{planet_name} at Opposition",
+                        description=f"{planet_name} opposite the Sun - best viewing",
+                        bodies=[planet_name],
+                    ))
+        except Exception:
+            continue
+
+    return events
+
+
 def get_upcoming_events(
     lat: float, lon: float, start: datetime, days: int = 7
 ) -> list[AstroEvent]:
@@ -166,6 +203,7 @@ def get_upcoming_events(
         events = []
         events.extend(_find_moon_phases(start, days))
         events.extend(_find_conjunctions(start, days))
+        events.extend(_find_oppositions(start, days))
         return sorted(events, key=lambda e: e["date"])
     except Exception:
         return []

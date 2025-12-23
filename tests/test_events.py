@@ -50,3 +50,28 @@ def test_conjunction_crosses_month_boundary():
     # Should not crash - 7 days crosses into January
     events = get_upcoming_events(lat=40.7, lon=-74.0, start=date, days=7)
     assert isinstance(events, list)
+
+
+@time_machine.travel("2025-01-01 12:00:00Z")
+def test_finds_opposition_for_outer_planets():
+    """Oppositions only occur for outer planets (Mars and beyond)."""
+    date = datetime(2025, 1, 1, 12, 0, tzinfo=timezone.utc)
+    # Look far ahead - oppositions are rare
+    events = get_upcoming_events(lat=40.7, lon=-74.0, start=date, days=365)
+
+    oppositions = [e for e in events if e["type"] == "opposition"]
+
+    # Any oppositions found should be outer planets only
+    for opp in oppositions:
+        body = opp["bodies"][0]
+        assert body in ["Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+
+
+def test_no_opposition_for_inner_planets():
+    """Mercury and Venus never have oppositions."""
+    date = datetime(2025, 1, 1, 12, 0, tzinfo=timezone.utc)
+    events = get_upcoming_events(lat=40.7, lon=-74.0, start=date, days=365)
+
+    oppositions = [e for e in events if e["type"] == "opposition"]
+    inner_planet_opps = [o for o in oppositions if o["bodies"][0] in ["Mercury", "Venus"]]
+    assert len(inner_planet_opps) == 0
