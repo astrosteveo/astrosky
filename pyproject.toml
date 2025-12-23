@@ -27,6 +27,7 @@ dependencies = [
     "skyfield>=1.46",
     "rich>=13.0.0",
     "httpx>=0.25.0",
+    "astronomy-engine>=2.1.0",
 ]
 
 [project.urls]
