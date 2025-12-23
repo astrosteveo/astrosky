@@ -192,6 +192,39 @@ def _find_oppositions(start: datetime, days: int) -> list[AstroEvent]:
     return events
 
 
+def _find_seasonal_events(start: datetime, days: int) -> list[AstroEvent]:
+    """Find equinoxes and solstices in the window."""
+    events = []
+    end = start + timedelta(days=days)
+
+    # Get seasons for the year(s) we're interested in
+    years_to_check = {start.year, end.year}
+
+    for year in years_to_check:
+        seasons = astronomy.Seasons(year)
+
+        seasonal_events = [
+            (seasons.mar_equinox, "equinox", "March Equinox", "Day and night equal length"),
+            (seasons.jun_solstice, "solstice", "June Solstice (Summer)", "Longest day in Northern Hemisphere"),
+            (seasons.sep_equinox, "equinox", "September Equinox", "Day and night equal length"),
+            (seasons.dec_solstice, "solstice", "December Solstice (Winter)", "Shortest day in Northern Hemisphere"),
+        ]
+
+        for time, event_type, title, description in seasonal_events:
+            event_date = time.Utc().replace(tzinfo=start.tzinfo)
+
+            if start <= event_date <= end:
+                events.append(AstroEvent(
+                    type=event_type,
+                    date=event_date,
+                    title=title,
+                    description=description,
+                    bodies=["Sun"],
+                ))
+
+    return events
+
+
 def get_upcoming_events(
     lat: float, lon: float, start: datetime, days: int = 7
 ) -> list[AstroEvent]:
@@ -204,6 +237,7 @@ def get_upcoming_events(
         events.extend(_find_moon_phases(start, days))
         events.extend(_find_conjunctions(start, days))
         events.extend(_find_oppositions(start, days))
+        events.extend(_find_seasonal_events(start, days))
         return sorted(events, key=lambda e: e["date"])
     except Exception:
         return []

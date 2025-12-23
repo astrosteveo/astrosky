@@ -75,3 +75,15 @@ def test_no_opposition_for_inner_planets():
     oppositions = [e for e in events if e["type"] == "opposition"]
     inner_planet_opps = [o for o in oppositions if o["bodies"][0] in ["Mercury", "Venus"]]
     assert len(inner_planet_opps) == 0
+
+
+@time_machine.travel("2025-12-15 12:00:00Z")
+def test_finds_solstice_in_december():
+    """December has winter solstice around Dec 21."""
+    date = datetime(2025, 12, 15, 12, 0, tzinfo=timezone.utc)
+    events = get_upcoming_events(lat=40.7, lon=-74.0, start=date, days=10)
+
+    seasonal = [e for e in events if e["type"] == "solstice"]
+    assert len(seasonal) == 1
+    assert "Winter" in seasonal[0]["title"] or "Solstice" in seasonal[0]["title"]
+    assert seasonal[0]["date"].day in [20, 21, 22]  # Usually Dec 21
