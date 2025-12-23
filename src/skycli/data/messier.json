@@ -1,14 +1,14 @@
 [
-  {"id": "M1", "name": "Crab Nebula", "constellation": "Taurus", "ra": 83.63, "dec": 22.01, "mag": 8.4, "type": "Supernova Remnant", "tip": "Look for fuzzy patch"},
-  {"id": "M13", "name": "Hercules Cluster", "constellation": "Hercules", "ra": 250.42, "dec": 36.46, "mag": 5.8, "type": "Globular Cluster", "tip": "Stunning in any scope"},
-  {"id": "M27", "name": "Dumbbell Nebula", "constellation": "Vulpecula", "ra": 299.90, "dec": 22.72, "mag": 7.5, "type": "Planetary Nebula", "tip": "Easy binocular target"},
-  {"id": "M31", "name": "Andromeda Galaxy", "constellation": "Andromeda", "ra": 10.68, "dec": 41.27, "mag": 3.4, "type": "Galaxy", "tip": "Use averted vision"},
-  {"id": "M42", "name": "Orion Nebula", "constellation": "Orion", "ra": 83.82, "dec": -5.39, "mag": 4.0, "type": "Nebula", "tip": "Naked eye!"},
-  {"id": "M44", "name": "Beehive Cluster", "constellation": "Cancer", "ra": 130.05, "dec": 19.67, "mag": 3.7, "type": "Open Cluster", "tip": "Naked eye fuzzy patch"},
-  {"id": "M45", "name": "Pleiades", "constellation": "Taurus", "ra": 56.87, "dec": 24.12, "mag": 1.6, "type": "Open Cluster", "tip": "Stunning cluster"},
-  {"id": "M51", "name": "Whirlpool Galaxy", "constellation": "Canes Venatici", "ra": 202.47, "dec": 47.20, "mag": 8.4, "type": "Galaxy", "tip": "Face-on spiral"},
-  {"id": "M57", "name": "Ring Nebula", "constellation": "Lyra", "ra": 283.40, "dec": 33.03, "mag": 8.8, "type": "Planetary Nebula", "tip": "Small but distinct"},
-  {"id": "M81", "name": "Bode's Galaxy", "constellation": "Ursa Major", "ra": 148.89, "dec": 69.07, "mag": 6.9, "type": "Galaxy", "tip": "Pair with M82"},
-  {"id": "M101", "name": "Pinwheel Galaxy", "constellation": "Ursa Major", "ra": 210.80, "dec": 54.35, "mag": 7.9, "type": "Galaxy", "tip": "Large, face-on spiral"},
-  {"id": "M104", "name": "Sombrero Galaxy", "constellation": "Virgo", "ra": 189.99, "dec": -11.62, "mag": 8.0, "type": "Galaxy", "tip": "Edge-on with dust lane"}
+  {"id": "M1", "name": "Crab Nebula", "constellation": "Taurus", "ra": 83.63, "dec": 22.01, "mag": 8.4, "size": 6.0, "type": "Supernova Remnant", "equipment": "small-scope", "tip": "Look for fuzzy patch"},
+  {"id": "M13", "name": "Hercules Cluster", "constellation": "Hercules", "ra": 250.42, "dec": 36.46, "mag": 5.8, "size": 6.0, "type": "Globular Cluster", "equipment": "small-scope", "tip": "Stunning in any scope"},
+  {"id": "M27", "name": "Dumbbell Nebula", "constellation": "Vulpecula", "ra": 299.90, "dec": 22.72, "mag": 7.5, "size": 6.0, "type": "Planetary Nebula", "equipment": "small-scope", "tip": "Easy binocular target"},
+  {"id": "M31", "name": "Andromeda Galaxy", "constellation": "Andromeda", "ra": 10.68, "dec": 41.27, "mag": 3.4, "size": 6.0, "type": "Galaxy", "equipment": "small-scope", "tip": "Use averted vision"},
+  {"id": "M42", "name": "Orion Nebula", "constellation": "Orion", "ra": 83.82, "dec": -5.39, "mag": 4.0, "size": 6.0, "type": "Nebula", "equipment": "small-scope", "tip": "Naked eye!"},
+  {"id": "M44", "name": "Beehive Cluster", "constellation": "Cancer", "ra": 130.05, "dec": 19.67, "mag": 3.7, "size": 6.0, "type": "Open Cluster", "equipment": "small-scope", "tip": "Naked eye fuzzy patch"},
+  {"id": "M45", "name": "Pleiades", "constellation": "Taurus", "ra": 56.87, "dec": 24.12, "mag": 1.6, "size": 6.0, "type": "Open Cluster", "equipment": "small-scope", "tip": "Stunning cluster"},
+  {"id": "M51", "name": "Whirlpool Galaxy", "constellation": "Canes Venatici", "ra": 202.47, "dec": 47.20, "mag": 8.4, "size": 6.0, "type": "Galaxy", "equipment": "small-scope", "tip": "Face-on spiral"},
+  {"id": "M57", "name": "Ring Nebula", "constellation": "Lyra", "ra": 283.40, "dec": 33.03, "mag": 8.8, "size": 6.0, "type": "Planetary Nebula", "equipment": "small-scope", "tip": "Small but distinct"},
+  {"id": "M81", "name": "Bode's Galaxy", "constellation": "Ursa Major", "ra": 148.89, "dec": 69.07, "mag": 6.9, "size": 6.0, "type": "Galaxy", "equipment": "small-scope", "tip": "Pair with M82"},
+  {"id": "M101", "name": "Pinwheel Galaxy", "constellation": "Ursa Major", "ra": 210.80, "dec": 54.35, "mag": 7.9, "size": 6.0, "type": "Galaxy", "equipment": "small-scope", "tip": "Large, face-on spiral"},
+  {"id": "M104", "name": "Sombrero Galaxy", "constellation": "Virgo", "ra": 189.99, "dec": -11.62, "mag": 8.0, "size": 6.0, "type": "Galaxy", "equipment": "small-scope", "tip": "Edge-on with dust lane"}
 ]

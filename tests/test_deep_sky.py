@@ -40,6 +40,17 @@ def test_dso_info_structure():
         assert "altitude" in obj
 
 
+def test_dso_info_includes_size_and_equipment():
+    """Each DSO includes size and equipment fields."""
+    result = get_visible_dso(NYC_LAT, NYC_LON, datetime(2025, 1, 15, 22, 0, tzinfo=timezone.utc), limit=5)
+    if result:
+        obj = result[0]
+        assert "size" in obj, "Missing size field"
+        assert "equipment" in obj, "Missing equipment field"
+        assert isinstance(obj["size"], (int, float)), "size should be numeric"
+        assert obj["equipment"] in {"naked-eye", "binoculars", "small-scope", "large-scope"}
+
+
 def test_messier_catalog_completeness():
     """Validate the complete Messier catalog structure."""
     catalog_path = Path(__file__).parent.parent / "src" / "skycli" / "data" / "messier.json"

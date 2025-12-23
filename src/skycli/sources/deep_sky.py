@@ -15,7 +15,9 @@ class DSOInfo(TypedDict):
     name: str
     constellation: str
     mag: float
+    size: float
     type: str
+    equipment: str
     tip: str
     altitude: float
 
@@ -69,7 +71,9 @@ def get_visible_dso(lat: float, lon: float, date: datetime, limit: int = 5, min_
                 name=obj["name"],
                 constellation=obj["constellation"],
                 mag=obj["mag"],
+                size=obj["size"],
                 type=obj["type"],
+                equipment=obj["equipment"],
                 tip=obj["tip"],
                 altitude=round(altitude, 0),
             ))
