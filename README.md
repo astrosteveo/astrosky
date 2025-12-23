@@ -141,10 +141,19 @@ Without the API key, ISS passes will be skipped (other features work fine).
 
 ## API
 
-The web app is powered by a FastAPI backend. Key endpoints:
+Build your own integrations with the public API:
 
-- `GET /api/health` - Health check
-- `GET /api/report?lat=X&lon=Y&date=YYYY-MM-DD` - Full sky report
+```
+https://astrosky-production.up.railway.app/api/report?lat=41.1359&lon=-95.9576
+```
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/report?lat=X&lon=Y` | Full sky report (moon, planets, ISS, meteors, DSOs, events) |
+| `GET /api/report?lat=X&lon=Y&date=YYYY-MM-DD` | Report for a specific date |
+| `GET /api/health` | Health check (`{"status": "ok"}`) |
+
+Returns JSON with all astronomical data for the given location. Perfect for home automation, dashboards, Discord bots, or custom apps.
 
 ## Development
 
