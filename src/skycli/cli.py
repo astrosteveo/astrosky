@@ -1,6 +1,6 @@
 """Command-line interface for AstroSky."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Optional
 
 import click
@@ -13,6 +13,7 @@ from skycli.locations import (
     get_location,
     get_default_location,
 )
+from skycli.sources.events import get_upcoming_events
 
 
 class LatitudeType(click.ParamType):
@@ -222,6 +223,99 @@ def tonight(
         output = render_report(report_data, no_color=no_color)
 
     click.echo(output)
+
+
+def render_events_standalone(events: list, start_date: datetime, days: int, no_color: bool = False) -> str:
+    """Render events list for standalone command."""
+    from io import StringIO
+    from rich.console import Console
+
+    output = StringIO()
+    console = Console(file=output, force_terminal=not no_color, no_color=no_color, width=65)
+
+    end_date = start_date + timedelta(days=days)
+    date_range = f"{start_date.strftime('%b %d')} - {end_date.strftime('%b %d')}"
+
+    if not events:
+        console.print(f"[bold]UPCOMING EVENTS ({date_range})[/bold]")
+        console.print("  No upcoming events in this period")
+        return output.getvalue()
+
+    console.print(f"[bold]UPCOMING EVENTS ({date_range})[/bold]")
+    for event in events:
+        date_str = event["date"].strftime("%b %d")
+        console.print(f"  {date_str}  {event['title']}")
+        if event["description"]:
+            console.print(f"          {event['description']}")
+    console.print()
+
+    return output.getvalue()
+
+
+@main.command()
+@click.option("--lat", type=LATITUDE, default=None, help="Latitude (-90 to 90)")
+@click.option("--lon", type=LONGITUDE, default=None, help="Longitude (-180 to 180)")
+@click.option("-l", "--location", "location_name", type=str, default=None, help="Use saved location")
+@click.option("--days", type=click.IntRange(1, 30), default=7, help="Days to look ahead (1-30)")
+@click.option("--type", "event_type", type=click.Choice(["conjunction", "opposition", "moon", "seasonal"]), default=None, help="Filter by event type")
+@click.option("--json", "json_output", is_flag=True, help="Output as JSON")
+@click.option("--no-color", is_flag=True, help="Disable colored output")
+def events(
+    lat: Optional[float],
+    lon: Optional[float],
+    location_name: Optional[str],
+    days: int,
+    event_type: Optional[str],
+    json_output: bool,
+    no_color: bool,
+) -> None:
+    """Show upcoming astronomical events."""
+    # Resolve location (same logic as tonight)
+    if lat is not None and lon is not None:
+        pass
+    elif location_name:
+        try:
+            lat, lon = get_location(location_name)
+        except KeyError:
+            raise click.ClickException(
+                f"Location '{location_name}' not found. Run 'astrosky location list' to see saved locations."
+            )
+    elif default := get_default_location():
+        _, lat, lon = default
+    else:
+        raise click.UsageError(
+            "Location required. Use --lat/--lon, --location <name>, or set a default with:\n"
+            "  astrosky location add <name> <lat> <lon> --default"
+        )
+
+    start = datetime.now(timezone.utc)
+    all_events = get_upcoming_events(lat, lon, start, days=days)
+
+    # Filter by type if specified
+    if event_type:
+        type_map = {
+            "conjunction": "conjunction",
+            "opposition": "opposition",
+            "moon": "moon_phase",
+            "seasonal": ["equinox", "solstice"],
+        }
+        filter_types = type_map[event_type]
+        if isinstance(filter_types, str):
+            filter_types = [filter_types]
+        all_events = [e for e in all_events if e["type"] in filter_types]
+
+    if json_output:
+        import json
+
+        def serialize(obj):
+            if isinstance(obj, datetime):
+                return obj.isoformat()
+            raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
+        click.echo(json.dumps(all_events, default=serialize, indent=2))
+    else:
+        output = render_events_standalone(all_events, start, days, no_color=no_color)
+        click.echo(output)
 
 
 if __name__ == "__main__":

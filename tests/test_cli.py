@@ -203,3 +203,18 @@ def test_tonight_no_location_shows_help(tmp_path, monkeypatch):
 
     assert result.exit_code != 0
     assert "location required" in result.output.lower()
+
+
+def test_events_command_basic():
+    """Events command should work with coordinates."""
+    runner = CliRunner()
+    result = runner.invoke(main, ["events", "--lat", "40.7", "--lon", "-74.0"])
+    assert result.exit_code == 0
+    assert "UPCOMING EVENTS" in result.output or "No upcoming events" in result.output
+
+
+def test_events_command_with_days():
+    """Events command should accept --days option."""
+    runner = CliRunner()
+    result = runner.invoke(main, ["events", "--lat", "40.7", "--lon", "-74.0", "--days", "14"])
+    assert result.exit_code == 0
