@@ -1,6 +1,9 @@
 """Tests for deep sky object source."""
 
+import json
+import re
 from datetime import datetime, timezone
+from pathlib import Path
 
 from skycli.sources.deep_sky import get_visible_dso
 
@@ -35,3 +38,53 @@ def test_dso_info_structure():
         assert "type" in obj
         assert "tip" in obj
         assert "altitude" in obj
+
+
+def test_messier_catalog_completeness():
+    """Validate the complete Messier catalog structure."""
+    catalog_path = Path(__file__).parent.parent / "src" / "skycli" / "data" / "messier.json"
+    with open(catalog_path) as f:
+        catalog = json.load(f)
+
+    # Must have all 110 Messier objects
+    assert len(catalog) == 110, f"Expected 110 objects, got {len(catalog)}"
+
+    # Track IDs for uniqueness check
+    seen_ids = set()
+    valid_types = {"Galaxy", "Globular Cluster", "Open Cluster", "Nebula", "Planetary Nebula", "Supernova Remnant"}
+    valid_equipment = {"naked-eye", "binoculars", "small-scope", "large-scope"}
+
+    for obj in catalog:
+        # Required fields exist
+        assert "id" in obj, f"Missing id in {obj}"
+        assert "name" in obj, f"Missing name in {obj.get('id', 'unknown')}"
+        assert "constellation" in obj, f"Missing constellation in {obj['id']}"
+        assert "ra" in obj, f"Missing ra in {obj['id']}"
+        assert "dec" in obj, f"Missing dec in {obj['id']}"
+        assert "mag" in obj, f"Missing mag in {obj['id']}"
+        assert "size" in obj, f"Missing size in {obj['id']}"
+        assert "type" in obj, f"Missing type in {obj['id']}"
+        assert "equipment" in obj, f"Missing equipment in {obj['id']}"
+        assert "tip" in obj, f"Missing tip in {obj['id']}"
+
+        # ID format and uniqueness
+        assert re.match(r"^M\d{1,3}$", obj["id"]), f"Invalid id format: {obj['id']}"
+        assert obj["id"] not in seen_ids, f"Duplicate id: {obj['id']}"
+        seen_ids.add(obj["id"])
+
+        # Coordinate ranges
+        assert 0 <= obj["ra"] < 360, f"RA out of range in {obj['id']}: {obj['ra']}"
+        assert -90 <= obj["dec"] <= 90, f"Dec out of range in {obj['id']}: {obj['dec']}"
+
+        # Magnitude range (reasonable for Messier objects)
+        assert 0 < obj["mag"] < 15, f"Magnitude out of range in {obj['id']}: {obj['mag']}"
+
+        # Size is positive
+        assert obj["size"] > 0, f"Size must be positive in {obj['id']}: {obj['size']}"
+
+        # Valid enum values
+        assert obj["type"] in valid_types, f"Invalid type in {obj['id']}: {obj['type']}"
+        assert obj["equipment"] in valid_equipment, f"Invalid equipment in {obj['id']}: {obj['equipment']}"
+
+        # Tip is non-empty
+        assert len(obj["tip"].strip()) > 0, f"Empty tip in {obj['id']}"
