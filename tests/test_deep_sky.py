@@ -23,7 +23,7 @@ def test_orion_nebula_visible_winter():
     """M42 Orion Nebula should be visible in winter evenings."""
     result = get_visible_dso(NYC_LAT, NYC_LON, datetime(2025, 1, 16, 3, 0, tzinfo=timezone.utc), limit=10)
     ids = [obj["id"] for obj in result]
-    assert "M42" in ids
+    assert "M042" in ids
 
 
 def test_dso_info_structure():
