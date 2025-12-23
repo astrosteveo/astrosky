@@ -48,7 +48,7 @@ src/skycli/
 
 ## Testing
 
-- 71 tests across 11 test files
+- 73 tests across 11 test files
 - Use `time-machine` for freezing time in astronomical tests
 - Use `Click.testing.CliRunner` for CLI integration tests
 - Monkeypatch `CONFIG_DIR` for location storage tests
@@ -61,5 +61,5 @@ src/skycli/
 ## Data Files
 
 - `de421.bsp` - JPL ephemeris (16.8 MB, pre-downloaded, do not delete)
-- `src/skycli/data/messier.json` - Deep sky object catalog
+- `src/skycli/data/messier.json` - Complete Messier catalog (110 objects with coordinates, magnitudes, sizes, equipment recommendations, and observing tips)
 - `src/skycli/data/showers.json` - Meteor shower data

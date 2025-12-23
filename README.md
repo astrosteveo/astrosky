@@ -8,7 +8,7 @@ A command-line tool that shows you what's visible in the night sky tonight.
 - **Visible planets** - Which planets are up and where to look
 - **ISS passes** - Upcoming International Space Station flyovers for your location
 - **Meteor showers** - Active showers and peak dates
-- **Deep sky objects** - Visible Messier objects (galaxies, nebulae, clusters)
+- **Deep sky objects** - Complete Messier catalog (110 objects) with equipment recommendations and observing tips
 - **Astronomical events** - Conjunctions, oppositions, moon phases, equinoxes, and solstices
 
 ## Installation
