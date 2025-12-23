@@ -2,6 +2,20 @@
 
 See what's visible in the night sky tonight - as a web app or CLI tool.
 
+<div align="center">
+
+### **Try it now - no install required!**
+
+[![Web App](https://img.shields.io/badge/Launch_Web_App-astrosky--beryl.vercel.app-7c3aed?style=for-the-badge&logo=vercel)](https://astrosky-beryl.vercel.app)
+
+**Moon phases | Planets | ISS passes | Meteor showers | 110 deep sky objects**
+
+*Automatically detects your location*
+
+</div>
+
+---
+
 ## Features
 
 - **Moon phase** - Current phase, illumination, and rise/set times
@@ -13,7 +27,7 @@ See what's visible in the night sky tonight - as a web app or CLI tool.
 
 ## Web App
 
-Visit the web app at your deployed URL, or run locally:
+Visit **[astrosky-beryl.vercel.app](https://astrosky-beryl.vercel.app)** or run locally:
 
 ```bash
 # Start the API
@@ -26,7 +40,7 @@ cd web && npm install && npm run dev
 
 The web app automatically detects your location or accepts URL parameters:
 ```
-https://yoursite.com/?lat=40.7128&lon=-74.0060
+https://astrosky-beryl.vercel.app/?lat=40.7128&lon=-74.0060
 ```
 
 ## CLI Installation
