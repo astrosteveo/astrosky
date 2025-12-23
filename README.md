@@ -1,4 +1,4 @@
-# SkyCLI
+# AstroSKY
 
 A command-line tool that shows you what's visible in the night sky tonight.
 
