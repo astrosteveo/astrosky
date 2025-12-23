@@ -108,8 +108,9 @@ def _find_conjunctions(start: datetime, days: int) -> list[AstroEvent]:
 
     # Check each day for close approaches
     for day_offset in range(days):
+        check_date = start + timedelta(days=day_offset)
         check_time = astronomy.Time.Make(
-            start.year, start.month, start.day + day_offset, 12, 0, 0
+            check_date.year, check_date.month, check_date.day, 12, 0, 0
         )
 
         # Planet-Moon conjunctions

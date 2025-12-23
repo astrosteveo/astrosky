@@ -42,3 +42,11 @@ def test_finds_planet_moon_conjunction():
     conj = conjunctions[0]
     assert "Moon" in conj["bodies"] or len(conj["bodies"]) == 2
     assert "°" in conj["description"]  # Should include separation
+
+
+def test_conjunction_crosses_month_boundary():
+    """Ensure conjunctions work across month boundaries."""
+    date = datetime(2025, 12, 28, 12, 0, tzinfo=timezone.utc)
+    # Should not crash - 7 days crosses into January
+    events = get_upcoming_events(lat=40.7, lon=-74.0, start=date, days=7)
+    assert isinstance(events, list)
