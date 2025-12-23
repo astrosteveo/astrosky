@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+
+  --color-space-black: #000000;
+  --color-space-deep: #020617;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-space-black);
+    color: rgb(248 250 252);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .glass-card {
+    backdrop-filter: blur(24px);
+    background-color: rgb(255 255 255 / 0.03);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 1rem;
+  }
+
+  .glass-card-hover {
+    transition: all 0.3s;
+  }
+
+  .glass-card-hover:hover {
+    background-color: rgb(255 255 255 / 0.05);
+    border-color: rgb(255 255 255 / 0.2);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
+  }
+}
