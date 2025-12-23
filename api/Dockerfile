@@ -3,8 +3,11 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Copy project files for skycli package installation
-COPY pyproject.toml /app/
+COPY pyproject.toml README.md /app/
 COPY src/ /app/src/
+
+# Copy ephemeris file (required by Skyfield for astronomical calculations)
+COPY de421.bsp /app/
 
 # Copy API requirements and install dependencies
 COPY api/requirements.txt /app/api/
