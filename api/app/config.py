@@ -1,6 +1,6 @@
 """Configuration via environment variables."""
 
-from pydantic import field_validator
+from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,16 +8,15 @@ class Settings(BaseSettings):
     """Application settings loaded from environment."""
 
     n2yo_api_key: str = ""
-    cors_origins: list[str] = ["http://localhost:5173", "http://localhost:5174"]
+    # Accept comma-separated string, parsed into list via computed_field
+    cors_origins_str: str = "http://localhost:5173,http://localhost:5174"
     environment: str = "development"
 
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def parse_cors_origins(cls, v):
-        """Parse CORS origins from comma-separated string or list."""
-        if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",")]
-        return v
+    @computed_field
+    @property
+    def cors_origins(self) -> list[str]:
+        """Parse CORS origins from comma-separated string."""
+        return [origin.strip() for origin in self.cors_origins_str.split(",")]
 
     model_config = SettingsConfigDict(
         env_file=".env",
