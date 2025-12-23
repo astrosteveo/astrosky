@@ -9,6 +9,7 @@ A command-line tool that shows you what's visible in the night sky tonight.
 - **ISS passes** - Upcoming International Space Station flyovers for your location
 - **Meteor showers** - Active showers and peak dates
 - **Deep sky objects** - Visible Messier objects (galaxies, nebulae, clusters)
+- **Astronomical events** - Conjunctions, oppositions, moon phases, equinoxes, and solstices
 
 ## Installation
 
@@ -64,6 +65,27 @@ astrosky tonight --json
 ```
 
 **Sections:** `moon`, `planets`, `iss`, `meteors`, `events`, `deepsky`
+
+### `astrosky events`
+
+Show upcoming astronomical events.
+
+```bash
+# Next 7 days (default)
+astrosky events --lat 40.7128 --lon -74.0060
+
+# Next 30 days
+astrosky events --lat 40.7128 --lon -74.0060 --days 30
+
+# Filter by event type
+astrosky events --lat 40.7128 --lon -74.0060 --type moon
+astrosky events --lat 40.7128 --lon -74.0060 --type conjunction
+
+# JSON output
+astrosky events --lat 40.7128 --lon -74.0060 --json
+```
+
+**Event types:** `moon` (full/new moon), `conjunction`, `opposition`, `seasonal` (equinoxes/solstices)
 
 ### `astrosky location`
 

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-SkyCLI is a command-line tool that provides real-time information about what's visible in the night sky at a specific location and time. It displays moon phase, visible planets, ISS passes, meteor showers, and deep sky objects.
+AstroSky is a command-line tool that provides real-time information about what's visible in the night sky at a specific location and time. It displays moon phase, visible planets, ISS passes, meteor showers, deep sky objects, and upcoming astronomical events.
 
 ## Quick Commands
 
@@ -14,8 +14,9 @@ pip install -e ".[dev]"
 pytest
 
 # Run CLI
-skycli tonight --lat 40.7128 --lon -74.0060
-skycli tonight -l <saved-location>
+astrosky tonight --lat 40.7128 --lon -74.0060
+astrosky tonight -l <saved-location>
+astrosky events --lat 40.7128 --lon -74.0060 --days 14
 ```
 
 ## Architecture
@@ -25,13 +26,14 @@ src/skycli/
 ├── cli.py          # Click CLI entry point, command definitions
 ├── report.py       # Orchestrates data sources into unified report
 ├── display.py      # Rich terminal formatting
-├── locations.py    # ~/.config/skycli/locations.json management
+├── locations.py    # ~/.config/astrosky/locations.json management
 └── sources/        # Independent data source modules
     ├── sun_moon.py # Skyfield-based sun/moon calculations
     ├── planets.py  # Planet visibility and positions
     ├── iss.py      # N2YO API for ISS pass predictions
     ├── meteors.py  # Data-driven from showers.json
-    └── deep_sky.py # Data-driven from messier.json
+    ├── deep_sky.py # Data-driven from messier.json
+    └── events.py   # Astronomical events (astronomy-engine)
 ```
 
 **Data flow:** CLI -> report.py (orchestration) -> sources/* -> display.py
@@ -46,7 +48,7 @@ src/skycli/
 
 ## Testing
 
-- 68 tests across 10 test files
+- 71 tests across 11 test files
 - Use `time-machine` for freezing time in astronomical tests
 - Use `Click.testing.CliRunner` for CLI integration tests
 - Monkeypatch `CONFIG_DIR` for location storage tests

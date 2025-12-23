@@ -68,7 +68,9 @@ def _find_moon_phases(start: datetime, days: int) -> list[AstroEvent]:
     events = []
     end = start + timedelta(days=days)
 
-    start_time = astronomy.Time.Make(start.year, start.month, start.day, start.hour, start.minute, 0)
+    start_time = astronomy.Time.Make(
+        start.year, start.month, start.day, start.hour, start.minute, 0
+    )
 
     # Search for Full Moon (phase 180°)
     full_moon = astronomy.SearchMoonPhase(180, start_time, days)
@@ -77,13 +79,15 @@ def _find_moon_phases(start: datetime, days: int) -> list[AstroEvent]:
         event_date = full_moon.Utc().replace(tzinfo=start.tzinfo)
         if event_date <= end:
             name = FULL_MOON_NAMES.get(event_date.month, "Full Moon")
-            events.append(AstroEvent(
-                type="moon_phase",
-                date=event_date,
-                title=f"Full Moon ({name})",
-                description="Moon fully illuminated",
-                bodies=["Moon"],
-            ))
+            events.append(
+                AstroEvent(
+                    type="moon_phase",
+                    date=event_date,
+                    title=f"Full Moon ({name})",
+                    description="Moon fully illuminated",
+                    bodies=["Moon"],
+                )
+            )
 
     # Search for New Moon (phase 0°)
     new_moon = astronomy.SearchMoonPhase(0, start_time, days)
@@ -91,18 +95,22 @@ def _find_moon_phases(start: datetime, days: int) -> list[AstroEvent]:
         # new_moon.Utc() returns a datetime object
         event_date = new_moon.Utc().replace(tzinfo=start.tzinfo)
         if event_date <= end:
-            events.append(AstroEvent(
-                type="moon_phase",
-                date=event_date,
-                title="New Moon",
-                description="Best time for deep sky observing",
-                bodies=["Moon"],
-            ))
+            events.append(
+                AstroEvent(
+                    type="moon_phase",
+                    date=event_date,
+                    title="New Moon",
+                    description="Best time for deep sky observing",
+                    bodies=["Moon"],
+                )
+            )
 
     return events
 
 
-def _angle_between(body1: astronomy.Body, body2: astronomy.Body, time: astronomy.Time) -> float:
+def _angle_between(
+    body1: astronomy.Body, body2: astronomy.Body, time: astronomy.Time
+) -> float:
     """Calculate angular separation between two bodies."""
     vec1 = astronomy.GeoVector(body1, time, True)
     vec2 = astronomy.GeoVector(body2, time, True)
@@ -112,7 +120,9 @@ def _angle_between(body1: astronomy.Body, body2: astronomy.Body, time: astronomy
 def _find_conjunctions(start: datetime, days: int) -> list[AstroEvent]:
     """Find conjunctions between planets and Moon."""
     events = []
-    start_time = astronomy.Time.Make(start.year, start.month, start.day, start.hour, start.minute, 0)
+    start_time = astronomy.Time.Make(
+        start.year, start.month, start.day, start.hour, start.minute, 0
+    )
 
     # Check each day for close approaches
     for day_offset in range(days):
@@ -127,29 +137,33 @@ def _find_conjunctions(start: datetime, days: int) -> list[AstroEvent]:
             if angle <= CONJUNCTION_THRESHOLD:
                 event_date = check_time.Utc().replace(tzinfo=start.tzinfo)
                 planet_name = PLANET_NAMES[planet]
-                events.append(AstroEvent(
-                    type="conjunction",
-                    date=event_date,
-                    title=f"{planet_name}-Moon Conjunction",
-                    description=f"{planet_name} {angle:.1f}° from Moon",
-                    bodies=[planet_name, "Moon"],
-                ))
+                events.append(
+                    AstroEvent(
+                        type="conjunction",
+                        date=event_date,
+                        title=f"{planet_name}-Moon Conjunction",
+                        description=f"{planet_name} {angle:.1f}° from Moon",
+                        bodies=[planet_name, "Moon"],
+                    )
+                )
 
         # Planet-Planet conjunctions (avoid duplicates)
         for i, planet1 in enumerate(PLANETS):
-            for planet2 in PLANETS[i + 1:]:
+            for planet2 in PLANETS[i + 1 :]:
                 angle = _angle_between(planet1, planet2, check_time)
                 if angle <= CONJUNCTION_THRESHOLD:
                     event_date = check_time.Utc().replace(tzinfo=start.tzinfo)
                     name1 = PLANET_NAMES[planet1]
                     name2 = PLANET_NAMES[planet2]
-                    events.append(AstroEvent(
-                        type="conjunction",
-                        date=event_date,
-                        title=f"{name1}-{name2} Conjunction",
-                        description=f"{name1} {angle:.1f}° from {name2}",
-                        bodies=[name1, name2],
-                    ))
+                    events.append(
+                        AstroEvent(
+                            type="conjunction",
+                            date=event_date,
+                            title=f"{name1}-{name2} Conjunction",
+                            description=f"{name1} {angle:.1f}° from {name2}",
+                            bodies=[name1, name2],
+                        )
+                    )
 
     # Deduplicate events on same day for same bodies
     seen = set()
@@ -166,7 +180,9 @@ def _find_conjunctions(start: datetime, days: int) -> list[AstroEvent]:
 def _find_oppositions(start: datetime, days: int) -> list[AstroEvent]:
     """Find planetary oppositions (outer planets only)."""
     events = []
-    start_time = astronomy.Time.Make(start.year, start.month, start.day, start.hour, start.minute, 0)
+    start_time = astronomy.Time.Make(
+        start.year, start.month, start.day, start.hour, start.minute, 0
+    )
 
     for planet in OUTER_PLANETS:
         try:
@@ -179,13 +195,15 @@ def _find_oppositions(start: datetime, days: int) -> list[AstroEvent]:
                 end_date = start + timedelta(days=days)
                 if start <= event_date <= end_date:
                     planet_name = PLANET_NAMES[planet]
-                    events.append(AstroEvent(
-                        type="opposition",
-                        date=event_date,
-                        title=f"{planet_name} at Opposition",
-                        description=f"{planet_name} opposite the Sun - best viewing",
-                        bodies=[planet_name],
-                    ))
+                    events.append(
+                        AstroEvent(
+                            type="opposition",
+                            date=event_date,
+                            title=f"{planet_name} at Opposition",
+                            description=f"{planet_name} opposite the Sun - best viewing",
+                            bodies=[planet_name],
+                        )
+                    )
         except Exception:
             continue
 
@@ -204,23 +222,45 @@ def _find_seasonal_events(start: datetime, days: int) -> list[AstroEvent]:
         seasons = astronomy.Seasons(year)
 
         seasonal_events = [
-            (seasons.mar_equinox, "equinox", "March Equinox", "Day and night equal length"),
-            (seasons.jun_solstice, "solstice", "June Solstice (Summer)", "Longest day in Northern Hemisphere"),
-            (seasons.sep_equinox, "equinox", "September Equinox", "Day and night equal length"),
-            (seasons.dec_solstice, "solstice", "December Solstice (Winter)", "Shortest day in Northern Hemisphere"),
+            (
+                seasons.mar_equinox,
+                "equinox",
+                "March Equinox",
+                "Day and night equal length",
+            ),
+            (
+                seasons.jun_solstice,
+                "solstice",
+                "June Solstice (Summer)",
+                "Longest day in Northern Hemisphere",
+            ),
+            (
+                seasons.sep_equinox,
+                "equinox",
+                "September Equinox",
+                "Day and night equal length",
+            ),
+            (
+                seasons.dec_solstice,
+                "solstice",
+                "December Solstice (Winter)",
+                "Shortest day in Northern Hemisphere",
+            ),
         ]
 
         for time, event_type, title, description in seasonal_events:
             event_date = time.Utc().replace(tzinfo=start.tzinfo)
 
             if start <= event_date <= end:
-                events.append(AstroEvent(
-                    type=event_type,
-                    date=event_date,
-                    title=title,
-                    description=description,
-                    bodies=["Sun"],
-                ))
+                events.append(
+                    AstroEvent(
+                        type=event_type,
+                        date=event_date,
+                        title=title,
+                        description=description,
+                        bodies=["Sun"],
+                    )
+                )
 
     return events
 
