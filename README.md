@@ -1,17 +1,35 @@
 # AstroSKY
 
-A command-line tool that shows you what's visible in the night sky tonight.
+See what's visible in the night sky tonight - as a web app or CLI tool.
 
 ## Features
 
 - **Moon phase** - Current phase, illumination, and rise/set times
 - **Visible planets** - Which planets are up and where to look
-- **ISS passes** - Upcoming International Space Station flyovers for your location
+- **ISS passes** - Upcoming International Space Station flyovers
 - **Meteor showers** - Active showers and peak dates
-- **Deep sky objects** - Complete Messier catalog (110 objects) with equipment recommendations and observing tips
-- **Astronomical events** - Conjunctions, oppositions, moon phases, equinoxes, and solstices
+- **Deep sky objects** - Complete Messier catalog (110 objects)
+- **Astronomical events** - Conjunctions, oppositions, equinoxes, solstices
 
-## Installation
+## Web App
+
+Visit the web app at your deployed URL, or run locally:
+
+```bash
+# Start the API
+cd api && pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+# Start the frontend (in another terminal)
+cd web && npm install && npm run dev
+```
+
+The web app automatically detects your location or accepts URL parameters:
+```
+https://yoursite.com/?lat=40.7128&lon=-74.0060
+```
+
+## CLI Installation
 
 ```bash
 # With pip
@@ -22,20 +40,7 @@ astrosky tonight --lat 40.7128 --lon -74.0060
 uvx astrosky tonight --lat 40.7128 --lon -74.0060
 ```
 
-## Quick Start
-
-```bash
-# Check the sky for a specific location
-astrosky tonight --lat 40.7128 --lon -74.0060
-
-# Save a location for easy reuse
-astrosky location add home 40.7128 -74.0060 --default
-
-# Now just run
-astrosky tonight
-```
-
-## Commands
+## CLI Usage
 
 ### `astrosky tonight`
 
@@ -78,14 +83,13 @@ astrosky events --lat 40.7128 --lon -74.0060
 astrosky events --lat 40.7128 --lon -74.0060 --days 30
 
 # Filter by event type
-astrosky events --lat 40.7128 --lon -74.0060 --type moon
 astrosky events --lat 40.7128 --lon -74.0060 --type conjunction
 
 # JSON output
 astrosky events --lat 40.7128 --lon -74.0060 --json
 ```
 
-**Event types:** `moon` (full/new moon), `conjunction`, `opposition`, `seasonal` (equinoxes/solstices)
+**Event types:** `moon`, `conjunction`, `opposition`, `seasonal`
 
 ### `astrosky location`
 
@@ -120,6 +124,24 @@ astrosky tonight
 ```
 
 Without the API key, ISS passes will be skipped (other features work fine).
+
+## API
+
+The web app is powered by a FastAPI backend. Key endpoints:
+
+- `GET /api/health` - Health check
+- `GET /api/report?lat=X&lon=Y&date=YYYY-MM-DD` - Full sky report
+
+## Development
+
+```bash
+# Install CLI in dev mode
+pip install -e ".[dev]"
+
+# Run tests
+pytest                     # Python (73 tests)
+cd web && npm run test     # Frontend
+```
 
 ## License
 

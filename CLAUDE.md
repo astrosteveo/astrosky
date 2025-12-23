@@ -2,64 +2,97 @@
 
 ## Project Overview
 
-AstroSky is a command-line tool that provides real-time information about what's visible in the night sky at a specific location and time. It displays moon phase, visible planets, ISS passes, meteor showers, deep sky objects, and upcoming astronomical events.
+AstroSky shows what's visible in the night sky. It's available as:
+- **CLI tool** (`pip install astrosky`) - Terminal-based output
+- **Web app** - React frontend + FastAPI backend
 
 ## Quick Commands
 
 ```bash
-# Install dependencies
+# CLI - Install and run
 pip install -e ".[dev]"
-
-# Run tests
-pytest
-
-# Run CLI
 astrosky tonight --lat 40.7128 --lon -74.0060
-astrosky tonight -l <saved-location>
-astrosky events --lat 40.7128 --lon -74.0060 --days 14
+
+# API - Run locally
+cd api && uvicorn app.main:app --reload
+
+# Web - Run locally
+cd web && npm install && npm run dev
+
+# Tests
+pytest                     # Python tests (73 tests)
+cd web && npm run test     # Frontend tests
 ```
 
 ## Architecture
 
 ```
-src/skycli/
-├── cli.py          # Click CLI entry point, command definitions
-├── report.py       # Orchestrates data sources into unified report
-├── display.py      # Rich terminal formatting
-├── locations.py    # ~/.config/astrosky/locations.json management
-└── sources/        # Independent data source modules
-    ├── sun_moon.py # Skyfield-based sun/moon calculations
-    ├── planets.py  # Planet visibility and positions
-    ├── iss.py      # N2YO API for ISS pass predictions
-    ├── meteors.py  # Data-driven from showers.json
-    ├── deep_sky.py # Data-driven from messier.json
-    └── events.py   # Astronomical events (astronomy-engine)
+astrosky/
+├── src/skycli/             # Core Python library (shared by CLI + API)
+│   ├── cli.py              # Click CLI entry point
+│   ├── report.py           # Orchestrates data sources
+│   ├── display.py          # Rich terminal formatting
+│   ├── locations.py        # Saved location management
+│   └── sources/            # Independent data modules
+│       ├── sun_moon.py     # Skyfield-based calculations
+│       ├── planets.py      # Planet visibility
+│       ├── iss.py          # N2YO API for ISS passes
+│       ├── meteors.py      # Meteor shower data
+│       ├── deep_sky.py     # Messier catalog (110 objects)
+│       └── events.py       # Astronomical events
+│
+├── api/                    # FastAPI backend
+│   ├── app/
+│   │   ├── main.py         # FastAPI app + CORS
+│   │   ├── config.py       # Environment config
+│   │   └── routers/
+│   │       ├── health.py   # GET /api/health
+│   │       └── report.py   # GET /api/report
+│   ├── Dockerfile          # Railway deployment
+│   └── de421.bsp           # JPL ephemeris (copied for Docker)
+│
+└── web/                    # React frontend (Vite + Tailwind)
+    └── src/
+        ├── App.tsx         # Main app component
+        ├── hooks/          # useGeolocation, useReport
+        ├── lib/api.ts      # API client
+        └── components/     # MoonCard, PlanetsCard, etc.
 ```
 
-**Data flow:** CLI -> report.py (orchestration) -> sources/* -> display.py
+**Data flow:**
+- CLI: `cli.py` -> `report.py` -> `sources/*` -> `display.py`
+- Web: `frontend` -> `api/report.py` -> `skycli.report.build_report()`
 
 ## Key Patterns
 
-- **TypedDicts** for all data structures (`SunTimes`, `MoonInfo`, `PlanetInfo`, etc.)
-- **Graceful degradation** - API failures return empty data, not exceptions
-- **Section filtering** via `--only` and `--exclude` flags
-- **Time handling** - All times in UTC with timezone-aware datetime objects
-- **Coordinate validation** - Custom Click parameter types for lat/lon
+- **TypedDicts** for all Python data structures
+- **Pydantic models** in API for request/response validation
+- **Graceful degradation** - API failures return empty data
+- **Geolocation + URL params** - Frontend supports `?lat=X&lon=Y`
 
-## Testing
+## Deployment
 
-- 73 tests across 11 test files
-- Use `time-machine` for freezing time in astronomical tests
-- Use `Click.testing.CliRunner` for CLI integration tests
-- Monkeypatch `CONFIG_DIR` for location storage tests
-- All external APIs are mocked
+- **API** (Railway): `railway.toml` + `api/Dockerfile`
+- **Frontend** (Vercel): `web/vercel.json`
+- **CLI** (PyPI): `pyproject.toml` -> `pip install astrosky`
 
 ## Environment Variables
 
-- `N2YO_API_KEY` - Required for ISS pass predictions (optional feature)
+### API
+- `CORS_ORIGINS_STR` - Comma-separated allowed origins
+- `N2YO_API_KEY` - ISS pass predictions (optional)
+- `ENVIRONMENT` - development/production
+
+### Frontend
+- `VITE_API_URL` - API base URL (defaults to localhost:8000)
 
 ## Data Files
 
-- `de421.bsp` - JPL ephemeris (16.8 MB, pre-downloaded, do not delete)
-- `src/skycli/data/messier.json` - Complete Messier catalog (110 objects with coordinates, magnitudes, sizes, equipment recommendations, and observing tips)
+- `de421.bsp` - JPL ephemeris (16.8 MB, required by Skyfield)
+- `src/skycli/data/messier.json` - Messier catalog (110 DSOs)
 - `src/skycli/data/showers.json` - Meteor shower data
+
+## Testing
+
+- **Python**: 73 tests, use `time-machine` for time-dependent tests
+- **Frontend**: Vitest + Testing Library
