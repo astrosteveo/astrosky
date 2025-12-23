@@ -6,6 +6,21 @@ build-backend = "hatchling.build"
 name = "skycli"
 version = "0.1.0"
 description = "CLI tool to see what's visible in the night sky tonight"
+authors = [{ name = "AstroSteveo", email = "stevengmjr@gmail.com" }]
+license = "MIT"
+readme = "README.md"
+keywords = ["astronomy", "cli", "night-sky", "planets", "stargazing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
 requires-python = ">=3.11"
 dependencies = [
     "click>=8.1.0",
