@@ -15,9 +15,10 @@ A command-line tool that shows you what's visible in the night sky tonight.
 ```bash
 # With pip
 pip install astrosky
-
-# Then run
 astrosky tonight --lat 40.7128 --lon -74.0060
+
+# Or run directly with uvx (no install needed)
+uvx astrosky tonight --lat 40.7128 --lon -74.0060
 ```
 
 ## Quick Start
