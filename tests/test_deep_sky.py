@@ -78,8 +78,8 @@ def test_messier_catalog_completeness():
         assert "equipment" in obj, f"Missing equipment in {obj['id']}"
         assert "tip" in obj, f"Missing tip in {obj['id']}"
 
-        # ID format and uniqueness
-        assert re.match(r"^M\d{1,3}$", obj["id"]), f"Invalid id format: {obj['id']}"
+        # ID format and uniqueness (zero-padded: M001-M110)
+        assert re.match(r"^M\d{3}$", obj["id"]), f"Invalid id format: {obj['id']}"
         assert obj["id"] not in seen_ids, f"Duplicate id: {obj['id']}"
         seen_ids.add(obj["id"])
 
