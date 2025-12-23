@@ -8,6 +8,7 @@ from skycli.sources.planets import get_visible_planets
 from skycli.sources.iss import get_iss_passes
 from skycli.sources.meteors import get_active_showers
 from skycli.sources.deep_sky import get_visible_dso
+from skycli.sources.events import get_upcoming_events
 
 
 SECTION_MAP = {
@@ -73,5 +74,9 @@ def build_report(
     # Deep sky objects
     if _should_include("deepsky", only, exclude):
         report["deep_sky"] = get_visible_dso(lat, lon, date)
+
+    # Astronomical events (next 2 days for tonight report)
+    if _should_include("events", only, exclude):
+        report["events"] = get_upcoming_events(lat, lon, date, days=2)
 
     return report

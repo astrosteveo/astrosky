@@ -51,3 +51,13 @@ def test_build_report_respects_exclude_filter():
 
     # Others should be populated
     assert result["moon"] is not None
+
+
+@time_machine.travel("2025-12-20 12:00:00Z")
+def test_report_includes_events():
+    """Report should include events section."""
+    date = datetime(2025, 12, 20, 20, 0, tzinfo=timezone.utc)
+    report = build_report(lat=40.7, lon=-74.0, date=date)
+
+    assert "events" in report
+    assert isinstance(report["events"], list)
