@@ -9,8 +9,26 @@ import { LoadingSkeleton } from './components/LoadingSkeleton'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 
+// Parse URL parameters for manual location override
+function useUrlParams() {
+  const params = new URLSearchParams(window.location.search)
+  const lat = params.get('lat')
+  const lon = params.get('lon')
+  if (lat && lon) {
+    return { lat: parseFloat(lat), lon: parseFloat(lon) }
+  }
+  return null
+}
+
 function App() {
-  const { lat, lon, error: geoError, loading: geoLoading } = useGeolocation()
+  const urlParams = useUrlParams()
+  const { lat: geoLat, lon: geoLon, error: geoError, loading: geoLoading } = useGeolocation()
+
+  // Use URL params if provided, otherwise use geolocation
+  const lat = urlParams?.lat ?? geoLat
+  const lon = urlParams?.lon ?? geoLon
+  const skipGeoLoading = urlParams !== null
+
   const { data, loading: reportLoading, error: reportError } = useReport(lat, lon)
 
   return (
@@ -31,10 +49,10 @@ function App() {
         </header>
 
         {/* Loading state */}
-        {(geoLoading || reportLoading) && <LoadingSkeleton />}
+        {((!skipGeoLoading && geoLoading) || reportLoading) && <LoadingSkeleton />}
 
         {/* Error state */}
-        {(geoError || reportError) && (
+        {(!skipGeoLoading && geoError || reportError) && (
           <div className="text-center text-red-400 py-12">
             {geoError || reportError}
           </div>
