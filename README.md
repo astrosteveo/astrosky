@@ -166,6 +166,10 @@ pytest                     # Python (73 tests)
 cd web && npm run test     # Frontend
 ```
 
+## Acknowledgments
+
+Special thanks to [Jesse Vincent](https://github.com/obra) for [Superpowers](https://github.com/superpowers-ai/superpowers) - the AI-powered development tools that made building this project a joy.
+
 ## License
 
 MIT
