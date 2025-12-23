@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-CONFIG_DIR = Path.home() / ".config" / "skycli"
+CONFIG_DIR = Path.home() / ".config" / "astrosky"
 LOCATIONS_FILE = "locations.json"
 
 

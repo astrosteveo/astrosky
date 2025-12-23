@@ -1,4 +1,4 @@
-"""Command-line interface for SkyCLI."""
+"""Command-line interface for AstroSky."""
 
 from datetime import datetime, timezone
 from typing import Optional
@@ -63,7 +63,7 @@ def parse_sections(value: str) -> list[str]:
 @click.group()
 @click.version_option()
 def main() -> None:
-    """SkyCLI - See what's visible in the night sky tonight."""
+    """AstroSky - See what's visible in the night sky tonight."""
     pass
 
 
@@ -91,7 +91,7 @@ def add(name: str, lat: float, lon: float, set_default: bool) -> None:
 
     if name in data["locations"]:
         raise click.ClickException(
-            f"Location '{name}' already exists. Remove it first with: skycli location remove {name}"
+            f"Location '{name}' already exists. Remove it first with: astrosky location remove {name}"
         )
 
     data["locations"][name] = {"lat": lat, "lon": lon}
@@ -112,7 +112,7 @@ def list_locations() -> None:
     data = load_locations()
 
     if not data["locations"]:
-        click.echo("No saved locations. Add one with: skycli location add <name> <lat> <lon>")
+        click.echo("No saved locations. Add one with: astrosky location add <name> <lat> <lon>")
         return
 
     for name, coords in data["locations"].items():
@@ -146,7 +146,7 @@ def set_default(name: str) -> None:
 
     if name not in data["locations"]:
         raise click.ClickException(
-            f"Location '{name}' not found. Add it first with: skycli location add {name} <lat> <lon>"
+            f"Location '{name}' not found. Add it first with: astrosky location add {name} <lat> <lon>"
         )
 
     data["default"] = name
@@ -185,14 +185,14 @@ def tonight(
             lat, lon = get_location(location_name)
         except KeyError:
             raise click.ClickException(
-                f"Location '{location_name}' not found. Run 'skycli location list' to see saved locations."
+                f"Location '{location_name}' not found. Run 'astrosky location list' to see saved locations."
             )
     elif default := get_default_location():
         _, lat, lon = default
     else:
         raise click.UsageError(
             "Location required. Use --lat/--lon, --location <name>, or set a default with:\n"
-            "  skycli location add <name> <lat> <lon> --default"
+            "  astrosky location add <name> <lat> <lon> --default"
         )
 
     # Parse section filters

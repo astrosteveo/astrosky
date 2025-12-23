@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "skycli"
-version = "0.1.0"
+name = "astrosky"
+version = "0.1.2"
 description = "CLI tool to see what's visible in the night sky tonight"
 authors = [{ name = "AstroSteveo", email = "stevengmjr@gmail.com" }]
 license = "MIT"
@@ -29,8 +29,13 @@ dependencies = [
     "httpx>=0.25.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/astrosteveo/astrosky"
+Repository = "https://github.com/astrosteveo/astrosky"
+Issues = "https://github.com/astrosteveo/astrosky/issues"
+
 [project.scripts]
-skycli = "skycli.cli:main"
+astrosky = "skycli.cli:main"
 
 [project.optional-dependencies]
 dev = [
