@@ -12,10 +12,13 @@ import { InstallPrompt } from './components/InstallPrompt'
 import { CurrentSkyStatus } from './components/CurrentSkyStatus'
 import { NextEvent } from './components/NextEvent'
 import { LiveCountdowns } from './components/LiveCountdowns'
+import { ObservationStats } from './components/ObservationStats'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 import { useCurrentTime } from './hooks/useCurrentTime'
 import { formatLocalTime } from './lib/timeUtils'
+import { useReverseGeocode } from './lib/geocoding'
+import { ObservationsProvider } from './context/ObservationsContext'
 
 // Parse URL parameters for manual location override
 function useUrlParams() {
@@ -53,7 +56,7 @@ const itemVariants = {
   },
 }
 
-function App() {
+function AppContent() {
   const urlParams = useUrlParams()
   const { lat: geoLat, lon: geoLon, error: geoError, loading: geoLoading } = useGeolocation()
   const currentTime = useCurrentTime()
@@ -64,6 +67,10 @@ function App() {
   const skipGeoLoading = urlParams !== null
 
   const { data, loading: reportLoading, error: reportError, lastUpdated } = useReport(lat, lon)
+  const { placeName } = useReverseGeocode(lat, lon)
+
+  // Location object for passing to cards
+  const location = lat !== null && lon !== null ? { lat, lon } : undefined
 
   return (
     <div className="min-h-screen relative">
@@ -88,7 +95,12 @@ function App() {
               transition={{ delay: 0.3 }}
             >
               <p className="text-slate-400">
-                {lat.toFixed(2)}°, {lon.toFixed(2)}°
+                {placeName || `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`}
+                {placeName && (
+                  <span className="text-slate-500 text-sm ml-2">
+                    ({lat.toFixed(2)}°, {lon.toFixed(2)}°)
+                  </span>
+                )}
               </p>
               <div className="flex items-center justify-center gap-4 text-sm">
                 <div className="flex items-center gap-2">
@@ -151,19 +163,24 @@ function App() {
               />
             </motion.div>
 
+            {/* Observation Stats */}
+            <motion.div variants={itemVariants}>
+              <ObservationStats />
+            </motion.div>
+
             <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
-              <MoonCard moon={data.moon} />
+              <MoonCard moon={data.moon} location={location} placeName={placeName || undefined} />
               <SunTimesCard sun={data.sun} />
             </motion.div>
 
             <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
-              <PlanetsCard planets={data.planets} />
+              <PlanetsCard planets={data.planets} location={location} placeName={placeName || undefined} />
               <ISSCard passes={data.iss_passes} />
             </motion.div>
 
             <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
               <MeteorsCard meteors={data.meteors} />
-              <DeepSkyCard objects={data.deep_sky} />
+              <DeepSkyCard objects={data.deep_sky} location={location} placeName={placeName || undefined} />
             </motion.div>
 
             <motion.div variants={itemVariants}>
@@ -176,6 +193,14 @@ function App() {
       {/* PWA Install Prompt */}
       <InstallPrompt />
     </div>
+  )
+}
+
+function App() {
+  return (
+    <ObservationsProvider>
+      <AppContent />
+    </ObservationsProvider>
   )
 }
 

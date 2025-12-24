@@ -6,7 +6,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-from app.config import CORS_ORIGINS
+from app.config import CORS_ORIGINS, CORS_ORIGIN_REGEX
 from app.routers import health, report
 
 
@@ -25,9 +25,11 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS middleware
+# Supports both explicit origins and regex pattern for Vercel preview deployments
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
+    allow_origin_regex=CORS_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"],
