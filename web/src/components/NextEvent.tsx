@@ -1,6 +1,8 @@
 import type { SkyReport } from '../types'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useCurrentTime } from '../hooks/useCurrentTime'
-import { calculateTimeUntil, formatTimeUntil, isBefore } from '../lib/timeUtils'
+import { ProgressRing } from './motion'
+import { calculateTimeUntil, isBefore } from '../lib/timeUtils'
 
 interface NextEventProps {
   data: SkyReport
@@ -12,7 +14,49 @@ interface EventInfo {
   title: string
   subtitle: string
   time: string | Date
-  color: string
+  gradient: string
+  border: string
+  glow: string
+  ringColor: string
+}
+
+const eventStyles: Record<string, Omit<EventInfo, 'type' | 'icon' | 'title' | 'subtitle' | 'time'>> = {
+  sunrise: {
+    gradient: 'from-orange-500/25 via-amber-500/15 to-yellow-500/25',
+    border: 'border-amber-500/40',
+    glow: 'shadow-[0_0_80px_rgba(251,191,36,0.15)]',
+    ringColor: '#fbbf24',
+  },
+  sunset: {
+    gradient: 'from-violet-500/25 via-purple-500/15 to-fuchsia-500/25',
+    border: 'border-purple-500/40',
+    glow: 'shadow-[0_0_80px_rgba(168,85,247,0.15)]',
+    ringColor: '#a855f7',
+  },
+  'dark-sky': {
+    gradient: 'from-indigo-500/25 via-blue-500/15 to-cyan-500/25',
+    border: 'border-blue-500/40',
+    glow: 'shadow-[0_0_80px_rgba(59,130,246,0.15)]',
+    ringColor: '#3b82f6',
+  },
+  iss: {
+    gradient: 'from-cyan-500/25 via-sky-500/15 to-teal-500/25',
+    border: 'border-cyan-500/40',
+    glow: 'shadow-[0_0_80px_rgba(34,211,238,0.15)]',
+    ringColor: '#22d3ee',
+  },
+  meteor: {
+    gradient: 'from-yellow-500/25 via-orange-500/15 to-red-500/25',
+    border: 'border-yellow-500/40',
+    glow: 'shadow-[0_0_80px_rgba(250,204,21,0.15)]',
+    ringColor: '#facc15',
+  },
+  'astro-event': {
+    gradient: 'from-pink-500/25 via-rose-500/15 to-red-500/25',
+    border: 'border-pink-500/40',
+    glow: 'shadow-[0_0_80px_rgba(236,72,153,0.15)]',
+    ringColor: '#ec4899',
+  },
 }
 
 export function NextEvent({ data }: NextEventProps) {
@@ -29,7 +73,7 @@ export function NextEvent({ data }: NextEventProps) {
       title: 'Sunrise',
       subtitle: 'Day begins',
       time: data.sun.sunrise,
-      color: 'from-orange-500/30 to-amber-500/30 border-amber-500/40'
+      ...eventStyles.sunrise,
     })
   }
 
@@ -40,7 +84,7 @@ export function NextEvent({ data }: NextEventProps) {
       title: 'Sunset',
       subtitle: 'Evening begins',
       time: data.sun.sunset,
-      color: 'from-violet-500/30 to-purple-500/30 border-purple-500/40'
+      ...eventStyles.sunset,
     })
   }
 
@@ -51,7 +95,7 @@ export function NextEvent({ data }: NextEventProps) {
       title: 'Dark Sky Begins',
       subtitle: 'Perfect for deep sky observing',
       time: data.sun.astronomical_twilight_start,
-      color: 'from-indigo-500/30 to-blue-500/30 border-blue-500/40'
+      ...eventStyles['dark-sky'],
     })
   }
 
@@ -65,7 +109,7 @@ export function NextEvent({ data }: NextEventProps) {
         title: 'ISS Pass',
         subtitle: `Max altitude ${nextPass.max_altitude}° • ${nextPass.brightness}`,
         time: nextPass.start_time,
-        color: 'from-cyan-500/30 to-sky-500/30 border-cyan-500/40'
+        ...eventStyles.iss,
       })
     }
   }
@@ -79,7 +123,7 @@ export function NextEvent({ data }: NextEventProps) {
         title: shower.name,
         subtitle: `Peak: ${shower.zhr} meteors/hour from ${shower.radiant_constellation}`,
         time: shower.peak_date,
-        color: 'from-yellow-500/30 to-orange-500/30 border-yellow-500/40'
+        ...eventStyles.meteor,
       })
     }
   })
@@ -93,7 +137,7 @@ export function NextEvent({ data }: NextEventProps) {
         title: event.title,
         subtitle: event.description,
         time: event.date,
-        color: 'from-pink-500/30 to-rose-500/30 border-pink-500/40'
+        ...eventStyles['astro-event'],
       })
     }
   })
@@ -113,21 +157,72 @@ export function NextEvent({ data }: NextEventProps) {
 
   const timeUntil = calculateTimeUntil(now, nextEvent.time)
 
+  // Progress for the ring (assuming max 24 hours to next event)
+  const maxSeconds = 86400 // 24 hours
+  const progress = Math.max(0, Math.min(1, 1 - timeUntil.totalSeconds / maxSeconds))
+
+  // Split time for animated display
+  const hours = Math.floor(timeUntil.totalSeconds / 3600)
+  const minutes = Math.floor((timeUntil.totalSeconds % 3600) / 60)
+  const seconds = timeUntil.totalSeconds % 60
+
   return (
-    <div className={`relative overflow-hidden rounded-xl border bg-gradient-to-br ${nextEvent.color} backdrop-blur-sm p-6 transition-all duration-500`}>
-      {/* Animated background pulse */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse"></div>
+    <motion.div
+      className={`
+        relative overflow-hidden rounded-2xl
+        border ${nextEvent.border}
+        bg-gradient-to-br ${nextEvent.gradient}
+        backdrop-blur-xl
+        ${nextEvent.glow}
+        p-6
+      `}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Animated shimmer */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: 'linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.05) 50%, transparent 75%)',
+        }}
+        animate={{
+          x: ['-100%', '100%'],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          repeatDelay: 3,
+          ease: 'easeInOut',
+        }}
+      />
 
       <div className="relative z-10">
-        <div className="flex items-start gap-4">
-          <div className="text-5xl" role="img" aria-label={nextEvent.title}>
-            {nextEvent.icon}
+        <div className="flex items-start gap-5">
+          {/* Large animated progress ring with icon */}
+          <div className="relative flex-shrink-0">
+            <ProgressRing
+              progress={progress}
+              size={80}
+              strokeWidth={4}
+              color={nextEvent.ringColor}
+            />
+            <motion.span
+              className="absolute inset-0 flex items-center justify-center text-4xl"
+              role="img"
+              aria-label={nextEvent.title}
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              {nextEvent.icon}
+            </motion.span>
           </div>
-          <div className="flex-1">
-            <div className="flex items-baseline gap-2 mb-1">
-              <h3 className="font-display text-sm uppercase tracking-wider text-slate-400">
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-medium uppercase tracking-wider text-slate-400 bg-white/5 px-2 py-0.5 rounded">
                 Next Event
-              </h3>
+              </span>
               <span className="text-xs text-slate-500">
                 {new Date(nextEvent.time).toLocaleDateString([], {
                   month: 'short',
@@ -137,30 +232,66 @@ export function NextEvent({ data }: NextEventProps) {
                 })}
               </span>
             </div>
-            <h2 className="font-display text-2xl font-bold text-slate-50 mb-2">
+
+            <h2 className="font-display text-2xl font-bold text-slate-50 mb-1 truncate">
               {nextEvent.title}
             </h2>
-            <p className="text-slate-300 text-sm mb-4">
+            <p className="text-slate-400 text-sm mb-4 line-clamp-2">
               {nextEvent.subtitle}
             </p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-slate-400 text-sm">Starts in</span>
-              <span className="font-mono font-bold text-2xl text-emerald-400 tabular-nums">
-                {formatTimeUntil(timeUntil)}
-              </span>
+
+            {/* Animated countdown */}
+            <div className="flex items-baseline gap-3">
+              <span className="text-slate-500 text-sm">Starts in</span>
+              <div className="font-mono font-bold text-2xl text-emerald-400 tabular-nums flex items-center gap-1">
+                {hours > 0 && (
+                  <>
+                    <AnimatedDigit value={hours} />
+                    <span className="text-slate-600 text-lg">h</span>
+                  </>
+                )}
+                <AnimatedDigit value={minutes} />
+                <span className="text-slate-600 text-lg">m</span>
+                <AnimatedDigit value={seconds} />
+                <span className="text-slate-600 text-lg">s</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Live indicator */}
-      <div className="absolute top-4 right-4 flex items-center gap-1.5 text-xs text-slate-400">
-        <span className="relative flex h-2 w-2">
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <motion.span
+          className="relative flex h-2.5 w-2.5"
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-        LIVE
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+        </motion.span>
+        <span className="text-xs font-medium text-emerald-400 uppercase tracking-wider">Live</span>
       </div>
-    </div>
+    </motion.div>
+  )
+}
+
+// Animated digit for countdown
+function AnimatedDigit({ value }: { value: number }) {
+  const displayValue = value.toString().padStart(2, '0')
+  return (
+    <span className="relative inline-flex overflow-hidden">
+      <AnimatePresence mode="popLayout">
+        <motion.span
+          key={displayValue}
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 20, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        >
+          {displayValue}
+        </motion.span>
+      </AnimatePresence>
+    </span>
   )
 }

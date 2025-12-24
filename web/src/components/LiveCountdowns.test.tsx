@@ -41,7 +41,7 @@ describe('LiveCountdowns', () => {
 
     render(<LiveCountdowns sun={mockSunTimes} />)
 
-    expect(screen.getByText('Morning Twilight Ends')).toBeInTheDocument()
+    expect(screen.getByText('Twilight Ends')).toBeInTheDocument()
     expect(screen.getByText('Sunrise')).toBeInTheDocument()
   })
 
@@ -51,7 +51,7 @@ describe('LiveCountdowns', () => {
     render(<LiveCountdowns sun={mockSunTimes} issPass={mockISSPass} />)
 
     expect(screen.getByText('ISS Pass')).toBeInTheDocument()
-    expect(screen.getByText(/Max 68° altitude/)).toBeInTheDocument()
+    expect(screen.getByText(/Max 68°/)).toBeInTheDocument()
   })
 
   it('should render upcoming meteor shower', () => {
@@ -60,7 +60,7 @@ describe('LiveCountdowns', () => {
     render(<LiveCountdowns sun={mockSunTimes} meteorShower={mockMeteorShower} />)
 
     expect(screen.getByText(/Perseids Peak/)).toBeInTheDocument()
-    expect(screen.getByText(/100 meteors\/hour/)).toBeInTheDocument()
+    expect(screen.getByText(/Up to 100\/hour/)).toBeInTheDocument()
   })
 
   it('should not render past events', () => {
@@ -78,7 +78,7 @@ describe('LiveCountdowns', () => {
 
     render(<LiveCountdowns sun={mockSunTimes} />)
 
-    expect(screen.getByText('LIVE')).toBeInTheDocument()
+    expect(screen.getByText('Live')).toBeInTheDocument()
   })
 
   it('should show countdowns in correct format', () => {
@@ -86,8 +86,9 @@ describe('LiveCountdowns', () => {
 
     render(<LiveCountdowns sun={mockSunTimes} />)
 
-    // Should have countdown timers (format: Xh Xm Xs or Xm Xs or Xs)
-    const countdowns = screen.getAllByText(/\d+[hms]/)
-    expect(countdowns.length).toBeGreaterThan(0)
+    // Should have countdown time unit labels (h, m, s)
+    expect(screen.getAllByText('h').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('m').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('s').length).toBeGreaterThan(0)
   })
 })

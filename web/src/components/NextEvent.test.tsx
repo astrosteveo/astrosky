@@ -87,9 +87,10 @@ describe('NextEvent', () => {
     render(<NextEvent data={mockData} />)
 
     expect(screen.getByText('Starts in')).toBeInTheDocument()
-    // Should have a countdown in format Xh Xm Xs
-    const countdown = screen.getByText(/\d+[hms]/)
-    expect(countdown).toBeInTheDocument()
+    // Should have countdown time unit labels (h, m, s)
+    expect(screen.getByText('h')).toBeInTheDocument()
+    expect(screen.getByText('m')).toBeInTheDocument()
+    expect(screen.getByText('s')).toBeInTheDocument()
   })
 
   it('should display LIVE indicator', () => {
@@ -97,7 +98,7 @@ describe('NextEvent', () => {
 
     render(<NextEvent data={mockData} />)
 
-    expect(screen.getByText('LIVE')).toBeInTheDocument()
+    expect(screen.getByText('Live')).toBeInTheDocument()
   })
 
   it('should display event time', () => {
