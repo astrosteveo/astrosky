@@ -25,8 +25,8 @@ describe('CurrentSkyStatus', () => {
 
     render(<CurrentSkyStatus sun={mockSunTimes} />)
 
-    expect(screen.getByText('Dark Sky - Perfect for Observing!')).toBeInTheDocument()
-    expect(screen.getByText(/Twilight begins in/)).toBeInTheDocument()
+    expect(screen.getByText('Perfect for Observing')).toBeInTheDocument()
+    expect(screen.getByText(/Dark sky for/)).toBeInTheDocument()
   })
 
   it('should show "Morning Twilight" during morning twilight', () => {
@@ -45,7 +45,7 @@ describe('CurrentSkyStatus', () => {
 
     render(<CurrentSkyStatus sun={mockSunTimes} />)
 
-    expect(screen.getByText('Daylight')).toBeInTheDocument()
+    expect(screen.getByText('Daytime')).toBeInTheDocument()
     expect(screen.getByText(/Sunset in/)).toBeInTheDocument()
   })
 
@@ -64,6 +64,6 @@ describe('CurrentSkyStatus', () => {
 
     render(<CurrentSkyStatus sun={mockSunTimes} />)
 
-    expect(screen.getByText('● LIVE')).toBeInTheDocument()
+    expect(screen.getByText('Live')).toBeInTheDocument()
   })
 })
