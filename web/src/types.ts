@@ -21,6 +21,7 @@ export interface MoonInfo {
 export interface PlanetInfo {
   name: string
   direction: string
+  azimuth: number
   altitude: number
   rise_time: string | null
   set_time: string | null

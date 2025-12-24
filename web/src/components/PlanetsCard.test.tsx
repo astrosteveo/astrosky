@@ -7,6 +7,7 @@ const mockPlanets: PlanetInfo[] = [
   {
     name: 'Jupiter',
     direction: 'SE',
+    azimuth: 135,
     altitude: 45,
     rise_time: '2025-12-23T18:00:00Z',
     set_time: '2025-12-24T04:00:00Z',
@@ -15,6 +16,7 @@ const mockPlanets: PlanetInfo[] = [
   {
     name: 'Saturn',
     direction: 'SW',
+    azimuth: 225,
     altitude: 30,
     rise_time: '2025-12-23T16:00:00Z',
     set_time: '2025-12-24T02:00:00Z',
@@ -30,10 +32,10 @@ describe('PlanetsCard', () => {
     expect(screen.getByText('Saturn')).toBeInTheDocument()
   })
 
-  it('displays direction and altitude', () => {
+  it('displays direction, azimuth, and altitude', () => {
     render(<PlanetsCard planets={mockPlanets} />)
 
-    expect(screen.getByText(/SE.*45°/)).toBeInTheDocument()
+    expect(screen.getByText(/SE \(135°\).*45° alt/)).toBeInTheDocument()
   })
 
   it('shows empty state when no planets visible', () => {
