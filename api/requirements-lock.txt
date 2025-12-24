@@ -28,3 +28,6 @@ sniffio==1.3.1
 idna==3.10
 certifi==2024.12.14
 h11==0.14.0
+
+# Install the skycli package from repo root
+.

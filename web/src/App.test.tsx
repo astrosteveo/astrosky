@@ -14,6 +14,12 @@ vi.mock('./hooks/useGeolocation', () => ({
 vi.mock('./hooks/useReport', () => ({
   useReport: () => ({
     data: {
+      sun: {
+        sunrise: '2024-01-15T07:00:00Z',
+        sunset: '2024-01-15T17:00:00Z',
+        astronomical_twilight_start: '2024-01-15T18:30:00Z',
+        astronomical_twilight_end: '2024-01-15T05:30:00Z',
+      },
       moon: {
         phase_name: 'Full Moon',
         illumination: 100,
