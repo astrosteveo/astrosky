@@ -19,6 +19,6 @@ describe('GlassCard', () => {
     render(<GlassCard>Content</GlassCard>)
 
     const card = screen.getByTestId('glass-card')
-    expect(card).toHaveClass('backdrop-blur-xl')
+    expect(card).toHaveClass('observatory-card')
   })
 })

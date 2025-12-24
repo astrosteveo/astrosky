@@ -2,18 +2,18 @@ import { motion } from 'framer-motion'
 
 function SkeletonCard({ className = '' }: { className?: string }) {
   return (
-    <div className={`relative overflow-hidden backdrop-blur-xl bg-white/[0.03] border border-white/10 rounded-2xl ${className}`}>
+    <div className={`observatory-card relative overflow-hidden ${className}`}>
       {/* Shimmer effect */}
       <motion.div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%)',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(201,162,39,0.03) 50%, transparent 100%)',
         }}
         animate={{
           x: ['-100%', '100%'],
         }}
         transition={{
-          duration: 1.5,
+          duration: 2,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
@@ -21,11 +21,11 @@ function SkeletonCard({ className = '' }: { className?: string }) {
 
       {/* Content placeholder lines */}
       <div className="p-6 space-y-4">
-        <div className="h-6 w-32 bg-white/5 rounded" />
+        <div className="h-6 w-32 bg-[rgba(201,162,39,0.08)] rounded" />
         <div className="space-y-2">
-          <div className="h-4 w-full bg-white/5 rounded" />
-          <div className="h-4 w-3/4 bg-white/5 rounded" />
-          <div className="h-4 w-1/2 bg-white/5 rounded" />
+          <div className="h-4 w-full bg-[rgba(201,162,39,0.05)] rounded" />
+          <div className="h-4 w-3/4 bg-[rgba(201,162,39,0.05)] rounded" />
+          <div className="h-4 w-1/2 bg-[rgba(201,162,39,0.05)] rounded" />
         </div>
       </div>
     </div>
@@ -35,11 +35,26 @@ function SkeletonCard({ className = '' }: { className?: string }) {
 export function LoadingSkeleton() {
   return (
     <motion.div
-      className="grid gap-6"
+      className="space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
+      {/* Loading indicator */}
+      <div className="text-center py-8">
+        <motion.div
+          className="inline-flex items-center gap-3"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <div className="w-2 h-2 rounded-full bg-[#c9a227]" />
+          <span className="font-mono text-sm text-[#c9a227]/70 tracking-wider uppercase">
+            Calibrating Observatory
+          </span>
+          <div className="w-2 h-2 rounded-full bg-[#c9a227]" />
+        </motion.div>
+      </div>
+
       {/* Status banner skeleton */}
       <SkeletonCard className="h-24" />
 

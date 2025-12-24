@@ -28,29 +28,27 @@ function CountdownRow({ icon, label, time, sublabel, maxSeconds = 86400 }: Count
   }
 
   // Color based on urgency
-  const getUrgencyColor = () => {
-    if (timeUntil.totalSeconds < 300) return { text: 'text-red-400', ring: '#f87171', glow: 'shadow-red-500/20' }
-    if (timeUntil.totalSeconds < 1800) return { text: 'text-amber-400', ring: '#fbbf24', glow: 'shadow-amber-500/20' }
-    if (timeUntil.totalSeconds < 3600) return { text: 'text-yellow-400', ring: '#facc15', glow: 'shadow-yellow-500/20' }
-    return { text: 'text-emerald-400', ring: '#34d399', glow: 'shadow-emerald-500/20' }
+  const getUrgencyConfig = () => {
+    if (timeUntil.totalSeconds < 300) return { color: '#ef4444', glow: 'rgba(239,68,68,0.15)' }
+    if (timeUntil.totalSeconds < 1800) return { color: '#fbbf24', glow: 'rgba(251,191,36,0.15)' }
+    if (timeUntil.totalSeconds < 3600) return { color: '#facc15', glow: 'rgba(250,204,21,0.15)' }
+    return { color: '#34d399', glow: 'rgba(52,211,153,0.15)' }
   }
 
-  const urgency = getUrgencyColor()
+  const urgency = getUrgencyConfig()
   const progress = Math.max(0, Math.min(1, 1 - timeUntil.totalSeconds / maxSeconds))
 
-  // Split the time for animated digits
   const hours = Math.floor(timeUntil.totalSeconds / 3600)
   const minutes = Math.floor((timeUntil.totalSeconds % 3600) / 60)
   const seconds = timeUntil.totalSeconds % 60
 
   return (
     <motion.div
-      className={`
-        flex items-center justify-between py-3 px-4 -mx-4
-        border-b border-white/5 last:border-0
-        hover:bg-white/[0.02] transition-colors rounded-lg
-        ${timeUntil.totalSeconds < 300 ? 'shadow-lg ' + urgency.glow : ''}
-      `}
+      className="flex items-center justify-between py-3 px-4 -mx-4 rounded-lg transition-colors hover:bg-[rgba(201,162,39,0.03)]"
+      style={{
+        borderBottom: '1px solid rgba(201,162,39,0.08)',
+        boxShadow: timeUntil.totalSeconds < 300 ? `0 0 20px ${urgency.glow}` : 'none',
+      }}
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 10 }}
@@ -63,10 +61,11 @@ function CountdownRow({ icon, label, time, sublabel, maxSeconds = 86400 }: Count
             progress={progress}
             size={44}
             strokeWidth={3}
-            color={urgency.ring}
+            color={urgency.color}
+            bgColor="rgba(201,162,39,0.1)"
           />
           <span
-            className="absolute inset-0 flex items-center justify-center text-xl"
+            className="absolute inset-0 flex items-center justify-center text-lg"
             role="img"
             aria-label={label}
           >
@@ -75,42 +74,43 @@ function CountdownRow({ icon, label, time, sublabel, maxSeconds = 86400 }: Count
         </div>
 
         <div>
-          <div className="text-slate-200 font-medium">{label}</div>
-          {sublabel && <div className="text-xs text-slate-500">{sublabel}</div>}
+          <div className="text-[#f5f0e1] font-medium">{label}</div>
+          {sublabel && <div className="text-xs text-[#c4baa6]/60 font-mono">{sublabel}</div>}
         </div>
       </div>
 
       {/* Animated countdown display */}
-      <div className={`font-mono font-bold text-lg tabular-nums flex items-center gap-0.5 ${urgency.text}`}>
+      <div className="font-mono font-bold text-lg tabular-nums flex items-center gap-0.5" style={{ color: urgency.color }}>
         {hours > 0 && (
           <>
-            <AnimatedDigit value={hours} />
-            <span className="text-slate-600">h</span>
+            <AnimatedDigit value={hours} color={urgency.color} />
+            <span className="text-[#c4baa6]/40 text-sm">h</span>
             <span className="w-1" />
           </>
         )}
-        <AnimatedDigit value={minutes} />
-        <span className="text-slate-600">m</span>
+        <AnimatedDigit value={minutes} color={urgency.color} />
+        <span className="text-[#c4baa6]/40 text-sm">m</span>
         <span className="w-1" />
-        <AnimatedDigit value={seconds} />
-        <span className="text-slate-600">s</span>
+        <AnimatedDigit value={seconds} color={urgency.color} />
+        <span className="text-[#c4baa6]/40 text-sm">s</span>
       </div>
     </motion.div>
   )
 }
 
-// Animated digit component with flip effect
-function AnimatedDigit({ value }: { value: number }) {
+// Animated digit component
+function AnimatedDigit({ value, color }: { value: number; color: string }) {
   const displayValue = value.toString().padStart(2, '0')
   return (
-    <span className="relative inline-flex overflow-hidden">
+    <span className="relative inline-flex overflow-hidden" style={{ minWidth: '1.2em' }}>
       <AnimatePresence mode="popLayout">
         <motion.span
           key={displayValue}
-          initial={{ y: -20, opacity: 0 }}
+          initial={{ y: -16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 20, opacity: 0 }}
+          exit={{ y: 16, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          style={{ color }}
         >
           {displayValue}
         </motion.span>
@@ -128,10 +128,10 @@ export function LiveCountdowns({ sun, issPass, meteorShower }: LiveCountdownsPro
   const showTwilightEnd = isBefore(now, sun.astronomical_twilight_end)
   const showTwilightStart = isBefore(now, sun.astronomical_twilight_start)
 
-  // Determine which ISS pass to show (next upcoming one)
+  // Determine which ISS pass to show
   const showISSPass = issPass && isBefore(now, issPass.start_time)
 
-  // Check if meteor shower is active or upcoming
+  // Check if meteor shower is upcoming
   const showMeteorShower = meteorShower && isBefore(now, meteorShower.peak_date)
 
   // If nothing to show, don't render the card
@@ -142,27 +142,38 @@ export function LiveCountdowns({ sun, issPass, meteorShower }: LiveCountdownsPro
   }
 
   return (
-    <GlassCard glowColor="emerald">
+    <GlassCard glowColor="success">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-display text-xl font-semibold text-slate-50">
-          Live Countdowns
-        </h2>
-        <div className="flex items-center gap-2 text-xs">
-          <motion.span
-            className="relative flex h-2 w-2"
-            animate={{ scale: [1, 1.3, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+        <div className="flex items-center gap-3">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, rgba(52,211,153,0.15) 0%, rgba(52,211,153,0.05) 100%)',
+              border: '1px solid rgba(52,211,153,0.3)',
+            }}
           >
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </motion.span>
-          <span className="text-emerald-400 font-medium uppercase tracking-wider">Live</span>
+            <span className="text-sm">⏱️</span>
+          </div>
+          <div>
+            <h2 className="font-display text-xl font-semibold text-[#f5f0e1]">
+              Live Countdowns
+            </h2>
+            <div
+              className="mt-1 h-px w-12"
+              style={{
+                background: 'linear-gradient(90deg, #34d399 0%, transparent 100%)',
+              }}
+            />
+          </div>
+        </div>
+        <div className="status-live">
+          <span>Live</span>
         </div>
       </div>
 
       <AnimatePresence mode="popLayout">
-        <div className="space-y-1">
+        <div className="space-y-0">
           {showTwilightEnd && (
             <CountdownRow
               icon="🌅"
@@ -206,7 +217,7 @@ export function LiveCountdowns({ sun, issPass, meteorShower }: LiveCountdownsPro
               icon="🛰️"
               label="ISS Pass"
               time={issPass.start_time}
-              sublabel={`Max ${issPass.max_altitude}° • Mag ${issPass.brightness}`}
+              sublabel={`Max ${issPass.max_altitude}° • ${issPass.brightness}`}
               maxSeconds={86400}
             />
           )}

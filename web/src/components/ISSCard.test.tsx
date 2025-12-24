@@ -26,10 +26,11 @@ describe('ISSCard', () => {
   it('displays ISS passes', () => {
     render(<ISSCard passes={mockPasses} />)
 
-    expect(screen.getByText(/6.*min/)).toBeInTheDocument()
-    expect(screen.getByText(/3.*min/)).toBeInTheDocument()
-    expect(screen.getByText(/45°/)).toBeInTheDocument()
-    expect(screen.getByText(/20°/)).toBeInTheDocument()
+    // New design displays values separately from units
+    expect(screen.getByText('6')).toBeInTheDocument()
+    expect(screen.getByText('3')).toBeInTheDocument()
+    expect(screen.getByText('45')).toBeInTheDocument()
+    expect(screen.getByText('20')).toBeInTheDocument()
   })
 
   it('shows empty state when no passes', () => {

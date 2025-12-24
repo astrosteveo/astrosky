@@ -26,8 +26,9 @@ describe('MeteorsCard', () => {
 
     expect(screen.getByText('Geminids')).toBeInTheDocument()
     expect(screen.getByText('Perseids')).toBeInTheDocument()
-    expect(screen.getByText(/120.*ZHR/)).toBeInTheDocument()
-    expect(screen.getByText(/80.*ZHR/)).toBeInTheDocument()
+    // New design displays ZHR values separately
+    expect(screen.getByText('120')).toBeInTheDocument()
+    expect(screen.getByText('80')).toBeInTheDocument()
   })
 
   it('shows empty state when no showers', () => {
@@ -39,7 +40,7 @@ describe('MeteorsCard', () => {
   it('highlights peak showers', () => {
     render(<MeteorsCard meteors={mockShowers} />)
 
-    expect(screen.getByText('PEAK')).toBeInTheDocument()
+    expect(screen.getByText('Peak Tonight')).toBeInTheDocument()
   })
 
   it('displays radiant constellations', () => {

@@ -12,31 +12,35 @@ type SkyPhase = 'night' | 'morning-twilight' | 'day' | 'evening-twilight'
 const phaseConfig = {
   night: {
     icon: '🌙',
-    gradient: 'from-indigo-600/30 via-purple-600/20 to-violet-600/30',
-    border: 'border-purple-500/40',
-    glow: 'shadow-[0_0_60px_rgba(139,92,246,0.2)]',
-    accentColor: 'text-purple-300',
+    label: 'Night Sky',
+    gradient: 'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(78,205,196,0.08) 50%, rgba(201,162,39,0.05) 100%)',
+    border: 'rgba(168,85,247,0.3)',
+    glow: '0 0 60px rgba(168,85,247,0.15), 0 0 120px rgba(78,205,196,0.08)',
+    accent: '#a855f7',
   },
   'morning-twilight': {
     icon: '🌅',
-    gradient: 'from-orange-500/30 via-amber-500/20 to-yellow-500/30',
-    border: 'border-amber-500/40',
-    glow: 'shadow-[0_0_60px_rgba(251,191,36,0.2)]',
-    accentColor: 'text-amber-300',
+    label: 'Morning Twilight',
+    gradient: 'linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(226,88,34,0.1) 50%, rgba(201,162,39,0.05) 100%)',
+    border: 'rgba(251,191,36,0.3)',
+    glow: '0 0 60px rgba(251,191,36,0.15), 0 0 120px rgba(226,88,34,0.08)',
+    accent: '#fbbf24',
   },
   day: {
     icon: '☀️',
-    gradient: 'from-sky-500/30 via-blue-500/20 to-cyan-500/30',
-    border: 'border-sky-500/40',
-    glow: 'shadow-[0_0_60px_rgba(56,189,248,0.2)]',
-    accentColor: 'text-sky-300',
+    label: 'Daytime',
+    gradient: 'linear-gradient(135deg, rgba(78,205,196,0.15) 0%, rgba(251,191,36,0.08) 50%, rgba(201,162,39,0.05) 100%)',
+    border: 'rgba(78,205,196,0.3)',
+    glow: '0 0 60px rgba(78,205,196,0.15), 0 0 120px rgba(251,191,36,0.08)',
+    accent: '#4ecdc4',
   },
   'evening-twilight': {
     icon: '🌇',
-    gradient: 'from-violet-500/30 via-purple-500/20 to-indigo-500/30',
-    border: 'border-violet-500/40',
-    glow: 'shadow-[0_0_60px_rgba(139,92,246,0.2)]',
-    accentColor: 'text-violet-300',
+    label: 'Evening Twilight',
+    gradient: 'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(226,88,34,0.1) 50%, rgba(201,162,39,0.05) 100%)',
+    border: 'rgba(168,85,247,0.3)',
+    glow: '0 0 60px rgba(168,85,247,0.15), 0 0 120px rgba(226,88,34,0.08)',
+    accent: '#a855f7',
   },
 }
 
@@ -71,19 +75,22 @@ export function CurrentSkyStatus({ sun }: CurrentSkyStatusProps) {
         if (!untilMorningTwilight.isPast) {
           return {
             title: 'Perfect for Observing',
-            subtitle: `Dark sky for ${formatTimeUntilCompact(untilMorningTwilight)}`,
+            subtitle: `Dark sky continues for ${formatTimeUntilCompact(untilMorningTwilight)}`,
+            quality: 'excellent',
           }
         }
         return {
           title: 'Perfect for Observing',
           subtitle: 'Optimal viewing conditions',
+          quality: 'excellent',
         }
       }
       case 'morning-twilight': {
         const untilSunrise = calculateTimeUntil(now, sun.sunrise)
         return {
-          title: 'Morning Twilight',
+          title: 'Dawn Approaching',
           subtitle: `Sunrise in ${formatTimeUntilCompact(untilSunrise)}`,
+          quality: 'fair',
         }
       }
       case 'day': {
@@ -91,13 +98,15 @@ export function CurrentSkyStatus({ sun }: CurrentSkyStatusProps) {
         return {
           title: 'Daytime',
           subtitle: `Sunset in ${formatTimeUntilCompact(untilSunset)}`,
+          quality: 'poor',
         }
       }
       case 'evening-twilight': {
         const untilDark = calculateTimeUntil(now, sun.astronomical_twilight_start)
         return {
-          title: 'Evening Twilight',
-          subtitle: `Dark sky in ${formatTimeUntilCompact(untilDark)}`,
+          title: 'Dusk Deepening',
+          subtitle: `True darkness in ${formatTimeUntilCompact(untilDark)}`,
+          quality: 'good',
         }
       }
     }
@@ -105,76 +114,140 @@ export function CurrentSkyStatus({ sun }: CurrentSkyStatusProps) {
 
   const status = getStatusInfo()
 
+  const qualityColors: Record<string, string> = {
+    excellent: '#34d399',
+    good: '#4ecdc4',
+    fair: '#fbbf24',
+    poor: '#c4baa6',
+  }
+
   return (
     <motion.div
-      className={`
-        relative overflow-hidden rounded-2xl
-        border ${config.border}
-        bg-gradient-to-r ${config.gradient}
-        backdrop-blur-xl
-        ${config.glow}
-        p-5 mb-2
-      `}
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
+      className="observatory-card p-6 relative overflow-hidden"
+      style={{
+        background: config.gradient,
+        borderColor: config.border,
+        boxShadow: config.glow,
+      }}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       {/* Animated shimmer effect */}
       <motion.div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)',
+          background: 'linear-gradient(110deg, transparent 30%, rgba(245,240,225,0.03) 50%, transparent 70%)',
         }}
         animate={{
           x: ['-100%', '200%'],
         }}
         transition={{
-          duration: 3,
+          duration: 4,
           repeat: Infinity,
-          repeatDelay: 5,
+          repeatDelay: 6,
           ease: 'easeInOut',
         }}
       />
 
-      <div className="relative flex items-center gap-5">
-        {/* Animated icon */}
+      {/* Decorative corner elements */}
+      <svg className="absolute top-0 right-0 w-24 h-24 pointer-events-none" viewBox="0 0 96 96">
+        <path
+          d="M96 0 L96 24 L72 24 L72 48 L48 48 L48 72 L24 72 L24 96"
+          fill="none"
+          stroke={config.accent}
+          strokeWidth="0.5"
+          opacity="0.2"
+        />
+        <circle cx="88" cy="8" r="2" fill={config.accent} opacity="0.4" />
+        <circle cx="76" cy="8" r="1.5" fill={config.accent} opacity="0.3" />
+      </svg>
+
+      <div className="relative flex items-center gap-6">
+        {/* Animated phase icon */}
         <motion.div
-          className="text-5xl"
-          role="img"
-          aria-label={status.title}
+          className="relative"
           animate={{
             scale: [1, 1.05, 1],
-            rotate: phase === 'night' ? [0, 5, 0, -5, 0] : 0,
           }}
           transition={{
-            duration: phase === 'night' ? 4 : 2,
+            duration: 4,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
         >
-          {config.icon}
+          {/* Icon glow */}
+          <div
+            className="absolute inset-0 rounded-full blur-xl"
+            style={{
+              background: `radial-gradient(circle, ${config.accent}40 0%, transparent 70%)`,
+              transform: 'scale(1.5)',
+            }}
+          />
+          {/* Icon container */}
+          <div
+            className="relative w-16 h-16 rounded-full flex items-center justify-center"
+            style={{
+              background: `linear-gradient(135deg, ${config.accent}20 0%, ${config.accent}05 100%)`,
+              border: `2px solid ${config.accent}40`,
+              boxShadow: `inset 0 0 20px ${config.accent}10`,
+            }}
+          >
+            <span className="text-3xl" role="img" aria-label={status.title}>
+              {config.icon}
+            </span>
+          </div>
         </motion.div>
 
+        {/* Status content */}
         <div className="flex-1">
-          <h2 className="font-display text-2xl font-bold text-slate-50">
-            {status.title}
-          </h2>
-          <p className={`${config.accentColor} text-sm mt-1 font-medium`}>
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="font-display text-2xl font-bold text-[#f5f0e1]">
+              {status.title}
+            </h2>
+            <span
+              className="font-mono text-xs px-2 py-0.5 rounded uppercase tracking-wider"
+              style={{
+                color: qualityColors[status.quality],
+                background: `${qualityColors[status.quality]}15`,
+                border: `1px solid ${qualityColors[status.quality]}30`,
+              }}
+            >
+              {status.quality}
+            </span>
+          </div>
+          <p className="text-[#c4baa6]">
             {status.subtitle}
           </p>
         </div>
 
         {/* Live indicator */}
-        <div className="flex items-center gap-2 text-xs font-medium">
-          <motion.span
-            className="relative flex h-2.5 w-2.5"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-          </motion.span>
-          <span className="text-emerald-400 uppercase tracking-wider">Live</span>
+        <div className="status-live">
+          <span>Live</span>
+        </div>
+      </div>
+
+      {/* Phase indicator bar */}
+      <div className="mt-5 pt-4 border-t border-[#c9a227]/10">
+        <div className="flex items-center gap-1">
+          {(['night', 'morning-twilight', 'day', 'evening-twilight'] as SkyPhase[]).map((p) => (
+            <div
+              key={p}
+              className="flex-1 h-1.5 rounded-full transition-all duration-500"
+              style={{
+                background: p === phase
+                  ? `linear-gradient(90deg, ${phaseConfig[p].accent}, ${phaseConfig[p].accent}80)`
+                  : 'rgba(201,162,39,0.1)',
+                boxShadow: p === phase ? `0 0 8px ${phaseConfig[p].accent}60` : 'none',
+              }}
+            />
+          ))}
+        </div>
+        <div className="flex justify-between mt-2 text-[9px] font-mono text-[#c4baa6]/50 uppercase tracking-wider">
+          <span>Night</span>
+          <span>Dawn</span>
+          <span>Day</span>
+          <span>Dusk</span>
         </div>
       </div>
     </motion.div>

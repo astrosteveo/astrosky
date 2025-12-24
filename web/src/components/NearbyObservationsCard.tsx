@@ -134,7 +134,7 @@ export function NearbyObservationsCard({ location }: NearbyObservationsCardProps
 
   if (loading) {
     return (
-      <GlassCard glowColor="cyan">
+      <GlassCard glowColor="aurora">
         <div className="flex items-center justify-center py-8">
           <svg className="w-6 h-6 animate-spin text-cyan-400" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -151,7 +151,7 @@ export function NearbyObservationsCard({ location }: NearbyObservationsCardProps
 
   if (stats.length === 0) {
     return (
-      <GlassCard glowColor="cyan">
+      <GlassCard glowColor="aurora">
         <div className="text-center py-4">
           <div className="text-4xl mb-3">👀</div>
           <h3 className="font-display text-lg font-semibold text-slate-50 mb-2">
@@ -168,7 +168,7 @@ export function NearbyObservationsCard({ location }: NearbyObservationsCardProps
   const totalObservations = stats.reduce((sum, s) => sum + s.observation_count, 0)
 
   return (
-    <GlassCard glowColor="cyan">
+    <GlassCard glowColor="aurora">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-display text-xl font-semibold text-slate-50">
           What Others Are Seeing
