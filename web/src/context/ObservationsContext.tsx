@@ -15,6 +15,12 @@ interface ObservationsContextType {
   hasObserved: (objectId: string) => boolean
   getObservationsForObject: (objectId: string) => Observation[]
   getStats: () => ObservationStats
+  // Sync status
+  syncing: boolean
+  lastSynced: Date | null
+  syncError: string | null
+  forceSync: () => void
+  deviceId: string
 }
 
 const ObservationsContext = createContext<ObservationsContextType | null>(null)

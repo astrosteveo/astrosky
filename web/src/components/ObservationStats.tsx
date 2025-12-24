@@ -74,9 +74,31 @@ function ObservationItem({ observation, onRemove }: { observation: Observation; 
 }
 
 export function ObservationStats() {
-  const { observations, removeObservation, getStats } = useObservationsContext()
+  const { observations, removeObservation, getStats, syncing, lastSynced, syncError } = useObservationsContext()
   const [showHistory, setShowHistory] = useState(false)
   const stats = getStats()
+
+  // Sync status indicator
+  const SyncStatus = () => {
+    if (syncing) {
+      return (
+        <span className="flex items-center gap-1 text-xs text-slate-400">
+          <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          Syncing...
+        </span>
+      )
+    }
+    if (syncError) {
+      return <span className="text-xs text-amber-400">Local only</span>
+    }
+    if (lastSynced) {
+      return <span className="text-xs text-emerald-400">Synced</span>
+    }
+    return null
+  }
 
   // If no observations yet, show a welcome prompt
   if (observations.length === 0) {
@@ -89,7 +111,7 @@ export function ObservationStats() {
           </h3>
           <p className="text-sm text-slate-400 max-w-sm mx-auto">
             Tap "I saw this!" on any celestial object to start tracking your observations.
-            Your progress is saved locally and will persist across sessions.
+            Your progress syncs across devices automatically.
           </p>
         </div>
       </GlassCard>
@@ -101,9 +123,12 @@ export function ObservationStats() {
   return (
     <GlassCard glowColor="purple">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-display text-xl font-semibold text-slate-50">
-          My Observations
-        </h2>
+        <div className="flex items-center gap-3">
+          <h2 className="font-display text-xl font-semibold text-slate-50">
+            My Observations
+          </h2>
+          <SyncStatus />
+        </div>
         <button
           onClick={() => setShowHistory(!showHistory)}
           className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
