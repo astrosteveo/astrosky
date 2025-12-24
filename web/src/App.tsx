@@ -15,12 +15,14 @@ import { LiveCountdowns } from './components/LiveCountdowns'
 import { ObservationStats } from './components/ObservationStats'
 import { NearbyObservationsCard } from './components/NearbyObservationsCard'
 import { WelcomeModal } from './components/WelcomeModal'
+import { ThemeToggle } from './components/ThemeToggle'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 import { useCurrentTime } from './hooks/useCurrentTime'
 import { formatLocalTime } from './lib/timeUtils'
 import { useReverseGeocode } from './lib/geocoding'
 import { ObservationsProvider } from './context/ObservationsContext'
+import { ThemeProvider } from './context/ThemeContext'
 
 // Parse URL parameters for manual location override
 function useUrlParams() {
@@ -81,11 +83,16 @@ function AppContent() {
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-8">
         {/* Header with fade-in */}
         <motion.header
-          className="text-center mb-8"
+          className="text-center mb-8 relative"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
+          {/* Theme Toggle */}
+          <div className="absolute right-0 top-0">
+            <ThemeToggle />
+          </div>
+
           <h1 className="font-display text-4xl md:text-5xl font-bold text-slate-50 mb-1">
             Astro<span className="text-cyan-400">SKY</span>
           </h1>
@@ -205,9 +212,11 @@ function AppContent() {
 
 function App() {
   return (
-    <ObservationsProvider>
-      <AppContent />
-    </ObservationsProvider>
+    <ThemeProvider>
+      <ObservationsProvider>
+        <AppContent />
+      </ObservationsProvider>
+    </ThemeProvider>
   )
 }
 

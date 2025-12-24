@@ -37,3 +37,56 @@
     box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
   }
 }
+
+/* Light theme overrides */
+.light-theme {
+  --color-space-black: #f8fafc;
+  --color-space-deep: #e2e8f0;
+}
+
+.light-theme body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.light-theme .glass-card {
+  background-color: rgb(255 255 255 / 0.8);
+  border: 1px solid rgb(0 0 0 / 0.1);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.light-theme .glass-card-hover:hover {
+  background-color: rgb(255 255 255 / 0.95);
+  border-color: rgb(0 0 0 / 0.15);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* Hide starfield in light mode */
+.light-theme .starfield {
+  opacity: 0;
+}
+
+/* Text color adjustments for light mode */
+.light-theme .text-slate-50 { color: #0f172a; }
+.light-theme .text-slate-100 { color: #1e293b; }
+.light-theme .text-slate-200 { color: #334155; }
+.light-theme .text-slate-300 { color: #475569; }
+.light-theme .text-slate-400 { color: #64748b; }
+.light-theme .text-slate-500 { color: #94a3b8; }
+
+/* Background adjustments */
+.light-theme .bg-white\/5 { background-color: rgb(0 0 0 / 0.03); }
+.light-theme .bg-white\/10 { background-color: rgb(0 0 0 / 0.05); }
+.light-theme .bg-white\/20 { background-color: rgb(0 0 0 / 0.1); }
+
+/* Border adjustments */
+.light-theme .border-white\/5 { border-color: rgb(0 0 0 / 0.05); }
+.light-theme .border-white\/10 { border-color: rgb(0 0 0 / 0.1); }
+.light-theme .border-white\/20 { border-color: rgb(0 0 0 / 0.15); }
+
+/* Modal overlay */
+.light-theme .bg-black\/70 { background-color: rgb(0 0 0 / 0.5); }
+
+/* Dropdown/popup backgrounds */
+.light-theme .bg-slate-800 { background-color: #ffffff; }
+.light-theme .bg-slate-900\/95 { background-color: rgb(255 255 255 / 0.95); }
