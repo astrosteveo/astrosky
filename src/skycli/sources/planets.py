@@ -12,6 +12,7 @@ class PlanetInfo(TypedDict):
 
     name: str
     direction: str  # N, NE, E, SE, S, SW, W, NW
+    azimuth: float  # degrees from north (0-360)
     altitude: float  # degrees above horizon
     rise_time: datetime | None
     set_time: datetime | None
@@ -102,6 +103,7 @@ def get_visible_planets(lat: float, lon: float, date: datetime) -> list[PlanetIn
         visible.append(PlanetInfo(
             name=planet_name,
             direction=_azimuth_to_direction(azimuth),
+            azimuth=round(azimuth, 1),
             altitude=round(altitude, 0),
             rise_time=rise_time,
             set_time=set_time,

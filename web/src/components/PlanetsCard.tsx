@@ -2,6 +2,8 @@ import type { PlanetInfo } from '../types'
 import { GlassCard } from './GlassCard'
 import { ObservationButton } from './ObservationButton'
 import { useObservationsContext } from '../context/ObservationsContext'
+import { useCurrentTime } from '../hooks/useCurrentTime'
+import { calculateTimeUntil, formatTimeUntilCompact, isBefore } from '../lib/timeUtils'
 import type { EquipmentType } from '../types/observations'
 
 interface PlanetsCardProps {
@@ -20,8 +22,16 @@ const planetColors: Record<string, string> = {
   Neptune: 'bg-blue-400',
 }
 
+function getUrgencyColor(totalSeconds: number): string {
+  if (totalSeconds < 300) return 'text-red-400' // < 5 min
+  if (totalSeconds < 1800) return 'text-amber-400' // < 30 min
+  if (totalSeconds < 3600) return 'text-yellow-400' // < 1 hour
+  return 'text-emerald-400' // > 1 hour
+}
+
 export function PlanetsCard({ planets, location, placeName }: PlanetsCardProps) {
   const { addObservation, hasObserved, getObservationsForObject } = useObservationsContext()
+  const now = useCurrentTime()
 
   const handleLog = (planet: PlanetInfo) => (equipment: EquipmentType, notes?: string) => {
     if (location) {
@@ -59,14 +69,22 @@ export function PlanetsCard({ planets, location, placeName }: PlanetsCardProps) 
                 className={`w-4 h-4 rounded-full ${planetColors[planet.name] || 'bg-slate-400'}`}
               />
 
-              <div className="flex-1">
-                <div className="flex items-baseline gap-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="font-display font-semibold text-slate-50">
                     {planet.name}
                   </span>
                   <span className="text-sm text-slate-400">
-                    {planet.direction} • {planet.altitude}°
+                    {planet.direction} ({planet.azimuth}°) • {planet.altitude}° alt
                   </span>
+                  {planet.set_time && isBefore(now, planet.set_time) && (() => {
+                    const timeUntil = calculateTimeUntil(now, planet.set_time)
+                    return (
+                      <span className={`text-sm font-medium ${getUrgencyColor(timeUntil.totalSeconds)}`}>
+                        Sets in {formatTimeUntilCompact(timeUntil)}
+                      </span>
+                    )
+                  })()}
                 </div>
                 <p className="text-sm text-slate-500">{planet.description}</p>
               </div>

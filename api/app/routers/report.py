@@ -39,6 +39,7 @@ class MoonInfo(BaseModel):
 class PlanetInfo(BaseModel):
     name: str
     direction: str
+    azimuth: float
     altitude: float
     rise_time: datetime | None
     set_time: datetime | None

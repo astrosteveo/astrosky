@@ -36,7 +36,7 @@ export function StarField({ starCount = 150 }: StarFieldProps) {
   return (
     <div
       data-testid="star-field"
-      className="fixed inset-0 overflow-hidden pointer-events-none"
+      className="starfield fixed inset-0 overflow-hidden pointer-events-none transition-opacity duration-500"
     >
       {/* Deep space gradient background */}
       <div
