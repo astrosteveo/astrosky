@@ -3,13 +3,16 @@
 from datetime import datetime, timezone
 from typing import Annotated
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 from pydantic import BaseModel
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from skycli.report import build_report
 
 
 router = APIRouter(tags=["report"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 # Pydantic models matching skycli TypedDicts
@@ -92,12 +95,20 @@ class ReportResponse(BaseModel):
 
 
 @router.get("/report", response_model=ReportResponse)
+@limiter.limit("100/minute")  # Generous limit for legitimate users
+@limiter.limit("1000/hour")   # Prevents sustained abuse
 def get_report(
+    request: Request,
     lat: Annotated[float, Query(ge=-90, le=90, description="Latitude")],
     lon: Annotated[float, Query(ge=-180, le=180, description="Longitude")],
     date: Annotated[str | None, Query(description="ISO date (YYYY-MM-DD), defaults to today")] = None,
 ) -> ReportResponse:
-    """Get sky report for location and date."""
+    """Get sky report for location and date.
+
+    Rate limits:
+    - 100 requests per minute per IP
+    - 1000 requests per hour per IP
+    """
     if date:
         report_date = datetime.fromisoformat(date).replace(tzinfo=timezone.utc)
     else:

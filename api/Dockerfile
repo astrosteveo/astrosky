@@ -10,8 +10,9 @@ COPY src/ /app/src/
 COPY de421.bsp /app/
 
 # Copy API requirements and install dependencies
-COPY api/requirements.txt /app/api/
-RUN pip install --no-cache-dir -r /app/api/requirements.txt
+# Use requirements-lock.txt for reproducible production builds
+COPY api/requirements-lock.txt /app/api/
+RUN pip install --no-cache-dir -r /app/api/requirements-lock.txt
 
 # Copy API application
 COPY api/app /app/app
