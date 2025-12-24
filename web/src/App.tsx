@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { StarField } from './components/StarField'
 import { MoonCard } from './components/MoonCard'
 import { SunTimesCard } from './components/SunTimesCard'
@@ -27,6 +28,31 @@ function useUrlParams() {
   return null
 }
 
+// Stagger animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+}
+
 function App() {
   const urlParams = useUrlParams()
   const { lat: geoLat, lon: geoLon, error: geoError, loading: geoLoading } = useGeolocation()
@@ -44,79 +70,106 @@ function App() {
       <StarField />
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <header className="text-center mb-8">
-          <h1 className="font-display text-4xl font-bold text-slate-50 mb-2">
+        {/* Header with fade-in */}
+        <motion.header
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-slate-50 mb-2">
             Tonight's Sky
           </h1>
           {lat && lon && (
-            <div className="space-y-2">
+            <motion.div
+              className="space-y-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               <p className="text-slate-400">
                 {lat.toFixed(2)}°, {lon.toFixed(2)}°
               </p>
               <div className="flex items-center justify-center gap-4 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-slate-500">Local Time:</span>
-                  <span className="font-mono font-medium text-slate-300 tabular-nums">
+                  <span className="font-mono font-medium text-cyan-400 tabular-nums tracking-wider">
                     {formatLocalTime(currentTime)}
                   </span>
                 </div>
                 {lastUpdated && (
                   <div className="flex items-center gap-2 text-slate-500">
-                    <span>•</span>
+                    <span className="text-slate-600">•</span>
                     <span>
                       Updated {Math.floor((currentTime.getTime() - lastUpdated.getTime()) / 60000)}m ago
                     </span>
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           )}
-        </header>
+        </motion.header>
 
         {/* Loading state */}
         {((!skipGeoLoading && geoLoading) || reportLoading) && <LoadingSkeleton />}
 
         {/* Error state */}
         {(!skipGeoLoading && geoError || reportError) && (
-          <div className="text-center text-red-400 py-12">
+          <motion.div
+            className="text-center text-red-400 py-12"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
             {geoError || reportError}
-          </div>
+          </motion.div>
         )}
 
-        {/* Data display */}
+        {/* Data display with staggered animations */}
         {data && (
-          <div className="grid gap-6">
+          <motion.div
+            className="grid gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {/* Live Sky Status */}
-            <CurrentSkyStatus sun={data.sun} />
+            <motion.div variants={itemVariants}>
+              <CurrentSkyStatus sun={data.sun} />
+            </motion.div>
 
             {/* Next Event Highlight */}
-            <NextEvent data={data} />
+            <motion.div variants={itemVariants}>
+              <NextEvent data={data} />
+            </motion.div>
 
             {/* Live Countdowns */}
-            <LiveCountdowns
-              sun={data.sun}
-              issPass={data.iss_passes[0]}
-              meteorShower={data.meteors.find(m => m.is_peak)}
-            />
+            <motion.div variants={itemVariants}>
+              <LiveCountdowns
+                sun={data.sun}
+                issPass={data.iss_passes[0]}
+                meteorShower={data.meteors.find(m => m.is_peak)}
+              />
+            </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
               <MoonCard moon={data.moon} />
               <SunTimesCard sun={data.sun} />
-            </div>
+            </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
               <PlanetsCard planets={data.planets} />
               <ISSCard passes={data.iss_passes} />
-            </div>
+            </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
               <MeteorsCard meteors={data.meteors} />
               <DeepSkyCard objects={data.deep_sky} />
-            </div>
+            </motion.div>
 
-            <EventsCard events={data.events} />
-          </div>
+            <motion.div variants={itemVariants}>
+              <EventsCard events={data.events} />
+            </motion.div>
+          </motion.div>
         )}
       </div>
 

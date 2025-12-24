@@ -1,7 +1,7 @@
 // Service Worker for AstroSky PWA
 // Provides offline support for dark sky sites with no cell service
 
-const CACHE_VERSION = 'astrosky-v2';
+const CACHE_VERSION = 'astrosky-v3';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const API_CACHE = `${CACHE_VERSION}-api`;
