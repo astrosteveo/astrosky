@@ -13,6 +13,7 @@ import { CurrentSkyStatus } from './components/CurrentSkyStatus'
 import { NextEvent } from './components/NextEvent'
 import { LiveCountdowns } from './components/LiveCountdowns'
 import { ObservationStats } from './components/ObservationStats'
+import { NearbyObservationsCard } from './components/NearbyObservationsCard'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 import { useCurrentTime } from './hooks/useCurrentTime'
@@ -165,8 +166,9 @@ function AppContent() {
             </motion.div>
 
             {/* Observation Stats */}
-            <motion.div variants={itemVariants}>
+            <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
               <ObservationStats />
+              <NearbyObservationsCard location={location} />
             </motion.div>
 
             <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
