@@ -1,11 +1,13 @@
 import { StarField } from './components/StarField'
 import { MoonCard } from './components/MoonCard'
+import { SunTimesCard } from './components/SunTimesCard'
 import { PlanetsCard } from './components/PlanetsCard'
 import { ISSCard } from './components/ISSCard'
 import { MeteorsCard } from './components/MeteorsCard'
 import { DeepSkyCard } from './components/DeepSkyCard'
 import { EventsCard } from './components/EventsCard'
 import { LoadingSkeleton } from './components/LoadingSkeleton'
+import { InstallPrompt } from './components/InstallPrompt'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 
@@ -61,7 +63,10 @@ function App() {
         {/* Data display */}
         {data && (
           <div className="grid gap-6">
-            <MoonCard moon={data.moon} />
+            <div className="grid md:grid-cols-2 gap-6">
+              <MoonCard moon={data.moon} />
+              <SunTimesCard sun={data.sun} />
+            </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <PlanetsCard planets={data.planets} />
@@ -77,6 +82,9 @@ function App() {
           </div>
         )}
       </div>
+
+      {/* PWA Install Prompt */}
+      <InstallPrompt />
     </div>
   )
 }

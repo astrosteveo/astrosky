@@ -1,9 +1,12 @@
 """Astronomical event calculations using Astronomy Engine."""
 
+import logging
 from datetime import datetime, timedelta
 from typing import TypedDict
 
 import astronomy
+
+logger = logging.getLogger(__name__)
 
 
 class AstroEvent(TypedDict):
@@ -204,7 +207,8 @@ def _find_oppositions(start: datetime, days: int) -> list[AstroEvent]:
                             bodies=[planet_name],
                         )
                     )
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Error calculating opposition for {PLANET_NAMES[planet]}: {e}")
             continue
 
     return events
@@ -271,6 +275,15 @@ def get_upcoming_events(
     """Get astronomical events within the specified window.
 
     Returns empty list on any error (graceful degradation).
+
+    Args:
+        lat: Latitude in degrees (not currently used but kept for API consistency)
+        lon: Longitude in degrees (not currently used but kept for API consistency)
+        start: Start date for event search
+        days: Number of days to search forward (default 7)
+
+    Returns:
+        List of astronomical events sorted by date, or empty list on error
     """
     try:
         events = []
@@ -279,5 +292,6 @@ def get_upcoming_events(
         events.extend(_find_oppositions(start, days))
         events.extend(_find_seasonal_events(start, days))
         return sorted(events, key=lambda e: e["date"])
-    except Exception:
+    except Exception as e:
+        logger.error(f"Unexpected error calculating astronomical events: {e}")
         return []

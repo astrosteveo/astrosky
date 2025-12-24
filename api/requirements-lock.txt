@@ -1,0 +1,30 @@
+# Pinned dependencies for reproducible builds
+# Generated: 2025-12-24
+# Use this for production deployments
+
+# Core dependencies
+fastapi==0.127.0
+uvicorn[standard]==0.40.0
+pydantic==2.12.5
+pydantic-core==2.41.5
+slowapi==0.1.9
+
+# HTTP client
+httpx==0.28.1
+
+# Astronomy libraries
+skyfield==1.53
+astronomy-engine==2.1.19
+
+# CLI dependencies
+click==8.3.1
+rich==14.2.0
+
+# Dependencies of dependencies (auto-resolved)
+# These are included to ensure exact reproducibility
+starlette==0.45.2
+anyio==4.12.0
+sniffio==1.3.1
+idna==3.10
+certifi==2024.12.14
+h11==0.14.0
