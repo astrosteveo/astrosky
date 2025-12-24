@@ -1,6 +1,6 @@
 # AstroSKY
 
-See what's visible in the night sky tonight - as a web app or CLI tool.
+Real-time astronomy observatory showing what's visible in the night sky - as a web app or CLI tool.
 
 <div align="center">
 
@@ -8,9 +8,9 @@ See what's visible in the night sky tonight - as a web app or CLI tool.
 
 [![Web App](https://img.shields.io/badge/Launch_Web_App-astrosky--beryl.vercel.app-7c3aed?style=for-the-badge&logo=vercel)](https://astrosky-beryl.vercel.app)
 
-**Moon phases | Planets | ISS passes | Meteor showers | 110 deep sky objects**
+**Live countdowns | Moon phases | Planets | ISS passes | Meteor showers | 110 deep sky objects**
 
-*Automatically detects your location*
+*Automatically detects your location • Updates in real-time*
 
 </div>
 
@@ -18,6 +18,14 @@ See what's visible in the night sky tonight - as a web app or CLI tool.
 
 ## Features
 
+### Real-Time Live Updates ⏱️
+- **Live countdowns** - Real-time timers for sunset, twilight, ISS passes, meteor peaks
+- **Current sky status** - Dynamic banner showing day/twilight/night phase
+- **Next event** - Highlights the next upcoming celestial event with countdown
+- **Live clock** - Updates every second showing your local time
+- **Auto-refresh** - Data updates every 5 minutes automatically
+
+### Astronomy Data 🌌
 - **Moon phase** - Current phase, illumination, and rise/set times
 - **Visible planets** - Which planets are up and where to look
 - **ISS passes** - Upcoming International Space Station flyovers
@@ -163,8 +171,10 @@ pip install -e ".[dev]"
 
 # Run tests
 pytest                     # Python (73 tests)
-cd web && npm run test     # Frontend
+cd web && npm run test     # Frontend (75 tests)
 ```
+
+See [CLAUDE.md](CLAUDE.md) for architecture details and development patterns.
 
 ## Acknowledgments
 

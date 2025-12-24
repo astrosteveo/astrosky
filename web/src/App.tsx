@@ -8,8 +8,13 @@ import { DeepSkyCard } from './components/DeepSkyCard'
 import { EventsCard } from './components/EventsCard'
 import { LoadingSkeleton } from './components/LoadingSkeleton'
 import { InstallPrompt } from './components/InstallPrompt'
+import { CurrentSkyStatus } from './components/CurrentSkyStatus'
+import { NextEvent } from './components/NextEvent'
+import { LiveCountdowns } from './components/LiveCountdowns'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
+import { useCurrentTime } from './hooks/useCurrentTime'
+import { formatLocalTime } from './lib/timeUtils'
 
 // Parse URL parameters for manual location override
 function useUrlParams() {
@@ -25,13 +30,14 @@ function useUrlParams() {
 function App() {
   const urlParams = useUrlParams()
   const { lat: geoLat, lon: geoLon, error: geoError, loading: geoLoading } = useGeolocation()
+  const currentTime = useCurrentTime()
 
   // Use URL params if provided, otherwise use geolocation
   const lat = urlParams?.lat ?? geoLat
   const lon = urlParams?.lon ?? geoLon
   const skipGeoLoading = urlParams !== null
 
-  const { data, loading: reportLoading, error: reportError } = useReport(lat, lon)
+  const { data, loading: reportLoading, error: reportError, lastUpdated } = useReport(lat, lon)
 
   return (
     <div className="min-h-screen relative">
@@ -44,9 +50,27 @@ function App() {
             Tonight's Sky
           </h1>
           {lat && lon && (
-            <p className="text-slate-400">
-              {lat.toFixed(2)}°, {lon.toFixed(2)}°
-            </p>
+            <div className="space-y-2">
+              <p className="text-slate-400">
+                {lat.toFixed(2)}°, {lon.toFixed(2)}°
+              </p>
+              <div className="flex items-center justify-center gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-500">Local Time:</span>
+                  <span className="font-mono font-medium text-slate-300 tabular-nums">
+                    {formatLocalTime(currentTime)}
+                  </span>
+                </div>
+                {lastUpdated && (
+                  <div className="flex items-center gap-2 text-slate-500">
+                    <span>•</span>
+                    <span>
+                      Updated {Math.floor((currentTime.getTime() - lastUpdated.getTime()) / 60000)}m ago
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </header>
 
@@ -63,6 +87,19 @@ function App() {
         {/* Data display */}
         {data && (
           <div className="grid gap-6">
+            {/* Live Sky Status */}
+            <CurrentSkyStatus sun={data.sun} />
+
+            {/* Next Event Highlight */}
+            <NextEvent data={data} />
+
+            {/* Live Countdowns */}
+            <LiveCountdowns
+              sun={data.sun}
+              issPass={data.iss_passes[0]}
+              meteorShower={data.meteors.find(m => m.is_peak)}
+            />
+
             <div className="grid md:grid-cols-2 gap-6">
               <MoonCard moon={data.moon} />
               <SunTimesCard sun={data.sun} />

@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-AstroSky shows what's visible in the night sky. It's available as:
+AstroSky is a real-time astronomy observatory showing what's visible in the night sky. It's available as:
 - **CLI tool** (`pip install astrosky`) - Terminal-based output
-- **Web app** - React frontend + FastAPI backend
+- **Web app** - React frontend + FastAPI backend with live updates
 
 ## Quick Commands
 
@@ -21,7 +21,7 @@ cd web && npm install && npm run dev
 
 # Tests
 pytest                     # Python tests (73 tests)
-cd web && npm run test     # Frontend tests
+cd web && npm run test     # Frontend tests (75 tests)
 ```
 
 ## Architecture
@@ -54,9 +54,14 @@ astrosky/
 └── web/                    # React frontend (Vite + Tailwind)
     └── src/
         ├── App.tsx         # Main app component
-        ├── hooks/          # useGeolocation, useReport
-        ├── lib/api.ts      # API client
+        ├── hooks/          # useGeolocation, useReport, useCurrentTime
+        ├── lib/
+        │   ├── api.ts      # API client
+        │   └── timeUtils.ts # Time calculations & countdowns
         └── components/     # MoonCard, PlanetsCard, etc.
+            ├── CurrentSkyStatus.tsx  # Live sky phase indicator
+            ├── NextEvent.tsx         # Next event highlighter
+            └── LiveCountdowns.tsx    # Real-time countdowns
 ```
 
 **Data flow:**
@@ -69,6 +74,8 @@ astrosky/
 - **Pydantic models** in API for request/response validation
 - **Graceful degradation** - API failures return empty data
 - **Geolocation + URL params** - Frontend supports `?lat=X&lon=Y`
+- **Real-time updates** - Live clock, countdowns, auto-refresh every 5 minutes
+- **Time-based rendering** - Components adapt based on current time (day/twilight/night)
 
 ## Deployment
 
@@ -95,4 +102,16 @@ astrosky/
 ## Testing
 
 - **Python**: 73 tests, use `time-machine` for time-dependent tests
-- **Frontend**: Vitest + Testing Library
+- **Frontend**: 75 tests, Vitest + Testing Library, fake timers for real-time components
+
+## Real-Time Features
+
+The web app includes live, dynamically updating components:
+
+- **Live Clock** - Updates every second in header
+- **Current Sky Status** - Real-time banner showing day/twilight/night phase
+- **Next Event Card** - Highlights next upcoming celestial event with countdown
+- **Live Countdowns** - Real-time timers for sunrise, sunset, twilight, ISS passes, meteor peaks
+- **Auto-Refresh** - Data silently refreshes every 5 minutes
+- **Color-Coded Urgency** - Countdowns change color based on time remaining
+  - Green (>1 hour), Yellow (<1 hour), Amber (<30 min), Red (<5 min)
