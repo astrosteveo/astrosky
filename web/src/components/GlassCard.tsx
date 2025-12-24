@@ -56,12 +56,12 @@ export function GlassCard({
       data-testid="glass-card"
       variants={staggerChildVariants}
       whileHover={{
-        y: -3,
-        transition: { type: 'spring', stiffness: 300, damping: 25 },
+        y: -2,
+        transition: { type: 'spring', stiffness: 400, damping: 30 },
       }}
       className={`
         observatory-card observatory-card-hover
-        ${noPadding ? '' : compact ? 'p-4' : 'p-6'}
+        ${noPadding ? '' : compact ? 'p-4' : 'p-5'}
         ${colorConfig.glow}
         ${colorConfig.border}
         ${className}
@@ -71,71 +71,28 @@ export function GlassCard({
       <div className="relative z-10">
         {/* Card header with title and optional icon */}
         {title && (
-          <div className="flex items-center gap-3 mb-5">
+          <div className="flex items-center gap-3 mb-4">
             {icon && (
               <div
-                className="flex items-center justify-center w-8 h-8 rounded-lg"
+                className="flex items-center justify-center w-9 h-9 rounded-xl"
                 style={{
-                  background: `linear-gradient(135deg, ${colorConfig.accent}15 0%, ${colorConfig.accent}08 100%)`,
-                  border: `1px solid ${colorConfig.accent}30`,
+                  background: `${colorConfig.accent}12`,
                 }}
               >
-                <span className="text-lg">{icon}</span>
+                <span className="text-xl">{icon}</span>
               </div>
             )}
-            <div className="flex-1">
-              <h2
-                className="font-display text-xl font-semibold tracking-wide"
-                style={{ color: '#f5f0e1' }}
-              >
-                {title}
-              </h2>
-              {/* Decorative underline */}
-              <div
-                className="mt-1.5 h-px w-16"
-                style={{
-                  background: `linear-gradient(90deg, ${colorConfig.accent}60 0%, transparent 100%)`,
-                }}
-              />
-            </div>
+            <h2
+              className="font-display text-lg font-semibold text-[#f0f4f8]"
+            >
+              {title}
+            </h2>
           </div>
         )}
 
         {/* Main content */}
         {children}
       </div>
-
-      {/* Corner decoration - top right */}
-      <svg
-        className="absolute top-0 right-0 w-16 h-16 pointer-events-none opacity-20"
-        viewBox="0 0 64 64"
-      >
-        <path
-          d="M64 0 L64 16 L48 16 L48 24 L40 24 L40 32 L32 32 L32 40 L24 40 L24 48 L16 48 L16 64"
-          fill="none"
-          stroke={colorConfig.accent}
-          strokeWidth="0.5"
-          opacity="0.3"
-        />
-        <circle cx="60" cy="4" r="1.5" fill={colorConfig.accent} opacity="0.4" />
-        <circle cx="52" cy="4" r="1" fill={colorConfig.accent} opacity="0.3" />
-        <circle cx="44" cy="4" r="0.75" fill={colorConfig.accent} opacity="0.2" />
-      </svg>
-
-      {/* Corner decoration - bottom left */}
-      <svg
-        className="absolute bottom-0 left-0 w-16 h-16 pointer-events-none opacity-20 rotate-180"
-        viewBox="0 0 64 64"
-      >
-        <path
-          d="M64 0 L64 16 L48 16 L48 24 L40 24 L40 32 L32 32 L32 40 L24 40 L24 48 L16 48 L16 64"
-          fill="none"
-          stroke={colorConfig.accent}
-          strokeWidth="0.5"
-          opacity="0.3"
-        />
-        <circle cx="60" cy="4" r="1.5" fill={colorConfig.accent} opacity="0.4" />
-      </svg>
     </motion.div>
   )
 }
@@ -154,13 +111,13 @@ export function CompactCard({
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: 1.01 }}
       className={`
         relative overflow-hidden
-        bg-gradient-to-br from-[rgba(13,26,45,0.8)] to-[rgba(10,22,40,0.9)]
-        border border-[rgba(201,162,39,0.15)]
-        rounded-lg p-3
-        transition-all duration-300
+        bg-[rgba(15,23,42,0.6)]
+        border border-[rgba(148,163,184,0.1)]
+        rounded-xl p-3
+        transition-all duration-200
         ${colorConfig.glow}
         ${colorConfig.border}
         ${className}
@@ -184,15 +141,15 @@ export function StatDisplay({
   accent?: boolean
 }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-0.5">
       <span className="data-label block">{label}</span>
       <div className="flex items-baseline gap-1">
         <span
-          className={`font-mono text-lg font-medium ${accent ? 'text-[#c9a227]' : 'text-[#f5f0e1]'}`}
+          className={`font-mono text-lg font-semibold ${accent ? 'text-[#c9a227]' : 'text-[#f0f4f8]'}`}
         >
           {value}
         </span>
-        {unit && <span className="text-[#c4baa6] text-sm">{unit}</span>}
+        {unit && <span className="text-[#94a3b8] text-sm">{unit}</span>}
       </div>
     </div>
   )
@@ -200,5 +157,5 @@ export function StatDisplay({
 
 // Divider component matching the observatory theme
 export function CardDivider() {
-  return <div className="divider-brass my-4" />
+  return <div className="h-px bg-gradient-to-r from-transparent via-[rgba(148,163,184,0.15)] to-transparent my-4" />
 }

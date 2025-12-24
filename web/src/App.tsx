@@ -81,97 +81,62 @@ function AppContent() {
       <StarField />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 py-10 md:py-16">
-        {/* Elegant Header - Celestial Atlas Style */}
+        {/* Modern Header */}
         <motion.header
-          className="text-center mb-12 relative"
-          initial={{ opacity: 0, y: -30 }}
+          className="text-center mb-10 relative"
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
           {/* Theme Toggle */}
           <div className="absolute right-0 top-0">
             <ThemeToggle />
           </div>
 
-          {/* Decorative top line */}
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent via-[#c9a227]/40 to-[#c9a227]/60" />
-            <div className="flex gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#c9a227]/60" />
-              <span className="w-1 h-1 rounded-full bg-[#c9a227]/40" />
-              <span className="w-0.5 h-0.5 rounded-full bg-[#c9a227]/30" />
-            </div>
-            <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent via-[#c9a227]/40 to-[#c9a227]/60" />
-          </div>
-
           {/* Main title */}
-          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-wide mb-2">
-            <span className="text-celestial">Astro</span>
-            <span className="text-[#f5f0e1]">SKY</span>
+          <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-1">
+            <span className="text-[#c9a227]">Astro</span>
+            <span className="text-[#f0f4f8]">SKY</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="font-mono text-xs tracking-[0.3em] uppercase text-[#c9a227]/70 mb-6">
-            Celestial Observatory
+          <p className="text-sm text-[#94a3b8] mb-6">
+            Your personal observatory
           </p>
 
           {/* Location and time info */}
           {lat && lon && (
             <motion.div
-              className="space-y-3"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.3 }}
             >
               {/* Location display */}
-              <div className="flex items-center justify-center gap-2">
-                <svg className="w-4 h-4 text-[#c9a227]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(15,23,42,0.6)] border border-[rgba(148,163,184,0.1)]">
+                <svg className="w-3.5 h-3.5 text-[#c9a227]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span className="text-[#f5f0e1] font-display text-lg">
+                <span className="text-[#f0f4f8] font-medium">
                   {placeName || `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`}
                 </span>
-                {placeName && (
-                  <span className="text-[#c4baa6] text-sm font-mono">
-                    {lat.toFixed(2)}°N, {Math.abs(lon).toFixed(2)}°{lon < 0 ? 'W' : 'E'}
-                  </span>
-                )}
               </div>
 
               {/* Time display */}
-              <div className="flex items-center justify-center gap-6 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="data-label">Local Time</span>
-                  <span className="font-mono font-medium text-[#4ecdc4] tabular-nums tracking-wider text-lg">
-                    {formatLocalTime(currentTime)}
-                  </span>
-                </div>
+              <div className="flex items-center gap-3">
+                <span className="font-mono font-semibold text-[#4ecdc4] tabular-nums text-base">
+                  {formatLocalTime(currentTime)}
+                </span>
                 {lastUpdated && (
                   <>
-                    <span className="text-[#c9a227]/30">•</span>
-                    <div className="flex items-center gap-2">
-                      <span className="status-live">Live</span>
-                      <span className="text-[#c4baa6] text-xs">
-                        Updated {Math.floor((currentTime.getTime() - lastUpdated.getTime()) / 60000)}m ago
-                      </span>
-                    </div>
+                    <span className="text-[#94a3b8]/40">•</span>
+                    <span className="status-live">Live</span>
                   </>
                 )}
               </div>
             </motion.div>
           )}
-
-          {/* Decorative bottom line */}
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <div className="h-px flex-1 max-w-32 bg-gradient-to-r from-transparent to-[#c9a227]/30" />
-            <svg className="w-6 h-6 text-[#c9a227]/40" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="12" r="3" />
-              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="0.5" />
-              <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="0.3" />
-            </svg>
-            <div className="h-px flex-1 max-w-32 bg-gradient-to-l from-transparent to-[#c9a227]/30" />
-          </div>
         </motion.header>
 
         {/* Loading state */}
@@ -180,12 +145,12 @@ function AppContent() {
         {/* Error state */}
         {(!skipGeoLoading && geoError || reportError) && (
           <motion.div
-            className="observatory-card p-8 text-center"
-            initial={{ opacity: 0, scale: 0.95 }}
+            className="observatory-card p-6 text-center"
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <div className="text-[#e25822] font-mono text-sm mb-2">OBSERVATION ERROR</div>
-            <p className="text-[#f5f0e1]">{geoError || reportError}</p>
+            <div className="text-[#e25822] font-medium text-sm mb-2">Unable to load data</div>
+            <p className="text-[#94a3b8]">{geoError || reportError}</p>
           </motion.div>
         )}
 
