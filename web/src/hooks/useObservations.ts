@@ -1,7 +1,10 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Observation, ObservableObject, EquipmentType, ObservationStats } from '../types/observations'
+import { getDeviceId } from '../lib/deviceId'
+import { syncObservations, deleteObservation as deleteObservationApi } from '../lib/api'
 
 const STORAGE_KEY = 'astrosky-observations'
+const SYNC_DEBOUNCE_MS = 2000 // Wait 2 seconds after changes before syncing
 
 function generateId(): string {
   return `obs-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -22,11 +25,52 @@ function saveObservations(observations: Observation[]): void {
 
 export function useObservations() {
   const [observations, setObservations] = useState<Observation[]>(() => loadObservations())
+  const [syncing, setSyncing] = useState(false)
+  const [lastSynced, setLastSynced] = useState<Date | null>(null)
+  const [syncError, setSyncError] = useState<string | null>(null)
+
+  const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const deviceId = getDeviceId()
 
   // Sync to localStorage whenever observations change
   useEffect(() => {
     saveObservations(observations)
   }, [observations])
+
+  // Debounced sync to backend
+  const syncToBackend = useCallback(async () => {
+    if (observations.length === 0) return
+
+    setSyncing(true)
+    setSyncError(null)
+
+    try {
+      await syncObservations(deviceId, observations)
+      setLastSynced(new Date())
+    } catch (error) {
+      console.error('Sync failed:', error)
+      setSyncError('Sync failed - observations saved locally')
+    } finally {
+      setSyncing(false)
+    }
+  }, [observations, deviceId])
+
+  // Trigger sync after changes (debounced)
+  useEffect(() => {
+    if (syncTimeoutRef.current) {
+      clearTimeout(syncTimeoutRef.current)
+    }
+
+    if (observations.length > 0) {
+      syncTimeoutRef.current = setTimeout(syncToBackend, SYNC_DEBOUNCE_MS)
+    }
+
+    return () => {
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current)
+      }
+    }
+  }, [observations, syncToBackend])
 
   const addObservation = useCallback((
     object: ObservableObject,
@@ -47,9 +91,18 @@ export function useObservations() {
     return newObservation
   }, [])
 
-  const removeObservation = useCallback((id: string) => {
+  const removeObservation = useCallback(async (id: string) => {
+    // Remove locally first for responsive UI
     setObservations(prev => prev.filter(obs => obs.id !== id))
-  }, [])
+
+    // Then try to remove from backend
+    try {
+      await deleteObservationApi(id, deviceId)
+    } catch (error) {
+      console.error('Failed to delete from backend:', error)
+      // Local deletion still happened, which is fine
+    }
+  }, [deviceId])
 
   const updateObservation = useCallback((id: string, updates: Partial<Omit<Observation, 'id'>>) => {
     setObservations(prev => prev.map(obs =>
@@ -91,6 +144,11 @@ export function useObservations() {
     }
   }, [observations])
 
+  // Manual sync trigger
+  const forceSync = useCallback(() => {
+    syncToBackend()
+  }, [syncToBackend])
+
   return {
     observations,
     addObservation,
@@ -99,5 +157,11 @@ export function useObservations() {
     hasObserved,
     getObservationsForObject,
     getStats,
+    // Sync status
+    syncing,
+    lastSynced,
+    syncError,
+    forceSync,
+    deviceId,
   }
 }

@@ -9,6 +9,9 @@ pydantic==2.12.5
 pydantic-core==2.41.5
 slowapi==0.1.9
 
+# Database
+sqlalchemy==2.0.36
+
 # HTTP client
 httpx==0.28.1
 
