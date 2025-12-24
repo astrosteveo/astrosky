@@ -1,8 +1,13 @@
 import type { MoonInfo } from '../types'
 import { GlassCard } from './GlassCard'
+import { ObservationButton } from './ObservationButton'
+import { useObservationsContext } from '../context/ObservationsContext'
+import type { EquipmentType } from '../types/observations'
 
 interface MoonCardProps {
   moon: MoonInfo
+  location?: { lat: number; lon: number }
+  placeName?: string
 }
 
 function MoonPhaseSVG({ illumination, phaseName }: { illumination: number; phaseName: string }) {
@@ -56,7 +61,24 @@ function MoonPhaseSVG({ illumination, phaseName }: { illumination: number; phase
   )
 }
 
-export function MoonCard({ moon }: MoonCardProps) {
+export function MoonCard({ moon, location, placeName }: MoonCardProps) {
+  const { addObservation, hasObserved, getObservationsForObject } = useObservationsContext()
+
+  const objectId = 'moon'
+  const observed = hasObserved(objectId)
+  const observationCount = getObservationsForObject(objectId).length
+
+  const handleLog = (equipment: EquipmentType, notes?: string) => {
+    if (location) {
+      addObservation(
+        { type: 'moon', id: objectId, name: 'The Moon', details: moon.phase_name },
+        { ...location, placeName },
+        equipment,
+        notes
+      )
+    }
+  }
+
   const formatTime = (isoString: string | null) => {
     if (!isoString) return '—'
     return new Date(isoString).toLocaleTimeString([], {
@@ -105,6 +127,19 @@ export function MoonCard({ moon }: MoonCardProps) {
           <p className="text-slate-50">{formatTime(moon.moonset)}</p>
         </div>
       </div>
+
+      {/* Observation button */}
+      {location && (
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <ObservationButton
+            object={{ type: 'moon', id: objectId, name: 'The Moon', details: moon.phase_name }}
+            hasObserved={observed}
+            observationCount={observationCount}
+            onLog={handleLog}
+            placeName={placeName}
+          />
+        </div>
+      )}
     </GlassCard>
   )
 }
