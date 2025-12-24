@@ -1,7 +1,7 @@
 {
-  "name": "AstroSky - Tonight's Night Sky",
-  "short_name": "AstroSky",
-  "description": "Real-time astronomy app showing what's visible in the night sky. Perfect for amateur astronomers.",
+  "name": "AstroSKY - Your Window to the Cosmos",
+  "short_name": "AstroSKY",
+  "description": "Track celestial objects, log observations, and explore the night sky. Your personal astronomy companion.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0e27",
@@ -36,9 +36,9 @@
   },
   "shortcuts": [
     {
-      "name": "Tonight's Sky",
-      "short_name": "Tonight",
-      "description": "View tonight's sky report",
+      "name": "Explore the Sky",
+      "short_name": "Explore",
+      "description": "View what's visible tonight",
       "url": "/",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }

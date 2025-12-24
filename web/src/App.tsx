@@ -84,9 +84,10 @@ function AppContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-slate-50 mb-2">
-            Tonight's Sky
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-slate-50 mb-1">
+            Astro<span className="text-cyan-400">SKY</span>
           </h1>
+          <p className="text-slate-500 text-sm mb-4">Your window to the cosmos</p>
           {lat && lon && (
             <motion.div
               className="space-y-2"

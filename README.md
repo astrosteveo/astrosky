@@ -1,6 +1,6 @@
 # AstroSKY
 
-Real-time astronomy observatory showing what's visible in the night sky - as a web app or CLI tool.
+**Your window to the cosmos** — Real-time astronomy app showing what's visible in the night sky, plus personal observation logging to track your stargazing journey.
 
 <div align="center">
 
@@ -17,6 +17,14 @@ Real-time astronomy observatory showing what's visible in the night sky - as a w
 ---
 
 ## Features
+
+### Observation Logging 📓
+- **One-tap logging** - Quickly log what you observe (Moon, planets, deep sky objects)
+- **Equipment tracking** - Record if you used naked eye, binoculars, or telescope
+- **Messier Marathon** - Track your progress through all 110 Messier objects
+- **Location aware** - Automatically records your city/state
+- **Anonymous sync** - Your observations sync across devices without needing an account
+- **Works offline** - Log observations even without internet (syncs later)
 
 ### Real-Time Live Updates ⏱️
 - **Live countdowns** - Real-time timers for sunset, twilight, ISS passes, meteor peaks
