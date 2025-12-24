@@ -55,13 +55,19 @@ export function LogObservationModal({
 
           {/* Modal */}
           <motion.div
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed inset-x-0 top-0 bottom-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <div className="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 mx-4 shadow-2xl">
+            <motion.div
+              className="w-full max-w-md"
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+            <div className="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl">
               {/* Header */}
               <div className="flex items-start justify-between mb-6">
                 <div>
@@ -85,7 +91,7 @@ export function LogObservationModal({
 
               {/* Location display */}
               {placeName && (
-                <div className="mb-6 flex items-center gap-2 text-sm text-slate-400">
+                <div className="mb-4 flex items-center gap-2 text-sm text-slate-400">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -95,8 +101,8 @@ export function LogObservationModal({
               )}
 
               {/* Equipment selector */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-300 mb-3">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   How did you observe it?
                 </label>
                 <div className="grid grid-cols-3 gap-3">
@@ -120,16 +126,16 @@ export function LogObservationModal({
               </div>
 
               {/* Notes input */}
-              <div className="mb-6">
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Notes <span className="text-slate-500">(optional)</span>
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Saw the rings clearly! Great seeing conditions..."
-                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 resize-none"
-                  rows={3}
+                  placeholder="Great seeing conditions..."
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 resize-none text-sm"
+                  rows={2}
                 />
               </div>
 
@@ -166,6 +172,7 @@ export function LogObservationModal({
                 </motion.button>
               </div>
             </div>
+            </motion.div>
           </motion.div>
         </>
       )}
