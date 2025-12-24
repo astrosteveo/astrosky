@@ -117,29 +117,30 @@ export function MoonCard({ moon, location, placeName }: MoonCardProps) {
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-white/10 flex gap-6 text-sm text-slate-400">
-        <div>
-          <span className="text-slate-500">Moonrise</span>
-          <p className="text-slate-50">{formatTime(moon.moonrise)}</p>
+      <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-sm text-slate-400">
+        <div className="flex gap-6">
+          <div>
+            <span className="text-slate-500">Moonrise</span>
+            <p className="text-slate-50">{formatTime(moon.moonrise)}</p>
+          </div>
+          <div>
+            <span className="text-slate-500">Moonset</span>
+            <p className="text-slate-50">{formatTime(moon.moonset)}</p>
+          </div>
         </div>
-        <div>
-          <span className="text-slate-500">Moonset</span>
-          <p className="text-slate-50">{formatTime(moon.moonset)}</p>
-        </div>
-      </div>
 
-      {/* Observation button */}
-      {location && (
-        <div className="mt-4 pt-4 border-t border-white/10">
+        {/* Observation button - compact inline */}
+        {location && (
           <ObservationButton
             object={{ type: 'moon', id: objectId, name: 'The Moon', details: moon.phase_name }}
             hasObserved={observed}
             observationCount={observationCount}
             onLog={handleLog}
             placeName={placeName}
+            compact
           />
-        </div>
-      )}
+        )}
+      </div>
     </GlassCard>
   )
 }
