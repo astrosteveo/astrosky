@@ -6,6 +6,22 @@ from typing import TypedDict
 from skyfield import almanac
 from skyfield.api import N, W, load, wgs84
 
+# Moon phase angle thresholds (in degrees)
+PHASE_NEW_MOON_MAX = 22.5
+PHASE_WAXING_CRESCENT_MAX = 67.5
+PHASE_FIRST_QUARTER_MAX = 112.5
+PHASE_WAXING_GIBBOUS_MAX = 157.5
+PHASE_FULL_MOON_MAX = 202.5
+PHASE_WANING_GIBBOUS_MAX = 247.5
+PHASE_LAST_QUARTER_MAX = 292.5
+PHASE_WANING_CRESCENT_MAX = 337.5
+
+# Darkness quality thresholds (moon illumination percentage)
+DARKNESS_EXCELLENT_MAX = 25  # < 25% illumination = Excellent
+DARKNESS_GOOD_MAX = 50       # < 50% illumination = Good
+DARKNESS_FAIR_MAX = 75       # < 75% illumination = Fair
+# >= 75% illumination = Poor
+
 
 class SunTimes(TypedDict):
     """Sun timing information."""
@@ -99,20 +115,20 @@ def get_moon_info(lat: float, lon: float, date: datetime) -> MoonInfo:
     # 0° = new moon, 180° = full moon
     illumination = (1 - abs(180 - phase_angle) / 180) * 100
 
-    # Determine phase name
-    if phase_angle < 22.5 or phase_angle >= 337.5:
+    # Determine phase name based on angle thresholds
+    if phase_angle < PHASE_NEW_MOON_MAX or phase_angle >= PHASE_WANING_CRESCENT_MAX:
         phase_name = "New Moon"
-    elif phase_angle < 67.5:
+    elif phase_angle < PHASE_WAXING_CRESCENT_MAX:
         phase_name = "Waxing Crescent"
-    elif phase_angle < 112.5:
+    elif phase_angle < PHASE_FIRST_QUARTER_MAX:
         phase_name = "First Quarter"
-    elif phase_angle < 157.5:
+    elif phase_angle < PHASE_WAXING_GIBBOUS_MAX:
         phase_name = "Waxing Gibbous"
-    elif phase_angle < 202.5:
+    elif phase_angle < PHASE_FULL_MOON_MAX:
         phase_name = "Full Moon"
-    elif phase_angle < 247.5:
+    elif phase_angle < PHASE_WANING_GIBBOUS_MAX:
         phase_name = "Waning Gibbous"
-    elif phase_angle < 292.5:
+    elif phase_angle < PHASE_LAST_QUARTER_MAX:
         phase_name = "Last Quarter"
     else:
         phase_name = "Waning Crescent"
@@ -134,12 +150,12 @@ def get_moon_info(lat: float, lon: float, date: datetime) -> MoonInfo:
         else:  # Set
             moonset = dt
 
-    # Determine darkness quality based on illumination
-    if illumination < 25:
+    # Determine darkness quality based on moon illumination percentage
+    if illumination < DARKNESS_EXCELLENT_MAX:
         darkness_quality = "Excellent"
-    elif illumination < 50:
+    elif illumination < DARKNESS_GOOD_MAX:
         darkness_quality = "Good"
-    elif illumination < 75:
+    elif illumination < DARKNESS_FAIR_MAX:
         darkness_quality = "Fair"
     else:
         darkness_quality = "Poor"

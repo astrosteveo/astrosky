@@ -8,6 +8,10 @@ from skyfield.api import Star, load, wgs84
 
 from skycli.data import DATA_DIR
 
+# Deep sky object visibility constants
+MIN_ALTITUDE_DEGREES = 20.0  # Minimum altitude for DSO visibility
+DEFAULT_DSO_LIMIT = 5        # Default number of objects to return
+
 
 class DSOInfo(TypedDict):
     """Information about a visible deep sky object."""
@@ -41,8 +45,19 @@ def _load_catalog() -> list[dict]:
         return json.load(f)
 
 
-def get_visible_dso(lat: float, lon: float, date: datetime, limit: int = 5, min_altitude: float = 20.0) -> list[DSOInfo]:
-    """Get deep sky objects visible at the given location and time."""
+def get_visible_dso(lat: float, lon: float, date: datetime, limit: int = DEFAULT_DSO_LIMIT, min_altitude: float = MIN_ALTITUDE_DEGREES) -> list[DSOInfo]:
+    """Get deep sky objects visible at the given location and time.
+
+    Args:
+        lat: Latitude in degrees
+        lon: Longitude in degrees
+        date: Date and time for observation
+        limit: Maximum number of objects to return (default 5)
+        min_altitude: Minimum altitude in degrees for visibility (default 20.0)
+
+    Returns:
+        List of visible deep sky objects, sorted by brightness (magnitude)
+    """
     eph, ts = _get_ephemeris()
 
     location = wgs84.latlon(lat, lon)

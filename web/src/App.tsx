@@ -1,5 +1,6 @@
 import { StarField } from './components/StarField'
 import { MoonCard } from './components/MoonCard'
+import { SunTimesCard } from './components/SunTimesCard'
 import { PlanetsCard } from './components/PlanetsCard'
 import { ISSCard } from './components/ISSCard'
 import { MeteorsCard } from './components/MeteorsCard'
@@ -61,7 +62,10 @@ function App() {
         {/* Data display */}
         {data && (
           <div className="grid gap-6">
-            <MoonCard moon={data.moon} />
+            <div className="grid md:grid-cols-2 gap-6">
+              <MoonCard moon={data.moon} />
+              <SunTimesCard sun={data.sun} />
+            </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <PlanetsCard planets={data.planets} />
