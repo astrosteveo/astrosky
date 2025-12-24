@@ -44,7 +44,7 @@ describe('useCurrentTime', () => {
   })
 
   it('should cleanup interval on unmount', () => {
-    const clearIntervalSpy = vi.spyOn(global, 'clearInterval')
+    const clearIntervalSpy = vi.spyOn(window, 'clearInterval')
     const { unmount } = renderHook(() => useCurrentTime())
 
     unmount()
