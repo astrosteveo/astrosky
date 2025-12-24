@@ -7,6 +7,7 @@ import { MeteorsCard } from './components/MeteorsCard'
 import { DeepSkyCard } from './components/DeepSkyCard'
 import { EventsCard } from './components/EventsCard'
 import { LoadingSkeleton } from './components/LoadingSkeleton'
+import { InstallPrompt } from './components/InstallPrompt'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 
@@ -81,6 +82,9 @@ function App() {
           </div>
         )}
       </div>
+
+      {/* PWA Install Prompt */}
+      <InstallPrompt />
     </div>
   )
 }
