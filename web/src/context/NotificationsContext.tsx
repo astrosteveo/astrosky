@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, type ReactNode } from 'react'
 import { useNotifications, checkScheduledNotifications } from '../hooks/useNotifications'
-import type { ISSPass, MeteorShower, AstroEvent } from '../types'
+import type { ISSPass, ShowerInfo, AstroEvent } from '../types'
 
 interface NotificationsContextType {
   preferences: ReturnType<typeof useNotifications>['preferences']
@@ -15,7 +15,7 @@ interface NotificationsContextType {
 
 interface SchedulableData {
   iss_passes?: ISSPass[]
-  meteors?: MeteorShower[]
+  meteors?: ShowerInfo[]
   events?: AstroEvent[]
 }
 
@@ -39,7 +39,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     // Schedule ISS pass notifications
     if (preferences.issPass && data.iss_passes) {
       data.iss_passes.slice(0, 3).forEach(pass => {
-        const passTime = new Date(pass.rise_time)
+        const passTime = new Date(pass.start_time)
         const notifyTime = new Date(passTime.getTime() - reminderMs)
 
         if (notifyTime > new Date()) {
@@ -47,7 +47,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
             'ISS Pass Coming Up! 🛰️',
             `The ISS will be visible in ${preferences.reminderMinutes} minutes. Max brightness: mag ${pass.magnitude.toFixed(1)}`,
             notifyTime,
-            { type: 'iss', tag: `iss-${pass.rise_time}` }
+            { type: 'iss', tag: `iss-${pass.start_time}` }
           )
         }
       })
@@ -65,7 +65,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           if (peakDate > new Date()) {
             scheduleNotification(
               `${meteor.name} Peak Tonight! ☄️`,
-              `Up to ${meteor.rate} meteors/hour expected. Best viewing after midnight.`,
+              `Up to ${meteor.zhr} meteors/hour expected. Best viewing after midnight.`,
               peakDate,
               { type: 'meteor', tag: `meteor-${meteor.name}` }
             )

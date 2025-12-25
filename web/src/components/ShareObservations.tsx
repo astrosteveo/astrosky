@@ -1,6 +1,5 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useObservationsContext } from '../context/ObservationsContext'
 import type { ObservationStats } from '../types/observations'
 
 interface ShareObservationsProps {
@@ -245,7 +244,7 @@ export function ShareObservations({ stats }: ShareObservationsProps) {
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             className="absolute right-0 top-full mt-2 bg-[#1a1a2e] border border-[#c9a227]/20 rounded-lg shadow-xl z-20 overflow-hidden min-w-[160px]"
           >
-            {navigator.share && (
+            {'share' in navigator && (
               <button
                 onClick={() => handleShare('native')}
                 className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-[#f0f4f8] hover:bg-[#c9a227]/10 transition-colors"
