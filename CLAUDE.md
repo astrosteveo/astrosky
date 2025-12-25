@@ -105,7 +105,7 @@ astrosky/
 ## Testing
 
 - **Python**: 73 tests, use `time-machine` for time-dependent tests
-- **Frontend**: 150 tests, Vitest + Testing Library, fake timers for real-time components
+- **Frontend**: 171 tests, Vitest + Testing Library, fake timers for real-time components
 
 ## Roadmap Maintenance
 

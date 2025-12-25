@@ -21,6 +21,7 @@ import { NotificationsProvider } from './context/NotificationsContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { EquipmentProvider } from './context/EquipmentContext'
+import { SessionsProvider } from './context/SessionsContext'
 
 // Lazy-loaded components for less-used tabs to reduce initial bundle size
 // Sky tab components
@@ -43,6 +44,7 @@ const NearbyObservationsCard = lazy(() => import('./components/NearbyObservation
 const NotificationSettings = lazy(() => import('./components/NotificationSettings').then(m => ({ default: m.NotificationSettings })))
 const AchievementsCard = lazy(() => import('./components/AchievementsCard').then(m => ({ default: m.AchievementsCard })))
 const EquipmentProfilesCard = lazy(() => import('./components/EquipmentProfilesCard').then(m => ({ default: m.EquipmentProfilesCard })))
+const SessionNotesCard = lazy(() => import('./components/SessionNotesCard').then(m => ({ default: m.SessionNotesCard })))
 
 // Minimal loading placeholder for lazy components
 function LazyLoadingFallback() {
@@ -321,6 +323,9 @@ function AppContent() {
                     animate="visible"
                   >
                     <motion.div variants={itemVariants}>
+                      <SessionNotesCard location={location ? { ...location, placeName: placeName || undefined } : undefined} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
                       <ObservationStats />
                     </motion.div>
                     <motion.div variants={itemVariants}>
@@ -364,9 +369,11 @@ function App() {
       <ThemeProvider>
         <NotificationsProvider>
           <ObservationsProvider>
-            <EquipmentProvider>
-              <AppContent />
-            </EquipmentProvider>
+            <SessionsProvider>
+              <EquipmentProvider>
+                <AppContent />
+              </EquipmentProvider>
+            </SessionsProvider>
           </ObservationsProvider>
         </NotificationsProvider>
       </ThemeProvider>

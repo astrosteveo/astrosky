@@ -2,6 +2,15 @@
 
 ## Recently Completed
 
+### v1.8 - Session Notes
+- [x] Session data model - Date, location, equipment, conditions, notes, highlights
+- [x] Smart date handling - Sessions before 6am count as previous night
+- [x] Conditions tracking - Seeing, transparency, Bortle class (1-9 scale)
+- [x] Equipment selection - Multiple equipment types per session
+- [x] Location naming - Custom site names for observing locations
+- [x] Session history - Browse and edit past sessions
+- [x] 21 comprehensive tests for session management
+
 ### v1.7 - Technical Debt Cleanup
 - [x] TonightsBest component tests - 18 comprehensive tests for recommendation logic
 - [x] Theme cycling tests - 28 tests for ThemeContext and ThemeToggle components
@@ -57,7 +66,6 @@
 
 ### Medium Priority
 - [ ] **Sky chart integration** - Interactive star map with object positions
-- [ ] **Session notes** - Add notes and conditions to entire observation sessions
 - [ ] **Export to social media** - Generate formatted posts for Twitter/Instagram
 
 ### Low Priority / Future Ideas
