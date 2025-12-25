@@ -189,12 +189,12 @@ export function NextEvent({ data }: NextEventProps) {
       />
 
       <div className="relative z-10">
-        <div className="flex items-start gap-6">
+        <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
           {/* Large animated progress ring with icon */}
-          <div className="relative flex-shrink-0">
+          <div className="relative flex-shrink-0 hidden sm:block">
             <ProgressRing
               progress={progress}
-              size={88}
+              size={80}
               strokeWidth={4}
               color={nextEvent.accent}
               bgColor="rgba(201,162,39,0.1)"
@@ -205,24 +205,24 @@ export function NextEvent({ data }: NextEventProps) {
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             >
               <div
-                className="w-14 h-14 rounded-full flex items-center justify-center"
+                className="w-12 h-12 rounded-full flex items-center justify-center"
                 style={{
                   background: `linear-gradient(135deg, ${nextEvent.accent}15 0%, transparent 100%)`,
                   border: `1px solid ${nextEvent.accent}30`,
                 }}
               >
-                <span className="text-3xl" role="img" aria-label={nextEvent.title}>
+                <span className="text-2xl" role="img" aria-label={nextEvent.title}>
                   {nextEvent.icon}
                 </span>
               </div>
             </motion.div>
           </div>
 
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 w-full">
             {/* Header */}
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
               <span
-                className="font-mono text-[10px] uppercase tracking-[0.2em] px-2 py-1 rounded"
+                className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded flex-shrink-0"
                 style={{
                   color: nextEvent.accent,
                   background: `${nextEvent.accent}10`,
@@ -231,7 +231,7 @@ export function NextEvent({ data }: NextEventProps) {
               >
                 Next Event
               </span>
-              <span className="text-xs text-[#c4baa6]/60 font-mono">
+              <span className="text-xs text-[#c4baa6]/60 font-mono truncate">
                 {new Date(nextEvent.time).toLocaleDateString([], {
                   month: 'short',
                   day: 'numeric',
@@ -243,27 +243,27 @@ export function NextEvent({ data }: NextEventProps) {
             </div>
 
             {/* Event title */}
-            <h2 className="font-display text-2xl font-bold text-[#f5f0e1] mb-1 truncate">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-[#f5f0e1] mb-1 truncate">
               {nextEvent.title}
             </h2>
-            <p className="text-[#c4baa6] text-sm mb-4 line-clamp-1">
+            <p className="text-[#c4baa6] text-sm mb-3 line-clamp-1">
               {nextEvent.subtitle}
             </p>
 
             {/* Animated countdown */}
-            <div className="flex items-baseline gap-2">
-              <span className="data-label">Starts in</span>
-              <div className="font-mono font-bold text-2xl tabular-nums flex items-center gap-1" style={{ color: nextEvent.accent }}>
+            <div className="flex flex-wrap items-baseline gap-2">
+              <span className="data-label flex-shrink-0">Starts in</span>
+              <div className="font-mono font-bold text-xl sm:text-2xl tabular-nums flex items-center gap-0.5" style={{ color: nextEvent.accent }}>
                 {hours > 0 && (
                   <>
                     <AnimatedDigit value={hours} color={nextEvent.accent} />
-                    <span className="text-[#c4baa6]/40 text-lg">h</span>
+                    <span className="text-[#c4baa6]/40 text-sm sm:text-lg">h</span>
                   </>
                 )}
                 <AnimatedDigit value={minutes} color={nextEvent.accent} />
-                <span className="text-[#c4baa6]/40 text-lg">m</span>
+                <span className="text-[#c4baa6]/40 text-sm sm:text-lg">m</span>
                 <AnimatedDigit value={seconds} color={nextEvent.accent} />
-                <span className="text-[#c4baa6]/40 text-lg">s</span>
+                <span className="text-[#c4baa6]/40 text-sm sm:text-lg">s</span>
               </div>
             </div>
           </div>

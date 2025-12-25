@@ -163,10 +163,10 @@ export function CurrentSkyStatus({ sun }: CurrentSkyStatusProps) {
         <circle cx="76" cy="8" r="1.5" fill={config.accent} opacity="0.3" />
       </svg>
 
-      <div className="relative flex items-center gap-6">
+      <div className="relative flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-6">
         {/* Animated phase icon */}
         <motion.div
-          className="relative"
+          className="relative flex-shrink-0"
           animate={{
             scale: [1, 1.05, 1],
           }}
@@ -186,27 +186,27 @@ export function CurrentSkyStatus({ sun }: CurrentSkyStatusProps) {
           />
           {/* Icon container */}
           <div
-            className="relative w-16 h-16 rounded-full flex items-center justify-center"
+            className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center"
             style={{
               background: `linear-gradient(135deg, ${config.accent}20 0%, ${config.accent}05 100%)`,
               border: `2px solid ${config.accent}40`,
               boxShadow: `inset 0 0 20px ${config.accent}10`,
             }}
           >
-            <span className="text-3xl" role="img" aria-label={status.title}>
+            <span className="text-2xl sm:text-3xl" role="img" aria-label={status.title}>
               {config.icon}
             </span>
           </div>
         </motion.div>
 
         {/* Status content */}
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-1">
-            <h2 className="font-display text-2xl font-bold text-[#f5f0e1]">
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-[#f5f0e1]">
               {status.title}
             </h2>
             <span
-              className="font-mono text-xs px-2 py-0.5 rounded uppercase tracking-wider"
+              className="font-mono text-[10px] sm:text-xs px-2 py-0.5 rounded uppercase tracking-wider flex-shrink-0"
               style={{
                 color: qualityColors[status.quality],
                 background: `${qualityColors[status.quality]}15`,
@@ -216,13 +216,13 @@ export function CurrentSkyStatus({ sun }: CurrentSkyStatusProps) {
               {status.quality}
             </span>
           </div>
-          <p className="text-[#c4baa6]">
+          <p className="text-[#c4baa6] text-sm sm:text-base">
             {status.subtitle}
           </p>
         </div>
 
         {/* Live indicator */}
-        <div className="status-live">
+        <div className="status-live absolute top-0 right-0 sm:static">
           <span>Live</span>
         </div>
       </div>

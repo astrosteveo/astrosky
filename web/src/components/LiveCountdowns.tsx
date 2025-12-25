@@ -44,7 +44,7 @@ function CountdownRow({ icon, label, time, sublabel, maxSeconds = 86400 }: Count
 
   return (
     <motion.div
-      className="flex items-center justify-between py-3 px-4 -mx-4 rounded-lg transition-colors hover:bg-[rgba(201,162,39,0.03)]"
+      className="flex flex-wrap items-center justify-between gap-3 py-3 px-4 -mx-4 rounded-lg transition-colors hover:bg-[rgba(201,162,39,0.03)]"
       style={{
         borderBottom: '1px solid rgba(201,162,39,0.08)',
         boxShadow: timeUntil.totalSeconds < 300 ? `0 0 20px ${urgency.glow}` : 'none',
@@ -54,18 +54,18 @@ function CountdownRow({ icon, label, time, sublabel, maxSeconds = 86400 }: Count
       exit={{ opacity: 0, x: 10 }}
       layout
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
         {/* Progress ring with icon */}
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           <ProgressRing
             progress={progress}
-            size={44}
+            size={40}
             strokeWidth={3}
             color={urgency.color}
             bgColor="rgba(201,162,39,0.1)"
           />
           <span
-            className="absolute inset-0 flex items-center justify-center text-lg"
+            className="absolute inset-0 flex items-center justify-center text-base"
             role="img"
             aria-label={label}
           >
@@ -73,26 +73,26 @@ function CountdownRow({ icon, label, time, sublabel, maxSeconds = 86400 }: Count
           </span>
         </div>
 
-        <div>
-          <div className="text-[#f5f0e1] font-medium">{label}</div>
-          {sublabel && <div className="text-xs text-[#c4baa6]/60 font-mono">{sublabel}</div>}
+        <div className="min-w-0">
+          <div className="text-[#f5f0e1] font-medium truncate">{label}</div>
+          {sublabel && <div className="text-xs text-[#c4baa6]/60 font-mono truncate">{sublabel}</div>}
         </div>
       </div>
 
       {/* Animated countdown display */}
-      <div className="font-mono font-bold text-lg tabular-nums flex items-center gap-0.5" style={{ color: urgency.color }}>
+      <div className="font-mono font-bold text-base tabular-nums flex items-center gap-0.5 flex-shrink-0" style={{ color: urgency.color }}>
         {hours > 0 && (
           <>
             <AnimatedDigit value={hours} color={urgency.color} />
-            <span className="text-[#c4baa6]/40 text-sm">h</span>
-            <span className="w-1" />
+            <span className="text-[#c4baa6]/40 text-xs">h</span>
+            <span className="w-0.5" />
           </>
         )}
         <AnimatedDigit value={minutes} color={urgency.color} />
-        <span className="text-[#c4baa6]/40 text-sm">m</span>
-        <span className="w-1" />
+        <span className="text-[#c4baa6]/40 text-xs">m</span>
+        <span className="w-0.5" />
         <AnimatedDigit value={seconds} color={urgency.color} />
-        <span className="text-[#c4baa6]/40 text-sm">s</span>
+        <span className="text-[#c4baa6]/40 text-xs">s</span>
       </div>
     </motion.div>
   )

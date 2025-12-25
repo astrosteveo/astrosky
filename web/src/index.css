@@ -381,6 +381,11 @@
 .light-theme .text-\[\#c9a227\] { color: #92400e !important; }
 .light-theme .text-\[\#4ecdc4\] { color: #0d9488 !important; }
 .light-theme .text-\[\#cbd5e1\] { color: #64748b !important; }
+.light-theme .text-\[\#f5f0e1\] { color: #0f172a !important; }
+.light-theme .text-\[\#c4baa6\] { color: #475569 !important; }
+.light-theme .text-\[\#c4baa6\]\/60 { color: rgba(71, 85, 105, 0.8) !important; }
+.light-theme .text-\[\#c4baa6\]\/40 { color: rgba(71, 85, 105, 0.6) !important; }
+.light-theme .text-\[\#c4baa6\]\/50 { color: rgba(71, 85, 105, 0.7) !important; }
 
 /* Light theme background adjustments */
 .light-theme .bg-\[rgba\(15\,23\,42\,0\.6\)\] { background-color: rgba(255, 255, 255, 0.8) !important; }
