@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { StarField } from './components/StarField'
 import { MoonCard } from './components/MoonCard'
 import { SunTimesCard } from './components/SunTimesCard'
@@ -16,6 +17,7 @@ import { ObservationStats } from './components/ObservationStats'
 import { NearbyObservationsCard } from './components/NearbyObservationsCard'
 import { WelcomeModal } from './components/WelcomeModal'
 import { ThemeToggle } from './components/ThemeToggle'
+import { TabNavigation, type TabId } from './components/TabNavigation'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 import { useCurrentTime } from './hooks/useCurrentTime'
@@ -60,7 +62,15 @@ const itemVariants = {
   },
 }
 
+// Tab content animation variants
+const tabContentVariants = {
+  enter: { opacity: 0, y: 8 },
+  center: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+}
+
 function AppContent() {
+  const [activeTab, setActiveTab] = useState<TabId>('tonight')
   const urlParams = useUrlParams()
   const { lat: geoLat, lon: geoLon, error: geoError, loading: geoLoading } = useGeolocation()
   const currentTime = useCurrentTime()
@@ -154,79 +164,119 @@ function AppContent() {
           </motion.div>
         )}
 
-        {/* Data display with staggered animations */}
+        {/* Tab Content */}
         {data && (
-          <motion.div
-            className="space-y-6"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {/* Live Sky Status - Full width hero */}
-            <motion.div variants={itemVariants}>
-              <CurrentSkyStatus sun={data.sun} />
-            </motion.div>
-
-            {/* Next Event Highlight */}
-            <motion.div variants={itemVariants}>
-              <NextEvent data={data} />
-            </motion.div>
-
-            {/* Live Countdowns */}
-            <motion.div variants={itemVariants}>
-              <LiveCountdowns
-                sun={data.sun}
-                issPass={data.iss_passes[0]}
-                meteorShower={data.meteors.find(m => m.is_peak)}
-              />
-            </motion.div>
-
-            {/* Observation Stats Row */}
-            <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
-              <ObservationStats />
-              <NearbyObservationsCard location={location} />
-            </motion.div>
-
-            {/* Primary data row - Moon & Sun */}
-            <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
-              <MoonCard moon={data.moon} location={location} placeName={placeName || undefined} />
-              <SunTimesCard sun={data.sun} />
-            </motion.div>
-
-            {/* Secondary data row - Planets & ISS */}
-            <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
-              <PlanetsCard planets={data.planets} location={location} placeName={placeName || undefined} />
-              <ISSCard passes={data.iss_passes} />
-            </motion.div>
-
-            {/* Tertiary data row - Meteors & Deep Sky */}
-            <motion.div className="grid md:grid-cols-2 gap-6" variants={itemVariants}>
-              <MeteorsCard meteors={data.meteors} />
-              <DeepSkyCard objects={data.deep_sky} location={location} placeName={placeName || undefined} />
-            </motion.div>
-
-            {/* Events - Full width */}
-            <motion.div variants={itemVariants}>
-              <EventsCard events={data.events} />
-            </motion.div>
-
-            {/* Footer decoration */}
-            <motion.footer
-              className="text-center pt-8 pb-4"
-              variants={itemVariants}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              variants={tabContentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="space-y-4 pb-24"
             >
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#c9a227]/20" />
-                <span className="text-[#c9a227]/40 text-lg">✦</span>
-                <div className="h-px w-20 bg-gradient-to-l from-transparent to-[#c9a227]/20" />
-              </div>
-              <p className="font-mono text-xs text-[#c4baa6]/50 tracking-wider">
-                Clear skies ahead
-              </p>
-            </motion.footer>
-          </motion.div>
+              {/* Tonight Tab */}
+              {activeTab === 'tonight' && (
+                <motion.div
+                  className="space-y-4"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <motion.div variants={itemVariants}>
+                    <CurrentSkyStatus sun={data.sun} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <NextEvent data={data} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <LiveCountdowns
+                      sun={data.sun}
+                      issPass={data.iss_passes[0]}
+                      meteorShower={data.meteors.find(m => m.is_peak)}
+                    />
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* Sky Tab */}
+              {activeTab === 'sky' && (
+                <motion.div
+                  className="space-y-4"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <motion.div variants={itemVariants}>
+                    <MoonCard moon={data.moon} location={location} placeName={placeName || undefined} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <SunTimesCard sun={data.sun} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <PlanetsCard planets={data.planets} location={location} placeName={placeName || undefined} />
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* Deep Sky Tab */}
+              {activeTab === 'deepsky' && (
+                <motion.div
+                  className="space-y-4"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <motion.div variants={itemVariants}>
+                    <DeepSkyCard objects={data.deep_sky} location={location} placeName={placeName || undefined} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <MeteorsCard meteors={data.meteors} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <EventsCard events={data.events} />
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* ISS Tab */}
+              {activeTab === 'iss' && (
+                <motion.div
+                  className="space-y-4"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <motion.div variants={itemVariants}>
+                    <ISSCard passes={data.iss_passes} />
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* Log Tab */}
+              {activeTab === 'log' && (
+                <motion.div
+                  className="space-y-4"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <motion.div variants={itemVariants}>
+                    <ObservationStats />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <NearbyObservationsCard location={location} />
+                  </motion.div>
+                </motion.div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         )}
       </div>
+
+      {/* Bottom Tab Navigation */}
+      {data && <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />}
 
       {/* PWA Install Prompt */}
       <InstallPrompt />
