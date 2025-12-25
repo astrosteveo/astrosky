@@ -83,11 +83,22 @@ class AstroEvent(BaseModel):
     bodies: list[str]
 
 
+class ObservingConditions(BaseModel):
+    cloud_cover: int  # 0-100 percentage, -1 if unknown
+    humidity: int  # 0-100 percentage, -1 if unknown
+    visibility: float  # km, -1 if unknown
+    wind_speed: float  # km/h, -1 if unknown
+    temperature: float  # Celsius, -1 if unknown
+    condition: str  # Excellent, Good, Fair, Poor, Unknown
+    summary: str  # Human-readable summary
+
+
 class ReportResponse(BaseModel):
     date: datetime
     location: Location
     sun: SunTimes
     moon: MoonInfo
+    weather: ObservingConditions | None
     planets: list[PlanetInfo]
     iss_passes: list[ISSPass]
     meteors: list[ShowerInfo]

@@ -39,7 +39,8 @@ astrosky/
 │       ├── iss.py          # N2YO API for ISS passes
 │       ├── meteors.py      # Meteor shower data
 │       ├── deep_sky.py     # Messier catalog (110 objects)
-│       └── events.py       # Astronomical events
+│       ├── events.py       # Astronomical events
+│       └── weather.py      # Open-Meteo API for observing conditions
 │
 ├── api/                    # FastAPI backend
 │   ├── app/
@@ -59,9 +60,11 @@ astrosky/
         │   ├── api.ts      # API client
         │   └── timeUtils.ts # Time calculations & countdowns
         └── components/     # MoonCard, PlanetsCard, etc.
-            ├── CurrentSkyStatus.tsx  # Live sky phase indicator
-            ├── NextEvent.tsx         # Next event highlighter
-            └── LiveCountdowns.tsx    # Real-time countdowns
+            ├── CurrentSkyStatus.tsx      # Live sky phase indicator
+            ├── NextEvent.tsx             # Next event highlighter
+            ├── LiveCountdowns.tsx        # Real-time countdowns
+            ├── ObservingConditionsCard.tsx # Weather-based observing quality
+            └── ObservationAnalytics.tsx  # User stats and insights
 ```
 
 **Data flow:**
@@ -102,7 +105,23 @@ astrosky/
 ## Testing
 
 - **Python**: 73 tests, use `time-machine` for time-dependent tests
-- **Frontend**: 75 tests, Vitest + Testing Library, fake timers for real-time components
+- **Frontend**: 76 tests, Vitest + Testing Library, fake timers for real-time components
+
+## PWA & Service Worker
+
+The web app is a Progressive Web App (PWA) with offline support.
+
+**IMPORTANT:** When making frontend changes, you MUST increment the service worker cache version:
+
+```javascript
+// web/public/sw.js - line 4
+const CACHE_VERSION = 'astrosky-v15';  // Increment this (v15 -> v16)
+```
+
+This ensures users get the latest version of the app. The service worker:
+- Caches static assets for offline use
+- Caches API responses for use at dark sky sites with no signal
+- Automatically cleans up old cache versions on update
 
 ## Real-Time Features
 

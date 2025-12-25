@@ -20,6 +20,15 @@ describe('NextEvent', () => {
       moonrise: '2024-01-01T18:00:00Z',
       moonset: '2024-01-01T08:00:00Z'
     },
+    weather: {
+      cloud_cover: 10,
+      humidity: 45,
+      visibility: 20,
+      wind_speed: 5,
+      temperature: 15,
+      condition: 'Excellent',
+      summary: 'Clear skies. Perfect for deep sky observing!'
+    },
     planets: [],
     iss_passes: [
       {

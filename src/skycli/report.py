@@ -9,6 +9,7 @@ from skycli.sources.iss import get_iss_passes
 from skycli.sources.meteors import get_active_showers
 from skycli.sources.deep_sky import get_visible_dso
 from skycli.sources.events import get_upcoming_events
+from skycli.sources.weather import get_observing_conditions
 
 
 SECTION_MAP = {
@@ -18,6 +19,7 @@ SECTION_MAP = {
     "meteors": "meteors",
     "deepsky": "deep_sky",
     "events": "events",
+    "weather": "weather",
 }
 
 
@@ -52,12 +54,17 @@ def build_report(
         "location": {"lat": lat, "lon": lon},
         "sun": sun_times,
         "moon": moon_info,
+        "weather": None,
         "planets": [],
         "iss_passes": [],
         "meteors": [],
         "deep_sky": [],
         "events": [],
     }
+
+    # Weather/observing conditions
+    if _should_include("weather", only, exclude):
+        report["weather"] = get_observing_conditions(lat, lon, date)
 
     # Planets
     if _should_include("planets", only, exclude):
