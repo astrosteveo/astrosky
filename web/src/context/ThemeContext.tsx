@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 
-type Theme = 'dark' | 'light'
+type Theme = 'dark' | 'light' | 'night'
 
 interface ThemeContextType {
   theme: Theme
-  toggleTheme: () => void
+  setTheme: (theme: Theme) => void
+  cycleTheme: () => void
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null)
@@ -12,28 +13,42 @@ const ThemeContext = createContext<ThemeContextType | null>(null)
 const THEME_KEY = 'astrosky-theme'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [theme, setThemeState] = useState<Theme>(() => {
     const stored = localStorage.getItem(THEME_KEY)
-    return (stored as Theme) || 'dark'
+    if (stored === 'dark' || stored === 'light' || stored === 'night') {
+      return stored
+    }
+    return 'dark'
   })
 
   useEffect(() => {
     localStorage.setItem(THEME_KEY, theme)
 
+    // Remove all theme classes first
+    document.documentElement.classList.remove('light-theme', 'night-theme')
+
     // Apply theme to document
     if (theme === 'light') {
       document.documentElement.classList.add('light-theme')
-    } else {
-      document.documentElement.classList.remove('light-theme')
+    } else if (theme === 'night') {
+      document.documentElement.classList.add('night-theme')
     }
   }, [theme])
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark')
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme)
+  }
+
+  const cycleTheme = () => {
+    setThemeState(prev => {
+      if (prev === 'dark') return 'light'
+      if (prev === 'light') return 'night'
+      return 'dark'
+    })
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, cycleTheme }}>
       {children}
     </ThemeContext.Provider>
   )

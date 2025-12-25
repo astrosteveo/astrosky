@@ -1,60 +1,97 @@
 import { motion } from 'framer-motion'
 import { useTheme } from '../context/ThemeContext'
 
+const themeConfig = {
+  dark: {
+    icon: '🌙',
+    label: 'Dark',
+    next: 'Light',
+    bg: 'linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(78,205,196,0.1) 100%)',
+    border: 'rgba(201,162,39,0.3)',
+    knobBg: 'linear-gradient(135deg, #c9a227 0%, #d4a574 100%)',
+    knobGlow: '0 0 10px rgba(201,162,39,0.4)',
+    position: 0,
+  },
+  light: {
+    icon: '☀️',
+    label: 'Light',
+    next: 'Night',
+    bg: 'linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(251,191,36,0.1) 100%)',
+    border: 'rgba(251,191,36,0.4)',
+    knobBg: 'linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%)',
+    knobGlow: '0 0 10px rgba(251,191,36,0.5)',
+    position: 20,
+  },
+  night: {
+    icon: '🔴',
+    label: 'Night',
+    next: 'Dark',
+    bg: 'linear-gradient(135deg, rgba(153,51,51,0.25) 0%, rgba(102,34,34,0.15) 100%)',
+    border: 'rgba(153,51,51,0.5)',
+    knobBg: 'linear-gradient(135deg, #993333 0%, #cc3333 100%)',
+    knobGlow: '0 0 10px rgba(153,51,51,0.5)',
+    position: 40,
+  },
+}
+
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme()
+  const { theme, cycleTheme } = useTheme()
+  const config = themeConfig[theme]
 
   return (
     <button
-      onClick={toggleTheme}
-      className="relative w-14 h-7 rounded-full transition-all duration-300 p-1"
+      onClick={cycleTheme}
+      className="relative flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300"
       style={{
-        background: theme === 'dark'
-          ? 'linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(78,205,196,0.1) 100%)'
-          : 'linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(251,191,36,0.1) 100%)',
-        border: `1px solid ${theme === 'dark' ? 'rgba(201,162,39,0.3)' : 'rgba(251,191,36,0.4)'}`,
+        background: config.bg,
+        border: `1px solid ${config.border}`,
       }}
-      title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+      title={`Switch to ${config.next} mode`}
+      aria-label={`Current: ${config.label} mode. Click to switch to ${config.next} mode`}
     >
-      {/* Sun icon */}
-      <motion.div
-        className="absolute left-1.5 top-1/2 -translate-y-1/2"
-        animate={{ opacity: theme === 'light' ? 1 : 0.3 }}
+      {/* Current theme icon */}
+      <motion.span
+        key={theme}
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="text-sm"
       >
-        <svg className="w-4 h-4 text-[#fbbf24]" fill="currentColor" viewBox="0 0 20 20">
-          <path
-            fillRule="evenodd"
-            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </motion.div>
+        {config.icon}
+      </motion.span>
 
-      {/* Moon icon */}
-      <motion.div
-        className="absolute right-1.5 top-1/2 -translate-y-1/2"
-        animate={{ opacity: theme === 'dark' ? 1 : 0.3 }}
-      >
-        <svg className="w-4 h-4 text-[#c9a227]" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-        </svg>
-      </motion.div>
-
-      {/* Toggle knob */}
-      <motion.div
-        className="w-5 h-5 rounded-full shadow-md"
+      {/* Theme label */}
+      <motion.span
+        key={`label-${theme}`}
+        initial={{ opacity: 0, y: -5 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-xs font-mono font-medium"
         style={{
-          background: theme === 'dark'
-            ? 'linear-gradient(135deg, #c9a227 0%, #d4a574 100%)'
-            : 'linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%)',
-          boxShadow: theme === 'dark'
-            ? '0 0 10px rgba(201,162,39,0.4)'
-            : '0 0 10px rgba(251,191,36,0.5)',
+          color: theme === 'dark' ? '#c9a227' :
+                 theme === 'light' ? '#92400e' :
+                 '#cc3333'
         }}
-        animate={{ x: theme === 'dark' ? 26 : 0 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-      />
+      >
+        {config.label}
+      </motion.span>
+
+      {/* Indicator dots */}
+      <div className="flex gap-1 ml-1">
+        {(['dark', 'light', 'night'] as const).map((t) => (
+          <motion.div
+            key={t}
+            className="w-1.5 h-1.5 rounded-full"
+            style={{
+              backgroundColor: t === theme
+                ? (t === 'dark' ? '#c9a227' : t === 'light' ? '#fbbf24' : '#cc3333')
+                : 'rgba(148,163,184,0.3)',
+            }}
+            animate={{
+              scale: t === theme ? 1 : 0.7,
+            }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+          />
+        ))}
+      </div>
     </button>
   )
 }
