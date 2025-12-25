@@ -2,6 +2,14 @@
 
 ## Recently Completed
 
+### v1.6 - Equipment Profiles
+- [x] Equipment profile management - Save binoculars and telescopes
+- [x] Quick presets - 16 common configurations from 7x35 binoculars to 12" Dobsonians
+- [x] Custom equipment entry - Add any aperture/focal length configuration
+- [x] Limiting magnitude calculation - Automatic based on aperture
+- [x] DSO filtering - "My Gear" filter shows objects viewable with saved equipment
+- [x] Primary equipment selector - Set default for recommendations
+
 ### v1.5 - Achievement System
 - [x] Achievement badges - 28 achievements across 7 categories
 - [x] Progress tracking - Visual progress bars for in-progress achievements
@@ -39,9 +47,6 @@
 ---
 
 ## Backlog
-
-### High Priority
-- [ ] **Equipment profiles** - Save telescope/binocular specs for personalized recommendations
 
 ### Medium Priority
 - [ ] **Sky chart integration** - Interactive star map with object positions

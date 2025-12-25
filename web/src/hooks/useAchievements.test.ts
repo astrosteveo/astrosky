@@ -224,16 +224,15 @@ describe('useAchievements', () => {
     const { result } = renderHook(() => useAchievements(observations))
 
     // Earned achievements should come first
-    const firstEarned = result.current.achievements.findIndex((a) => a.earned)
-    const lastEarned = result.current.achievements
+    const lastEarnedIndex = result.current.achievements
       .map((a, i) => (a.earned ? i : -1))
       .filter((i) => i >= 0)
       .pop()
 
-    const firstNotEarned = result.current.achievements.findIndex((a) => !a.earned)
+    const firstNotEarnedIndex = result.current.achievements.findIndex((a) => !a.earned)
 
-    if (lastEarned !== undefined && firstNotEarned !== -1) {
-      expect(lastEarned).toBeLessThan(firstNotEarned)
+    if (lastEarnedIndex !== undefined && firstNotEarnedIndex !== -1) {
+      expect(lastEarnedIndex).toBeLessThan(firstNotEarnedIndex)
     }
   })
 

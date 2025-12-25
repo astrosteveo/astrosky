@@ -32,6 +32,8 @@ import { ThemeProvider } from './context/ThemeContext'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { NotificationSettings } from './components/NotificationSettings'
 import { AchievementsCard } from './components/AchievementsCard'
+import { EquipmentProfilesCard } from './components/EquipmentProfilesCard'
+import { EquipmentProvider } from './context/EquipmentContext'
 
 // Validate latitude is within valid range [-90, 90]
 function isValidLatitude(lat: number): boolean {
@@ -299,6 +301,9 @@ function AppContent() {
                     <ObservationAnalytics />
                   </motion.div>
                   <motion.div variants={itemVariants}>
+                    <EquipmentProfilesCard />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
                     <NotificationSettings />
                   </motion.div>
                   <motion.div variants={itemVariants}>
@@ -329,7 +334,9 @@ function App() {
       <ThemeProvider>
         <NotificationsProvider>
           <ObservationsProvider>
-            <AppContent />
+            <EquipmentProvider>
+              <AppContent />
+            </EquipmentProvider>
           </ObservationsProvider>
         </NotificationsProvider>
       </ThemeProvider>
