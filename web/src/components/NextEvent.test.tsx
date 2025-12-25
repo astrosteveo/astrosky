@@ -60,7 +60,8 @@ describe('NextEvent', () => {
         bodies: ['Moon', 'Jupiter']
       }
     ],
-    aurora: null
+    aurora: null,
+    satellites: null
   }
 
   beforeEach(() => {

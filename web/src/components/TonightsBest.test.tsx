@@ -26,6 +26,7 @@ const baseSkyReport: SkyReport = {
   },
   weather: null,
   aurora: null,
+  satellites: null,
   planets: [],
   iss_passes: [],
   meteors: [],

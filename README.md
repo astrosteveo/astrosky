@@ -8,7 +8,7 @@
 
 [![Web App](https://img.shields.io/badge/Launch_Web_App-astrosky--beryl.vercel.app-7c3aed?style=for-the-badge&logo=vercel)](https://astrosky-beryl.vercel.app)
 
-**Live countdowns | Moon phases | Planets | ISS passes | Meteor showers | 110 deep sky objects**
+**Live countdowns | Moon phases | Planets | ISS passes | Starlink satellites | Aurora forecast | Meteor showers | 110 deep sky objects**
 
 *Automatically detects your location • Updates in real-time*
 
@@ -39,9 +39,21 @@
 - **Moon phase** - Current phase, illumination, and rise/set times
 - **Visible planets** - Which planets are up and where to look
 - **ISS passes** - Upcoming International Space Station flyovers
+- **Satellite tracker** - Starlink passes, Hubble, Tiangong, and other bright satellites
+- **Aurora forecast** - Real-time Kp index and visibility predictions from NOAA
 - **Meteor showers** - Active showers and peak dates
 - **Deep sky objects** - Complete Messier catalog (110 objects)
 - **Astronomical events** - Conjunctions, oppositions, equinoxes, solstices
+
+### AstroSky Pro ⭐
+Optional subscription ($2.99/mo or $19.99/yr) for power users:
+- **Smart Clear Sky Alerts** - Get notified when observing conditions are perfect
+- **Observation Planner** - Personalized "what to see tonight" recommendations
+- **Weekly Challenges** - Gamified challenges with XP rewards
+- **Full Satellite List** - Complete Starlink and satellite pass predictions
+- **Detailed Aurora Alerts** - In-depth geomagnetic forecasts
+
+*Free tier remains fully functional with all core astronomy features.*
 
 ## Web App
 
@@ -181,7 +193,7 @@ pip install -e ".[dev]"
 
 # Run tests
 pytest                     # Python (73 tests)
-cd web && npm run test     # Frontend (76 tests)
+cd web && npm run test     # Frontend (200 tests)
 ```
 
 See [CLAUDE.md](CLAUDE.md) for architecture details and development patterns.

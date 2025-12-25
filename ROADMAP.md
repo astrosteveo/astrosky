@@ -2,6 +2,15 @@
 
 ## Recently Completed
 
+### v1.13 - Satellite Tracker
+- [x] **Starlink Pass Predictions** - Track visible Starlink satellite passes
+- [x] **Notable Satellites** - Hubble Space Telescope, Tiangong Space Station
+- [x] Multi-satellite tracking - Consolidated view of all bright satellite passes
+- [x] Brightness filtering - Only show naked-eye visible passes (mag ≤ 2.0)
+- [x] Visual pass list - Time, duration, altitude, magnitude, direction
+- [x] Next bright pass highlight - Prominent display for magnitude ≤ -2.0 passes
+- [x] Pro feature - Full satellite list gated behind subscription
+
 ### v1.12 - Aurora Forecast
 - [x] **Aurora/Geomagnetic Alerts** - Real-time Kp index from NOAA SWPC
 - [x] Visual Kp meter - Color-coded 0-9 scale with storm level indicators
@@ -112,7 +121,7 @@
 ### Low Priority / Future Ideas
 - [ ] **Social features** - Nearby observers, shared sightings
 - [x] **Aurora forecast** - Northern/Southern lights predictions ✓ v1.12
-- [ ] **Satellite tracker** - Beyond ISS (Starlink, notable satellites)
+- [x] **Satellite tracker** - Beyond ISS (Starlink, notable satellites) ✓ v1.13
 - [ ] **Light pollution map** - Visual Bortle scale overlay
 - [ ] **Astrophotography mode** - Exposure calculator, polar alignment helper
 - [ ] **Widgets** - iOS/Android home screen widgets for next event

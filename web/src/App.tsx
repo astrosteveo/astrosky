@@ -45,6 +45,7 @@ const AuroraCard = lazy(() => import('./components/AuroraCard').then(m => ({ def
 
 // ISS tab components
 const ISSCard = lazy(() => import('./components/ISSCard').then(m => ({ default: m.ISSCard })))
+const SatelliteCard = lazy(() => import('./components/SatelliteCard').then(m => ({ default: m.SatelliteCard })))
 
 // Log tab components
 const ObservationStats = lazy(() => import('./components/ObservationStats').then(m => ({ default: m.ObservationStats })))
@@ -344,6 +345,12 @@ function AppContent() {
                   >
                     <motion.div variants={itemVariants}>
                       <ISSCard passes={data.iss_passes} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <SatelliteCard
+                        satellites={data.satellites}
+                        onUpgradeClick={() => openUpgradeModal('Satellite Alerts')}
+                      />
                     </motion.div>
                   </motion.div>
                 </Suspense>

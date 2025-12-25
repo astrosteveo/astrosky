@@ -107,6 +107,27 @@ class AuroraForecast(BaseModel):
     summary: str  # Human-readable summary
 
 
+class SatellitePass(BaseModel):
+    satellite_name: str
+    satellite_type: str  # starlink, station, telescope, other
+    norad_id: int
+    start_time: str  # ISO format
+    duration_minutes: int
+    max_altitude: float  # degrees above horizon
+    start_direction: str
+    end_direction: str
+    brightness: str  # Brilliant!, Bright, Moderate, Faint
+    magnitude: float
+
+
+class SatelliteInfo(BaseModel):
+    total_passes: int
+    starlink_passes: int
+    station_passes: int
+    next_bright_pass: SatellitePass | None
+    passes: list[SatellitePass]
+
+
 class ReportResponse(BaseModel):
     date: datetime
     location: Location
@@ -114,6 +135,7 @@ class ReportResponse(BaseModel):
     moon: MoonInfo
     weather: ObservingConditions | None
     aurora: AuroraForecast | None
+    satellites: SatelliteInfo | None
     planets: list[PlanetInfo]
     iss_passes: list[ISSPass]
     meteors: list[ShowerInfo]

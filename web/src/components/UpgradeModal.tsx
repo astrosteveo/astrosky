@@ -21,6 +21,11 @@ const PRO_FEATURES = [
     description: 'Get notified when aurora may be visible at your location',
   },
   {
+    icon: '📡',
+    name: 'Satellite Alerts',
+    description: 'Track Starlink trains, Hubble, Tiangong, and bright satellites',
+  },
+  {
     icon: '🎯',
     name: 'Observation Planner',
     description: 'Personalized "what to observe tonight" recommendations',
