@@ -10,6 +10,12 @@ import { ObservingConditionsCard } from './components/ObservingConditionsCard'
 import { TonightsBest } from './components/TonightsBest'
 import { WelcomeModal } from './components/WelcomeModal'
 import { ThemeToggle } from './components/ThemeToggle'
+import { SmartAlertsCard } from './components/SmartAlertsCard'
+import { ObservationPlannerCard } from './components/ObservationPlannerCard'
+import { WeeklyChallengesCard } from './components/WeeklyChallengesCard'
+import { UpgradeModal, useUpgradeModal } from './components/UpgradeModal'
+import { useSubscriptionContext } from './context/SubscriptionContext'
+import { ProBadge } from './components/ProBadge'
 import { TabNavigation, type TabId } from './components/TabNavigation'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
@@ -22,6 +28,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { EquipmentProvider } from './context/EquipmentContext'
 import { SessionsProvider } from './context/SessionsContext'
+import { SubscriptionProvider } from './context/SubscriptionContext'
 
 // Lazy-loaded components for less-used tabs to reduce initial bundle size
 // Sky tab components
@@ -124,6 +131,8 @@ function AppContent() {
   const urlParams = useUrlParams()
   const { lat: geoLat, lon: geoLon, error: geoError, loading: geoLoading } = useGeolocation()
   const currentTime = useCurrentTime()
+  const { isPro } = useSubscriptionContext()
+  const { isOpen: upgradeModalOpen, highlightFeature, openUpgradeModal, closeUpgradeModal } = useUpgradeModal()
 
   // Use URL params if provided, otherwise use geolocation
   const lat = urlParams?.lat ?? geoLat
@@ -154,6 +163,7 @@ function AppContent() {
               <span className="text-[#c9a227] transition-colors">Astro</span>
               <span className="text-[#f0f4f8] transition-colors">SKY</span>
             </h1>
+            {isPro && <ProBadge size="md" />}
             <ThemeToggle />
           </div>
 
@@ -243,6 +253,18 @@ function AppContent() {
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <TonightsBest data={data} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <SmartAlertsCard
+                      report={data}
+                      onUpgradeClick={() => openUpgradeModal('Smart Clear Sky Alerts')}
+                    />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <ObservationPlannerCard
+                      report={data}
+                      onUpgradeClick={() => openUpgradeModal('Observation Planner')}
+                    />
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <LiveCountdowns
@@ -336,6 +358,11 @@ function AppContent() {
                       <AchievementsCard />
                     </motion.div>
                     <motion.div variants={itemVariants}>
+                      <WeeklyChallengesCard
+                        onUpgradeClick={() => openUpgradeModal('Weekly Challenges')}
+                      />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
                       <ObservationAnalytics />
                     </motion.div>
                     <motion.div variants={itemVariants}>
@@ -363,6 +390,13 @@ function AppContent() {
 
       {/* Welcome Modal for first-time visitors */}
       <WelcomeModal />
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={upgradeModalOpen}
+        onClose={closeUpgradeModal}
+        highlightFeature={highlightFeature}
+      />
     </div>
   )
 }
@@ -371,15 +405,17 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <NotificationsProvider>
-          <ObservationsProvider>
-            <SessionsProvider>
-              <EquipmentProvider>
-                <AppContent />
-              </EquipmentProvider>
-            </SessionsProvider>
-          </ObservationsProvider>
-        </NotificationsProvider>
+        <SubscriptionProvider>
+          <NotificationsProvider>
+            <ObservationsProvider>
+              <SessionsProvider>
+                <EquipmentProvider>
+                  <AppContent />
+                </EquipmentProvider>
+              </SessionsProvider>
+            </ObservationsProvider>
+          </NotificationsProvider>
+        </SubscriptionProvider>
       </ThemeProvider>
     </ErrorBoundary>
   )

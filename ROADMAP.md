@@ -2,6 +2,20 @@
 
 ## Recently Completed
 
+### v1.11 - AstroSky Pro (Subscription Model)
+- [x] Subscription infrastructure - Pro state management with localStorage persistence
+- [x] Feature gating system - Pro-only features with upgrade prompts
+- [x] Upgrade modal - Beautiful pricing UI with monthly/yearly options ($2.99/mo or $19.99/yr)
+- [x] Pro badge - Visual indicator in header for Pro subscribers
+- [x] **Smart Clear Sky Alerts** - Observability scoring (0-100) combining weather, moon phase, and events
+- [x] Alert preferences - Configurable cloud cover thresholds, alert timing, notification types
+- [x] **Observation Planner** - "What should I observe tonight?" personalized recommendations
+- [x] Prioritized hit list - Scores objects by visibility, equipment match, and observation history
+- [x] Object difficulty ratings - Easy/Moderate/Challenging based on equipment
+- [x] **Weekly Challenges** - Rotating challenges (3 per week: Easy, Medium, Hard)
+- [x] XP reward system - Earn XP for completing challenges
+- [x] Challenge types - Planet hunting, DSO exploration, observation streaks, constellation quests
+
 ### v1.10 - Social Media Export
 - [x] Platform-specific text formatters for Twitter, Instagram, Threads, Bluesky
 - [x] Twitter/X intent URL integration - Opens with pre-filled post
