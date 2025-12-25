@@ -65,7 +65,7 @@ export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50">
       {/* Blur backdrop */}
-      <div className="absolute inset-0 bg-[rgba(5,10,20,0.85)] backdrop-blur-xl border-t border-[rgba(148,163,184,0.1)]" />
+      <div className="absolute inset-0 bg-[rgba(5,10,20,0.85)] backdrop-blur-xl border-t border-[rgba(148,163,184,0.1)] transition-all duration-300" />
 
       {/* Safe area padding for iOS */}
       <div className="relative flex items-center justify-around px-2 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
@@ -82,7 +82,7 @@ export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
               {isActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 rounded-xl bg-[rgba(201,162,39,0.1)]"
+                  className="absolute inset-0 rounded-xl bg-[rgba(201,162,39,0.1)] transition-colors duration-300"
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}

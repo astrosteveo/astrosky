@@ -83,7 +83,7 @@ export function GlassCard({
               </div>
             )}
             <h2
-              className="font-display text-lg font-semibold text-[#f0f4f8]"
+              className="font-display text-lg font-semibold text-[#f0f4f8] transition-colors"
             >
               {title}
             </h2>

@@ -45,6 +45,8 @@
 
   html {
     scroll-behavior: smooth;
+    /* Smooth theme transitions */
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
   body {
@@ -56,6 +58,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
+    /* Smooth theme transitions */
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
   /* Modern heading styles */
@@ -310,59 +314,171 @@
 
 /* Light theme overrides */
 .light-theme {
-  --color-midnight: #f8fafc;
-  --color-midnight-light: #f1f5f9;
+  --color-midnight: #f1f5f9;
+  --color-midnight-light: #e2e8f0;
   --color-midnight-card: #ffffff;
   --color-parchment: #0f172a;
-  --color-parchment-dim: #64748b;
-  --color-brass: #a16207;
-  --color-brass-light: #ca8a04;
+  --color-parchment-dim: #475569;
+  --color-brass: #92400e;
+  --color-brass-light: #b45309;
+  --color-brass-glow: rgba(146, 64, 14, 0.2);
+  --color-aurora: #0d9488;
+  --color-star-silver: #64748b;
 }
 
 .light-theme body {
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
   color: #0f172a;
 }
 
 .light-theme .observatory-card {
-  background: rgba(255, 255, 255, 0.8);
-  border-color: rgba(148, 163, 184, 0.2);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 250, 252, 0.98) 100%
+  );
+  border-color: rgba(148, 163, 184, 0.3);
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.05),
-    0 4px 16px rgba(0, 0, 0, 0.05);
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.4s ease;
+}
+
+.light-theme .observatory-card::before {
+  background: radial-gradient(ellipse at 0% 0%, rgba(146, 64, 14, 0.06) 0%, transparent 50%);
 }
 
 .light-theme .observatory-card::after {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(161, 98, 7, 0.2) 50%,
+    rgba(146, 64, 14, 0.25) 50%,
     transparent 100%
   );
 }
 
 .light-theme .observatory-card-hover:hover {
-  border-color: rgba(161, 98, 7, 0.3);
+  border-color: rgba(146, 64, 14, 0.35);
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.05),
-    0 8px 24px rgba(0, 0, 0, 0.08);
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 12px 28px rgba(0, 0, 0, 0.1);
 }
 
 /* Hide starfield in light mode */
 .light-theme .starfield {
   opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
-/* Light theme text adjustments */
-.light-theme .text-parchment { color: #2c3e50; }
-.light-theme .text-parchment-dim { color: #5d6d7e; }
-.light-theme .text-brass { color: #8b6914; }
-.light-theme .text-brass-light { color: #a67c00; }
+/* Dark mode starfield transition */
+.starfield {
+  transition: opacity 0.4s ease;
+}
+
+/* Light theme text - High contrast colors */
+.light-theme .text-\[\#f0f4f8\] { color: #0f172a !important; }
+.light-theme .text-\[\#94a3b8\] { color: #475569 !important; }
+.light-theme .text-\[\#c9a227\] { color: #92400e !important; }
+.light-theme .text-\[\#4ecdc4\] { color: #0d9488 !important; }
+.light-theme .text-\[\#cbd5e1\] { color: #64748b !important; }
 
 /* Light theme background adjustments */
-.light-theme .bg-midnight { background-color: #faf8f3; }
-.light-theme .bg-midnight-light { background-color: #f0ebe0; }
-.light-theme .bg-midnight-card { background-color: #ffffff; }
+.light-theme .bg-\[rgba\(15\,23\,42\,0\.6\)\] { background-color: rgba(255, 255, 255, 0.8) !important; }
+.light-theme .bg-\[rgba\(15\,23\,42\,0\.9\)\] { background-color: rgba(255, 255, 255, 0.95) !important; }
+.light-theme .bg-\[rgba\(5\,10\,20\,0\.85\)\] { background-color: rgba(241, 245, 249, 0.95) !important; }
+
+/* Light theme border adjustments */
+.light-theme .border-\[rgba\(148\,163\,184\,0\.1\)\] { border-color: rgba(148, 163, 184, 0.25) !important; }
+.light-theme .border-\[rgba\(148\,163\,184\,0\.15\)\] { border-color: rgba(148, 163, 184, 0.3) !important; }
+
+/* Tab navigation light mode */
+.light-theme nav.fixed.bottom-0 > div:first-child {
+  background-color: rgba(241, 245, 249, 0.95) !important;
+  border-top-color: rgba(148, 163, 184, 0.25) !important;
+}
+
+/* Active tab indicator in light mode */
+.light-theme .bg-\[rgba\(201\,162\,39\,0\.1\)\] { background-color: rgba(146, 64, 14, 0.1) !important; }
+
+/* Pill/badge backgrounds in light mode */
+.light-theme .bg-\[rgba\(15\,23\,42\,0\.6\)\] { background-color: rgba(255, 255, 255, 0.9) !important; }
+.light-theme .rounded-full.bg-\[rgba\(15\,23\,42\,0\.6\)\] {
+  background-color: rgba(241, 245, 249, 0.95) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* Data labels in light mode */
+.light-theme .data-label {
+  color: #475569;
+}
+
+.light-theme .data-value {
+  color: #0f172a;
+}
+
+/* Button styles in light mode */
+.light-theme .btn-brass {
+  background: rgba(146, 64, 14, 0.08);
+  border-color: rgba(146, 64, 14, 0.3);
+  color: #92400e;
+}
+
+.light-theme .btn-brass:hover {
+  background: rgba(146, 64, 14, 0.12);
+  border-color: rgba(146, 64, 14, 0.5);
+}
+
+/* Status indicator in light mode */
+.light-theme .status-live {
+  color: #059669;
+}
+
+.light-theme .status-live::before {
+  background: #059669;
+  box-shadow: 0 0 6px #059669;
+}
+
+/* Celestial gradient text in light mode */
+.light-theme .text-celestial {
+  background: linear-gradient(
+    135deg,
+    #92400e 0%,
+    #b45309 50%,
+    #0d9488 100%
+  );
+}
+
+/* Scrollbar in light mode */
+.light-theme ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.light-theme ::-webkit-scrollbar-thumb {
+  background: rgba(146, 64, 14, 0.25);
+}
+
+.light-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(146, 64, 14, 0.4);
+}
 
 /* Modal overlay */
 .light-theme .bg-black\/70 { background-color: rgba(0, 0, 0, 0.4); }
+
+/* Dividers in light mode */
+.light-theme .divider-brass {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(146, 64, 14, 0.25) 20%,
+    rgba(146, 64, 14, 0.4) 50%,
+    rgba(146, 64, 14, 0.25) 80%,
+    transparent 100%
+  );
+}
+
+/* Smooth transitions for all themed elements */
+.light-theme *,
+.light-theme *::before,
+.light-theme *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}

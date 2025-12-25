@@ -105,12 +105,12 @@ function AppContent() {
 
           {/* Main title */}
           <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-1">
-            <span className="text-[#c9a227]">Astro</span>
-            <span className="text-[#f0f4f8]">SKY</span>
+            <span className="text-[#c9a227] transition-colors">Astro</span>
+            <span className="text-[#f0f4f8] transition-colors">SKY</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-sm text-[#94a3b8] mb-6">
+          <p className="text-sm text-[#94a3b8] mb-6 transition-colors">
             Your personal observatory
           </p>
 
@@ -123,12 +123,12 @@ function AppContent() {
               transition={{ delay: 0.3 }}
             >
               {/* Location display */}
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(15,23,42,0.6)] border border-[rgba(148,163,184,0.1)]">
-                <svg className="w-3.5 h-3.5 text-[#c9a227]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(15,23,42,0.6)] border border-[rgba(148,163,184,0.1)] transition-all">
+                <svg className="w-3.5 h-3.5 text-[#c9a227] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span className="text-[#f0f4f8] font-medium">
+                <span className="text-[#f0f4f8] font-medium transition-colors">
                   {placeName || `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`}
                 </span>
               </div>
