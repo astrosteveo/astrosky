@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GlassCard } from './GlassCard'
 import { useObservationsContext } from '../context/ObservationsContext'
+import { ShareObservations } from './ShareObservations'
+import { PhotoThumbnails } from './PhotoCapture'
 import type { Observation } from '../types/observations'
 
 function formatRelativeTime(isoString: string): string {
@@ -58,6 +60,9 @@ function ObservationItem({ observation, onRemove }: { observation: Observation; 
         </div>
         {observation.notes && (
           <p className="text-xs text-slate-400 mt-1 italic">"{observation.notes}"</p>
+        )}
+        {observation.photos && observation.photos.length > 0 && (
+          <PhotoThumbnails photos={observation.photos} />
         )}
       </div>
       <button
@@ -182,12 +187,15 @@ export function ObservationStats() {
           </h2>
           <SyncStatus />
         </div>
-        <button
-          onClick={() => setShowHistory(!showHistory)}
-          className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
-        >
-          {showHistory ? 'Hide History' : 'View History'}
-        </button>
+        <div className="flex items-center gap-2">
+          <ShareObservations stats={stats} />
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+          >
+            {showHistory ? 'Hide History' : 'View History'}
+          </button>
+        </div>
       </div>
 
       {/* Stats Grid */}

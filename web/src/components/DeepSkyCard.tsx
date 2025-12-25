@@ -50,14 +50,15 @@ export function DeepSkyCard({ objects, location, placeName }: DeepSkyCardProps) 
     return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b))
   }, [filteredObjects, groupByConstellation])
 
-  const handleLog = (obj: DSOInfo) => (equipment: EquipmentType, notes?: string) => {
+  const handleLog = (obj: DSOInfo) => (equipment: EquipmentType, notes?: string, photos?: string[]) => {
     if (location) {
       const objectId = `dso-${obj.id}`
       addObservation(
         { type: 'deep-sky', id: objectId, name: `${obj.id} - ${obj.name}`, details: `${obj.type} in ${obj.constellation}` },
         { ...location, placeName },
         equipment,
-        notes
+        notes,
+        photos
       )
     }
   }

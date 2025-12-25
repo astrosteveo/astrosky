@@ -156,13 +156,14 @@ export function MoonCard({ moon, location, placeName }: MoonCardProps) {
   const observed = hasObserved(objectId)
   const observationCount = getObservationsForObject(objectId).length
 
-  const handleLog = (equipment: EquipmentType, notes?: string) => {
+  const handleLog = (equipment: EquipmentType, notes?: string, photos?: string[]) => {
     if (location) {
       addObservation(
         { type: 'moon', id: objectId, name: 'The Moon', details: moon.phase_name },
         { ...location, placeName },
         equipment,
-        notes
+        notes,
+        photos
       )
     }
   }

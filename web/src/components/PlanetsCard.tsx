@@ -131,14 +131,15 @@ export function PlanetsCard({ planets, location, placeName }: PlanetsCardProps) 
   const { addObservation, hasObserved, getObservationsForObject } = useObservationsContext()
   const now = useCurrentTime()
 
-  const handleLog = (planet: PlanetInfo) => (equipment: EquipmentType, notes?: string) => {
+  const handleLog = (planet: PlanetInfo) => (equipment: EquipmentType, notes?: string, photos?: string[]) => {
     if (location) {
       const objectId = `planet-${planet.name.toLowerCase()}`
       addObservation(
         { type: 'planet', id: objectId, name: planet.name, details: planet.description },
         { ...location, placeName },
         equipment,
-        notes
+        notes,
+        photos
       )
     }
   }

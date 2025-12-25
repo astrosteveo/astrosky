@@ -27,8 +27,10 @@ import { useCurrentTime } from './hooks/useCurrentTime'
 import { formatLocalTime } from './lib/timeUtils'
 import { useReverseGeocode } from './lib/geocoding'
 import { ObservationsProvider } from './context/ObservationsContext'
+import { NotificationsProvider } from './context/NotificationsContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { NotificationSettings } from './components/NotificationSettings'
 
 // Validate latitude is within valid range [-90, 90]
 function isValidLatitude(lat: number): boolean {
@@ -295,6 +297,9 @@ function AppContent() {
                     <ObservationAnalytics />
                   </motion.div>
                   <motion.div variants={itemVariants}>
+                    <NotificationSettings />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
                     <NearbyObservationsCard location={location} />
                   </motion.div>
                 </motion.div>
@@ -320,9 +325,11 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <ObservationsProvider>
-          <AppContent />
-        </ObservationsProvider>
+        <NotificationsProvider>
+          <ObservationsProvider>
+            <AppContent />
+          </ObservationsProvider>
+        </NotificationsProvider>
       </ThemeProvider>
     </ErrorBoundary>
   )
