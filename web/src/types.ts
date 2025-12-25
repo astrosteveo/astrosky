@@ -77,12 +77,47 @@ export interface ObservingConditions {
   summary: string // Human-readable summary
 }
 
+export interface AuroraForecast {
+  kp_current: number // Current Kp index (0-9)
+  kp_24h_max: number // Maximum Kp in next 24 hours
+  geomagnetic_storm: boolean // True if Kp >= 5
+  storm_level: string // G0 (none) to G5 (extreme)
+  visibility_probability: number // 0-100 for user's location
+  visible_latitude: number // Minimum latitude where aurora may be visible
+  best_time: string // Best viewing time advice
+  activity_level: string // Quiet, Unsettled, Active, Storm
+  summary: string // Human-readable summary
+}
+
+export interface SatellitePass {
+  satellite_name: string
+  satellite_type: string // starlink, station, telescope, other
+  norad_id: number
+  start_time: string // ISO format
+  duration_minutes: number
+  max_altitude: number // degrees above horizon
+  start_direction: string
+  end_direction: string
+  brightness: string // Brilliant!, Bright, Moderate, Faint
+  magnitude: number
+}
+
+export interface SatelliteInfo {
+  total_passes: number
+  starlink_passes: number
+  station_passes: number
+  next_bright_pass: SatellitePass | null
+  passes: SatellitePass[]
+}
+
 export interface SkyReport {
   date: string
   location: Location
   sun: SunTimes
   moon: MoonInfo
   weather: ObservingConditions | null
+  aurora: AuroraForecast | null
+  satellites: SatelliteInfo | null
   planets: PlanetInfo[]
   iss_passes: ISSPass[]
   meteors: ShowerInfo[]

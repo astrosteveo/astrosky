@@ -21,7 +21,7 @@ cd web && npm install && npm run dev
 
 # Tests
 pytest                     # Python tests (73 tests)
-cd web && npm run test     # Frontend tests (75 tests)
+cd web && npm run test     # Frontend tests (200 tests)
 ```
 
 ## Architecture
@@ -40,7 +40,9 @@ astrosky/
 │       ├── meteors.py      # Meteor shower data
 │       ├── deep_sky.py     # Messier catalog (110 objects)
 │       ├── events.py       # Astronomical events
-│       └── weather.py      # Open-Meteo API for observing conditions
+│       ├── weather.py      # Open-Meteo API for observing conditions
+│       ├── aurora.py       # NOAA SWPC aurora/geomagnetic data
+│       └── satellites.py   # Starlink, Hubble, Tiangong passes (N2YO)
 │
 ├── api/                    # FastAPI backend
 │   ├── app/
@@ -64,7 +66,12 @@ astrosky/
             ├── NextEvent.tsx             # Next event highlighter
             ├── LiveCountdowns.tsx        # Real-time countdowns
             ├── ObservingConditionsCard.tsx # Weather-based observing quality
-            └── ObservationAnalytics.tsx  # User stats and insights
+            ├── ObservationAnalytics.tsx  # User stats and insights
+            ├── AuroraCard.tsx            # Aurora/geomagnetic forecast
+            ├── SatelliteCard.tsx         # Starlink/satellite passes
+            ├── SmartAlertsCard.tsx       # Pro: observability scoring
+            ├── ObservationPlannerCard.tsx # Pro: personalized recommendations
+            └── WeeklyChallengesCard.tsx  # Pro: gamification challenges
 ```
 
 **Data flow:**
@@ -79,6 +86,28 @@ astrosky/
 - **Geolocation + URL params** - Frontend supports `?lat=X&lon=Y`
 - **Real-time updates** - Live clock, countdowns, auto-refresh every 5 minutes
 - **Time-based rendering** - Components adapt based on current time (day/twilight/night)
+
+## Pro Subscription Model
+
+AstroSky has a freemium model with Pro features ($2.99/mo or $19.99/yr):
+
+**Free Tier** (fully functional):
+- All sky data (sun, moon, planets, ISS, meteors, deep sky, events)
+- Aurora and satellite forecasts (basic view)
+- Observation logging and achievements
+- PWA offline support
+
+**Pro Features** (gated with upgrade prompts):
+- **Smart Clear Sky Alerts** - Observability scoring (0-100)
+- **Aurora Alerts** - Detailed geomagnetic forecasts
+- **Satellite Alerts** - Full Starlink/satellite pass list
+- **Observation Planner** - Personalized "what to see tonight"
+- **Weekly Challenges** - Gamification with XP rewards
+- **Unlimited History** - Complete observation history
+- **Cloud Backup** - Cross-device sync
+- **Data Export** - CSV/JSON export
+
+Subscription state is managed via `useSubscription` hook with localStorage persistence.
 
 ## Deployment
 
@@ -105,7 +134,7 @@ astrosky/
 ## Testing
 
 - **Python**: 73 tests, use `time-machine` for time-dependent tests
-- **Frontend**: 171 tests, Vitest + Testing Library, fake timers for real-time components
+- **Frontend**: 200 tests, Vitest + Testing Library, fake timers for real-time components
 
 ## Roadmap Maintenance
 
@@ -125,7 +154,7 @@ The web app is a Progressive Web App (PWA) with offline support.
 
 ```javascript
 // web/public/sw.js - line 4
-const CACHE_VERSION = 'astrosky-v15';  // Increment this (v15 -> v16)
+const CACHE_VERSION = 'astrosky-v30';  // Increment this (v30 -> v31)
 ```
 
 This ensures users get the latest version of the app. The service worker:

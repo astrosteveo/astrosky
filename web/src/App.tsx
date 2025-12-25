@@ -41,9 +41,11 @@ const SkyChart = lazy(() => import('./components/SkyChart').then(m => ({ default
 const DeepSkyCard = lazy(() => import('./components/DeepSkyCard').then(m => ({ default: m.DeepSkyCard })))
 const MeteorsCard = lazy(() => import('./components/MeteorsCard').then(m => ({ default: m.MeteorsCard })))
 const EventsCard = lazy(() => import('./components/EventsCard').then(m => ({ default: m.EventsCard })))
+const AuroraCard = lazy(() => import('./components/AuroraCard').then(m => ({ default: m.AuroraCard })))
 
 // ISS tab components
 const ISSCard = lazy(() => import('./components/ISSCard').then(m => ({ default: m.ISSCard })))
+const SatelliteCard = lazy(() => import('./components/SatelliteCard').then(m => ({ default: m.SatelliteCard })))
 
 // Log tab components
 const ObservationStats = lazy(() => import('./components/ObservationStats').then(m => ({ default: m.ObservationStats })))
@@ -310,6 +312,15 @@ function AppContent() {
                     initial="hidden"
                     animate="visible"
                   >
+                    {data.aurora && (
+                      <motion.div variants={itemVariants}>
+                        <AuroraCard
+                          aurora={data.aurora}
+                          userLat={lat || 0}
+                          onUpgradeClick={() => openUpgradeModal('Aurora Alerts')}
+                        />
+                      </motion.div>
+                    )}
                     <motion.div variants={itemVariants}>
                       <DeepSkyCard objects={data.deep_sky} location={location} placeName={placeName || undefined} />
                     </motion.div>
@@ -334,6 +345,12 @@ function AppContent() {
                   >
                     <motion.div variants={itemVariants}>
                       <ISSCard passes={data.iss_passes} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <SatelliteCard
+                        satellites={data.satellites}
+                        onUpgradeClick={() => openUpgradeModal('Satellite Alerts')}
+                      />
                     </motion.div>
                   </motion.div>
                 </Suspense>

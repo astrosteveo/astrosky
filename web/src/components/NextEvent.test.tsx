@@ -59,7 +59,9 @@ describe('NextEvent', () => {
         description: 'Moon and Jupiter appear close together',
         bodies: ['Moon', 'Jupiter']
       }
-    ]
+    ],
+    aurora: null,
+    satellites: null
   }
 
   beforeEach(() => {

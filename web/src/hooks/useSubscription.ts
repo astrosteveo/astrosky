@@ -10,6 +10,8 @@ export interface SubscriptionState {
 
 export interface ProFeatures {
   smartAlerts: boolean
+  auroraAlerts: boolean
+  satelliteAlerts: boolean
   observationPlanner: boolean
   weeklyChallenges: boolean
   unlimitedHistory: boolean
@@ -31,6 +33,8 @@ const STORAGE_KEY = 'astrosky_subscription'
 
 const FREE_FEATURES: ProFeatures = {
   smartAlerts: false,
+  auroraAlerts: false,
+  satelliteAlerts: false,
   observationPlanner: false,
   weeklyChallenges: false,
   unlimitedHistory: false,
@@ -40,6 +44,8 @@ const FREE_FEATURES: ProFeatures = {
 
 const PRO_FEATURES: ProFeatures = {
   smartAlerts: true,
+  auroraAlerts: true,
+  satelliteAlerts: true,
   observationPlanner: true,
   weeklyChallenges: true,
   unlimitedHistory: true,

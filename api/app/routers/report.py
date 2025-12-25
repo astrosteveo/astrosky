@@ -95,12 +95,47 @@ class ObservingConditions(BaseModel):
     summary: str  # Human-readable summary
 
 
+class AuroraForecast(BaseModel):
+    kp_current: float  # Current Kp index (0-9)
+    kp_24h_max: float  # Maximum Kp in next 24 hours
+    geomagnetic_storm: bool  # True if Kp >= 5
+    storm_level: str  # G0 (none) to G5 (extreme)
+    visibility_probability: int  # 0-100 for user's location
+    visible_latitude: float  # Minimum latitude where aurora may be visible
+    best_time: str  # Best viewing time advice
+    activity_level: str  # Quiet, Unsettled, Active, Storm
+    summary: str  # Human-readable summary
+
+
+class SatellitePass(BaseModel):
+    satellite_name: str
+    satellite_type: str  # starlink, station, telescope, other
+    norad_id: int
+    start_time: str  # ISO format
+    duration_minutes: int
+    max_altitude: float  # degrees above horizon
+    start_direction: str
+    end_direction: str
+    brightness: str  # Brilliant!, Bright, Moderate, Faint
+    magnitude: float
+
+
+class SatelliteInfo(BaseModel):
+    total_passes: int
+    starlink_passes: int
+    station_passes: int
+    next_bright_pass: SatellitePass | None
+    passes: list[SatellitePass]
+
+
 class ReportResponse(BaseModel):
     date: datetime
     location: Location
     sun: SunTimes
     moon: MoonInfo
     weather: ObservingConditions | None
+    aurora: AuroraForecast | None
+    satellites: SatelliteInfo | None
     planets: list[PlanetInfo]
     iss_passes: list[ISSPass]
     meteors: list[ShowerInfo]

@@ -10,16 +10,20 @@ from skycli.sources.meteors import get_active_showers
 from skycli.sources.deep_sky import get_visible_dso
 from skycli.sources.events import get_upcoming_events
 from skycli.sources.weather import get_observing_conditions
+from skycli.sources.aurora import get_aurora_forecast
+from skycli.sources.satellites import get_satellite_passes
 
 
 SECTION_MAP = {
     "moon": "moon",
     "planets": "planets",
     "iss": "iss_passes",
+    "satellites": "satellites",
     "meteors": "meteors",
     "deepsky": "deep_sky",
     "events": "events",
     "weather": "weather",
+    "aurora": "aurora",
 }
 
 
@@ -55,6 +59,8 @@ def build_report(
         "sun": sun_times,
         "moon": moon_info,
         "weather": None,
+        "aurora": None,
+        "satellites": None,
         "planets": [],
         "iss_passes": [],
         "meteors": [],
@@ -66,6 +72,10 @@ def build_report(
     if _should_include("weather", only, exclude):
         report["weather"] = get_observing_conditions(lat, lon, date)
 
+    # Aurora forecast
+    if _should_include("aurora", only, exclude):
+        report["aurora"] = get_aurora_forecast(lat, lon)
+
     # Planets
     if _should_include("planets", only, exclude):
         report["planets"] = get_visible_planets(lat, lon, date)
@@ -73,6 +83,10 @@ def build_report(
     # ISS passes
     if _should_include("iss", only, exclude):
         report["iss_passes"] = get_iss_passes(lat, lon, date)
+
+    # Other satellites (Starlink, Hubble, Tiangong)
+    if _should_include("satellites", only, exclude):
+        report["satellites"] = get_satellite_passes(lat, lon)
 
     # Meteor showers
     if _should_include("meteors", only, exclude):
