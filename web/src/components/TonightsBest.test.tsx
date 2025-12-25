@@ -263,6 +263,7 @@ describe('TonightsBest', () => {
             equipment: 'naked eye',
             tip: 'Look below Orion belt',
             altitude: 55,
+            azimuth: 180,
           },
         ],
       }
@@ -274,9 +275,9 @@ describe('TonightsBest', () => {
 
     it('shows multiple DSOs up to limit', () => {
       const dsos = [
-        { id: 'M31', name: 'Andromeda Galaxy', constellation: 'Andromeda', mag: 3.4, size: 178, type: 'galaxy', equipment: 'binoculars', tip: '', altitude: 70 },
-        { id: 'M42', name: 'Orion Nebula', constellation: 'Orion', mag: 4.0, size: 65, type: 'nebula', equipment: 'naked eye', tip: '', altitude: 55 },
-        { id: 'M45', name: 'Pleiades', constellation: 'Taurus', mag: 1.6, size: 110, type: 'cluster', equipment: 'naked eye', tip: '', altitude: 60 },
+        { id: 'M31', name: 'Andromeda Galaxy', constellation: 'Andromeda', mag: 3.4, size: 178, type: 'galaxy', equipment: 'binoculars', tip: '', altitude: 70, azimuth: 45 },
+        { id: 'M42', name: 'Orion Nebula', constellation: 'Orion', mag: 4.0, size: 65, type: 'nebula', equipment: 'naked eye', tip: '', altitude: 55, azimuth: 180 },
+        { id: 'M45', name: 'Pleiades', constellation: 'Taurus', mag: 1.6, size: 110, type: 'cluster', equipment: 'naked eye', tip: '', altitude: 60, azimuth: 90 },
       ]
       const report: SkyReport = { ...baseSkyReport, deep_sky: dsos }
       render(<TonightsBest data={report} />)

@@ -24,6 +24,7 @@ class DSOInfo(TypedDict):
     equipment: str
     tip: str
     altitude: float
+    azimuth: float
 
 
 _ephemeris = None
@@ -73,12 +74,13 @@ def get_visible_dso(lat: float, lon: float, date: datetime, limit: int = DEFAULT
         ra_hours = obj["ra"] / 15.0
         dso = Star(ra_hours=ra_hours, dec_degrees=obj["dec"])
 
-        # Calculate altitude
+        # Calculate altitude and azimuth
         astrometric = observer.at(t).observe(dso)
         apparent = astrometric.apparent()
-        alt, _, _ = apparent.altaz()
+        alt, az, _ = apparent.altaz()
 
         altitude = alt.degrees
+        azimuth = az.degrees
 
         if altitude >= min_altitude:
             visible.append(DSOInfo(
@@ -91,6 +93,7 @@ def get_visible_dso(lat: float, lon: float, date: datetime, limit: int = DEFAULT
                 equipment=obj["equipment"],
                 tip=obj["tip"],
                 altitude=round(altitude, 0),
+                azimuth=round(azimuth, 0),
             ))
 
     # Sort by magnitude (brightest first), then limit
