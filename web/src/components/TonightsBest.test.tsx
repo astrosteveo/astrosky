@@ -25,6 +25,7 @@ const baseSkyReport: SkyReport = {
     moonset: '2025-01-16T08:00:00Z',
   },
   weather: null,
+  aurora: null,
   planets: [],
   iss_passes: [],
   meteors: [],

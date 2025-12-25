@@ -10,6 +10,7 @@ from skycli.sources.meteors import get_active_showers
 from skycli.sources.deep_sky import get_visible_dso
 from skycli.sources.events import get_upcoming_events
 from skycli.sources.weather import get_observing_conditions
+from skycli.sources.aurora import get_aurora_forecast
 
 
 SECTION_MAP = {
@@ -20,6 +21,7 @@ SECTION_MAP = {
     "deepsky": "deep_sky",
     "events": "events",
     "weather": "weather",
+    "aurora": "aurora",
 }
 
 
@@ -55,6 +57,7 @@ def build_report(
         "sun": sun_times,
         "moon": moon_info,
         "weather": None,
+        "aurora": None,
         "planets": [],
         "iss_passes": [],
         "meteors": [],
@@ -65,6 +68,10 @@ def build_report(
     # Weather/observing conditions
     if _should_include("weather", only, exclude):
         report["weather"] = get_observing_conditions(lat, lon, date)
+
+    # Aurora forecast
+    if _should_include("aurora", only, exclude):
+        report["aurora"] = get_aurora_forecast(lat, lon)
 
     # Planets
     if _should_include("planets", only, exclude):

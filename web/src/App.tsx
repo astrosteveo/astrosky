@@ -41,6 +41,7 @@ const SkyChart = lazy(() => import('./components/SkyChart').then(m => ({ default
 const DeepSkyCard = lazy(() => import('./components/DeepSkyCard').then(m => ({ default: m.DeepSkyCard })))
 const MeteorsCard = lazy(() => import('./components/MeteorsCard').then(m => ({ default: m.MeteorsCard })))
 const EventsCard = lazy(() => import('./components/EventsCard').then(m => ({ default: m.EventsCard })))
+const AuroraCard = lazy(() => import('./components/AuroraCard').then(m => ({ default: m.AuroraCard })))
 
 // ISS tab components
 const ISSCard = lazy(() => import('./components/ISSCard').then(m => ({ default: m.ISSCard })))
@@ -310,6 +311,15 @@ function AppContent() {
                     initial="hidden"
                     animate="visible"
                   >
+                    {data.aurora && (
+                      <motion.div variants={itemVariants}>
+                        <AuroraCard
+                          aurora={data.aurora}
+                          userLat={lat || 0}
+                          onUpgradeClick={() => openUpgradeModal('Aurora Alerts')}
+                        />
+                      </motion.div>
+                    )}
                     <motion.div variants={itemVariants}>
                       <DeepSkyCard objects={data.deep_sky} location={location} placeName={placeName || undefined} />
                     </motion.div>

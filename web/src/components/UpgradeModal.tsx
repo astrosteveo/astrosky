@@ -16,6 +16,11 @@ const PRO_FEATURES = [
     description: 'Get notified when conditions are perfect for stargazing',
   },
   {
+    icon: '🌌',
+    name: 'Aurora Alerts',
+    description: 'Get notified when aurora may be visible at your location',
+  },
+  {
     icon: '🎯',
     name: 'Observation Planner',
     description: 'Personalized "what to observe tonight" recommendations',

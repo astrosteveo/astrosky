@@ -77,12 +77,25 @@ export interface ObservingConditions {
   summary: string // Human-readable summary
 }
 
+export interface AuroraForecast {
+  kp_current: number // Current Kp index (0-9)
+  kp_24h_max: number // Maximum Kp in next 24 hours
+  geomagnetic_storm: boolean // True if Kp >= 5
+  storm_level: string // G0 (none) to G5 (extreme)
+  visibility_probability: number // 0-100 for user's location
+  visible_latitude: number // Minimum latitude where aurora may be visible
+  best_time: string // Best viewing time advice
+  activity_level: string // Quiet, Unsettled, Active, Storm
+  summary: string // Human-readable summary
+}
+
 export interface SkyReport {
   date: string
   location: Location
   sun: SunTimes
   moon: MoonInfo
   weather: ObservingConditions | null
+  aurora: AuroraForecast | null
   planets: PlanetInfo[]
   iss_passes: ISSPass[]
   meteors: ShowerInfo[]
