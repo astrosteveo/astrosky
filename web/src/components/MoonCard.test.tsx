@@ -30,9 +30,9 @@ describe('MoonCard', () => {
     expect(screen.getByText('Excellent')).toBeInTheDocument()
   })
 
-  it('renders moon phase SVG', () => {
+  it('renders moon phase viewer', () => {
     render(<MoonCard moon={mockMoon} />)
 
-    expect(screen.getByTestId('moon-phase-svg')).toBeInTheDocument()
+    expect(screen.getByTestId('moon-phase-viewer')).toBeInTheDocument()
   })
 })

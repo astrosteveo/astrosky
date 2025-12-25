@@ -32,8 +32,11 @@ describe('DeepSkyCard', () => {
   it('displays deep sky objects', () => {
     render(<DeepSkyCard objects={mockObjects} />)
 
-    expect(screen.getByText(/M31.*Andromeda Galaxy/)).toBeInTheDocument()
-    expect(screen.getByText(/M42.*Orion Nebula/)).toBeInTheDocument()
+    // New design displays ID and name separately
+    expect(screen.getByText('M31')).toBeInTheDocument()
+    expect(screen.getByText('Andromeda Galaxy')).toBeInTheDocument()
+    expect(screen.getByText('M42')).toBeInTheDocument()
+    expect(screen.getByText('Orion Nebula')).toBeInTheDocument()
   })
 
   it('shows empty state when no objects', () => {
@@ -52,7 +55,8 @@ describe('DeepSkyCard', () => {
   it('displays observing tips', () => {
     render(<DeepSkyCard objects={mockObjects} />)
 
-    expect(screen.getByText('Best viewed from dark skies')).toBeInTheDocument()
-    expect(screen.getByText('Look below Orion belt')).toBeInTheDocument()
+    // New design wraps tips in quotes
+    expect(screen.getByText(/"Best viewed from dark skies"/)).toBeInTheDocument()
+    expect(screen.getByText(/"Look below Orion belt"/)).toBeInTheDocument()
   })
 })

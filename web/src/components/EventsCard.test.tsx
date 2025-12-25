@@ -45,7 +45,10 @@ describe('EventsCard', () => {
   it('displays involved bodies', () => {
     render(<EventsCard events={mockEvents} />)
 
-    expect(screen.getByText('Earth, Moon')).toBeInTheDocument()
-    expect(screen.getByText('Venus, Jupiter')).toBeInTheDocument()
+    // New design displays bodies as individual tags
+    expect(screen.getByText('Earth')).toBeInTheDocument()
+    expect(screen.getByText('Moon')).toBeInTheDocument()
+    expect(screen.getByText('Venus')).toBeInTheDocument()
+    expect(screen.getByText('Jupiter')).toBeInTheDocument()
   })
 })

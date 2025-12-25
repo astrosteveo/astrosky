@@ -35,7 +35,10 @@ describe('PlanetsCard', () => {
   it('displays direction, azimuth, and altitude', () => {
     render(<PlanetsCard planets={mockPlanets} />)
 
-    expect(screen.getByText(/SE \(135°\).*45° alt/)).toBeInTheDocument()
+    // New design displays direction, azimuth, and altitude separately
+    expect(screen.getByText('SE')).toBeInTheDocument()
+    expect(screen.getByText(/Az 135°/)).toBeInTheDocument()
+    expect(screen.getByText(/Alt 45°/)).toBeInTheDocument()
   })
 
   it('shows empty state when no planets visible', () => {

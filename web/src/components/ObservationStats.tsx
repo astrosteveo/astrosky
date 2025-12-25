@@ -156,7 +156,7 @@ export function ObservationStats() {
   // If no observations yet, show a welcome prompt
   if (observations.length === 0) {
     return (
-      <GlassCard glowColor="purple">
+      <GlassCard glowColor="nebula">
         <div className="text-center py-4">
           <div className="text-4xl mb-3">🔭</div>
           <h3 className="font-display text-lg font-semibold text-slate-50 mb-2">
@@ -174,7 +174,7 @@ export function ObservationStats() {
   const messierProgress = (stats.messierCount / 110) * 100
 
   return (
-    <GlassCard glowColor="purple">
+    <GlassCard glowColor="nebula">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <h2 className="font-display text-xl font-semibold text-slate-50">

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import App from './App'
 
 vi.mock('./hooks/useGeolocation', () => ({
@@ -39,11 +39,13 @@ vi.mock('./hooks/useReport', () => ({
 }))
 
 describe('App', () => {
-  it('renders moon card with data', async () => {
+  it('renders tonight tab with sky status', async () => {
     render(<App />)
 
     await waitFor(() => {
-      expect(screen.getByText('Full Moon')).toBeInTheDocument()
+      // Tonight tab is default - look for sky status content
+      expect(screen.getByText('Tonight')).toBeInTheDocument()
+      expect(screen.getByText('Live')).toBeInTheDocument()
     })
   })
 
@@ -52,6 +54,23 @@ describe('App', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/40.71.*-74.01/)).toBeInTheDocument()
+    })
+  })
+
+  it('renders moon card when sky tab is clicked', async () => {
+    render(<App />)
+
+    // Wait for initial render
+    await waitFor(() => {
+      expect(screen.getByText('Sky')).toBeInTheDocument()
+    })
+
+    // Click on Sky tab
+    fireEvent.click(screen.getByText('Sky'))
+
+    // Now moon card should be visible
+    await waitFor(() => {
+      expect(screen.getByText('Full Moon')).toBeInTheDocument()
     })
   })
 })
