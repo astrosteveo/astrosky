@@ -63,7 +63,7 @@ interface TabNavigationProps {
 
 export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
       {/* Blur backdrop */}
       <div className="absolute inset-0 bg-[rgba(5,10,20,0.85)] backdrop-blur-xl border-t border-[rgba(148,163,184,0.1)] transition-all duration-300" />
 

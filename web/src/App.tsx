@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react'
+import { useState, lazy, Suspense, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { StarField } from './components/StarField'
 import { LoadingSkeleton } from './components/LoadingSkeleton'
@@ -17,6 +17,7 @@ import { UpgradeModal, useUpgradeModal } from './components/UpgradeModal'
 import { useSubscriptionContext } from './context/SubscriptionContext'
 import { ProBadge } from './components/ProBadge'
 import { TabNavigation, type TabId } from './components/TabNavigation'
+import { DesktopLayout } from './components/layout/DesktopLayout'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useReport } from './hooks/useReport'
 import { useCurrentTime } from './hooks/useCurrentTime'
@@ -126,6 +127,31 @@ const tabContentVariants = {
   exit: { opacity: 0, y: -8 },
 }
 
+// Helper to get next event info for sidebar widget
+function getNextEventInfo(data: { events?: Array<{ name: string; date: string }> }) {
+  if (!data.events || data.events.length === 0) return null
+  const nextEvent = data.events[0]
+  if (!nextEvent) return null
+
+  const eventDate = new Date(nextEvent.date)
+  const now = new Date()
+  const diffMs = eventDate.getTime() - now.getTime()
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
+
+  let timeStr = ''
+  if (diffDays <= 0) {
+    timeStr = 'Today'
+  } else if (diffDays === 1) {
+    timeStr = 'Tomorrow'
+  } else if (diffDays <= 7) {
+    timeStr = `In ${diffDays} days`
+  } else {
+    timeStr = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
+
+  return { name: nextEvent.name, time: timeStr }
+}
+
 function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('tonight')
   const urlParams = useUrlParams()
@@ -145,37 +171,59 @@ function AppContent() {
   // Location object for passing to cards
   const location = lat !== null && lon !== null ? { lat, lon } : undefined
 
+  // Extract data for desktop sidebar widgets
+  const nextEventInfo = useMemo(() => {
+    if (!data) return null
+    return getNextEventInfo(data)
+  }, [data])
+
   return (
     <div className="min-h-screen relative grain-overlay">
       <StarField />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 py-10 md:py-16">
+      {/* Desktop Layout with Sidebar - only renders sidebar on lg: screens */}
+      <DesktopLayout
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        moonPhase={data?.moon?.phase}
+        moonIllumination={data?.moon?.illumination}
+        cloudCover={data?.weather?.cloud_cover}
+        nextEventName={nextEventInfo?.name}
+        nextEventTime={nextEventInfo?.time}
+      >
+      <div className="relative z-10 max-w-5xl lg:max-w-none xl:max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 xl:px-12 py-10 md:py-16 lg:py-8">
         {/* Modern Header */}
         <motion.header
-          className="mb-10 relative"
+          className="mb-10 lg:mb-6 relative"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
-          {/* Title row with theme toggle */}
-          <div className="flex items-center justify-center gap-3 mb-1">
-            <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
-              <span className="text-[#c9a227] transition-colors">Astro</span>
-              <span className="text-[#f0f4f8] transition-colors">SKY</span>
-            </h1>
-            {isPro && <ProBadge size="md" />}
+          {/* Title row with theme toggle - hidden on desktop (shown in sidebar) */}
+          <div className="flex items-center justify-center lg:justify-between gap-3 mb-1">
+            <div className="flex items-center gap-3 lg:hidden">
+              <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
+                <span className="text-[#c9a227] transition-colors">Astro</span>
+                <span className="text-[#f0f4f8] transition-colors">SKY</span>
+              </h1>
+              {isPro && <ProBadge size="md" />}
+            </div>
+            {/* Desktop: Show Pro badge and theme toggle inline */}
+            <div className="hidden lg:flex items-center gap-3">
+              {isPro && <ProBadge size="md" />}
+            </div>
             <ThemeToggle />
           </div>
 
-          {/* Subtitle */}
-          <p className="text-sm text-[#94a3b8] mb-6 transition-colors text-center">
+          {/* Subtitle - hidden on desktop */}
+          <p className="text-sm text-[#94a3b8] mb-6 transition-colors text-center lg:hidden">
             Your personal observatory
           </p>
 
           {/* Location and time info */}
           {lat && lon && (
             <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-center"
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 text-sm text-center lg:text-left"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -232,7 +280,7 @@ function AppContent() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="space-y-4 pb-24"
+              className="space-y-4 pb-24 lg:pb-8"
             >
               {/* Tonight Tab */}
               {activeTab === 'tonight' && (
@@ -242,37 +290,42 @@ function AppContent() {
                   initial="hidden"
                   animate="visible"
                 >
-                  <motion.div variants={itemVariants}>
+                  {/* Full-width status banner */}
+                  <motion.div variants={itemVariants} className="desktop-full-width">
                     <CurrentSkyStatus sun={data.sun} />
                   </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <ObservingConditionsCard weather={data.weather} moon={data.moon} />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <NextEvent data={data} />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <TonightsBest data={data} />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <SmartAlertsCard
-                      report={data}
-                      onUpgradeClick={() => openUpgradeModal('Smart Clear Sky Alerts')}
-                    />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <ObservationPlannerCard
-                      report={data}
-                      onUpgradeClick={() => openUpgradeModal('Observation Planner')}
-                    />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <LiveCountdowns
-                      sun={data.sun}
-                      issPass={data.iss_passes[0]}
-                      meteorShower={data.meteors.find(m => m.is_peak)}
-                    />
-                  </motion.div>
+
+                  {/* Desktop grid for main content */}
+                  <div className="desktop-grid">
+                    <motion.div variants={itemVariants}>
+                      <ObservingConditionsCard weather={data.weather} moon={data.moon} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <NextEvent data={data} />
+                    </motion.div>
+                    <motion.div variants={itemVariants} className="desktop-full-width xl:col-span-1 2xl:col-span-1">
+                      <TonightsBest data={data} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <SmartAlertsCard
+                        report={data}
+                        onUpgradeClick={() => openUpgradeModal('Smart Clear Sky Alerts')}
+                      />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <ObservationPlannerCard
+                        report={data}
+                        onUpgradeClick={() => openUpgradeModal('Observation Planner')}
+                      />
+                    </motion.div>
+                    <motion.div variants={itemVariants} className="desktop-full-width">
+                      <LiveCountdowns
+                        sun={data.sun}
+                        issPass={data.iss_passes[0]}
+                        meteorShower={data.meteors.find(m => m.is_peak)}
+                      />
+                    </motion.div>
+                  </div>
                 </motion.div>
               )}
 
@@ -285,15 +338,21 @@ function AppContent() {
                     initial="hidden"
                     animate="visible"
                   >
-                    <motion.div variants={itemVariants}>
-                      <SkyChart planets={data.planets} deepSky={data.deep_sky} />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <MoonCard moon={data.moon} location={location} placeName={placeName || undefined} />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <SunTimesCard sun={data.sun} />
-                    </motion.div>
+                    {/* Desktop: SkyChart prominent on left, info on right */}
+                    <div className="desktop-split">
+                      <motion.div variants={itemVariants} className="sky-chart-desktop xl:order-1">
+                        <SkyChart planets={data.planets} deepSky={data.deep_sky} />
+                      </motion.div>
+                      <div className="space-y-4 xl:order-2">
+                        <motion.div variants={itemVariants}>
+                          <MoonCard moon={data.moon} location={location} placeName={placeName || undefined} />
+                        </motion.div>
+                        <motion.div variants={itemVariants}>
+                          <SunTimesCard sun={data.sun} />
+                        </motion.div>
+                      </div>
+                    </div>
+                    {/* Planets card full width below */}
                     <motion.div variants={itemVariants}>
                       <PlanetsCard planets={data.planets} location={location} placeName={placeName || undefined} />
                     </motion.div>
@@ -310,15 +369,19 @@ function AppContent() {
                     initial="hidden"
                     animate="visible"
                   >
-                    <motion.div variants={itemVariants}>
+                    {/* Deep Sky objects full width */}
+                    <motion.div variants={itemVariants} className="desktop-full-width">
                       <DeepSkyCard objects={data.deep_sky} location={location} placeName={placeName || undefined} />
                     </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <MeteorsCard meteors={data.meteors} />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <EventsCard events={data.events} />
-                    </motion.div>
+                    {/* Meteors and Events side by side on desktop */}
+                    <div className="desktop-split">
+                      <motion.div variants={itemVariants}>
+                        <MeteorsCard meteors={data.meteors} />
+                      </motion.div>
+                      <motion.div variants={itemVariants}>
+                        <EventsCard events={data.events} />
+                      </motion.div>
+                    </div>
                   </motion.div>
                 </Suspense>
               )}
@@ -348,30 +411,37 @@ function AppContent() {
                     initial="hidden"
                     animate="visible"
                   >
-                    <motion.div variants={itemVariants}>
+                    {/* Session notes full width */}
+                    <motion.div variants={itemVariants} className="desktop-full-width">
                       <SessionNotesCard location={location ? { ...location, placeName: placeName || undefined } : undefined} />
                     </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <ObservationStats />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <AchievementsCard />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <WeeklyChallengesCard
-                        onUpgradeClick={() => openUpgradeModal('Weekly Challenges')}
-                      />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <ObservationAnalytics />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <EquipmentProfilesCard />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <NotificationSettings />
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
+
+                    {/* Stats and achievements in grid */}
+                    <div className="desktop-grid">
+                      <motion.div variants={itemVariants}>
+                        <ObservationStats />
+                      </motion.div>
+                      <motion.div variants={itemVariants}>
+                        <AchievementsCard />
+                      </motion.div>
+                      <motion.div variants={itemVariants}>
+                        <WeeklyChallengesCard
+                          onUpgradeClick={() => openUpgradeModal('Weekly Challenges')}
+                        />
+                      </motion.div>
+                      <motion.div variants={itemVariants}>
+                        <ObservationAnalytics />
+                      </motion.div>
+                      <motion.div variants={itemVariants}>
+                        <EquipmentProfilesCard />
+                      </motion.div>
+                      <motion.div variants={itemVariants}>
+                        <NotificationSettings />
+                      </motion.div>
+                    </div>
+
+                    {/* Nearby observations full width */}
+                    <motion.div variants={itemVariants} className="desktop-full-width">
                       <NearbyObservationsCard location={location} />
                     </motion.div>
                   </motion.div>
@@ -381,8 +451,9 @@ function AppContent() {
           </AnimatePresence>
         )}
       </div>
+      </DesktopLayout>
 
-      {/* Bottom Tab Navigation */}
+      {/* Bottom Tab Navigation - hidden on lg: screens via CSS */}
       {data && <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />}
 
       {/* PWA Install Prompt */}
