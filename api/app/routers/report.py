@@ -74,6 +74,7 @@ class DSOInfo(BaseModel):
     equipment: str
     tip: str
     altitude: float
+    azimuth: float
 
 
 class AstroEvent(BaseModel):
