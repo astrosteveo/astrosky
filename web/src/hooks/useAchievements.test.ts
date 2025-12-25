@@ -176,9 +176,10 @@ describe('useAchievements', () => {
   })
 
   it('tracks late night observations', () => {
+    // Use local time (no 'Z' suffix) so getHours() returns expected values (0-3am)
     const observations = Array.from({ length: 10 }, (_, i) =>
       createObservation({
-        timestamp: new Date(`2025-06-15T0${i % 4}:00:00Z`).toISOString(),
+        timestamp: new Date(`2025-06-15T0${i % 4}:00:00`).toISOString(),
       })
     )
     const { result } = renderHook(() => useAchievements(observations))

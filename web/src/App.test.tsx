@@ -52,8 +52,9 @@ describe('App', () => {
     render(<App />)
 
     await waitFor(() => {
-      // Tonight tab is default - look for sky status content
-      expect(screen.getByText('Tonight')).toBeInTheDocument()
+      // Tonight tab is default - may appear in both mobile nav and desktop sidebar
+      const tonightElements = screen.getAllByText('Tonight')
+      expect(tonightElements.length).toBeGreaterThan(0)
       expect(screen.getByText('Live')).toBeInTheDocument()
     })
   })
@@ -69,13 +70,15 @@ describe('App', () => {
   it('renders moon card when sky tab is clicked', async () => {
     render(<App />)
 
-    // Wait for initial render
+    // Wait for initial render - Sky appears in both mobile nav and desktop sidebar
     await waitFor(() => {
-      expect(screen.getByText('Sky')).toBeInTheDocument()
+      const skyElements = screen.getAllByText(/Sky/)
+      expect(skyElements.length).toBeGreaterThan(0)
     })
 
-    // Click on Sky tab
-    fireEvent.click(screen.getByText('Sky'))
+    // Click on Sky tab (use the first one - mobile nav button)
+    const skyButtons = screen.getAllByText(/Sky/)
+    fireEvent.click(skyButtons[0])
 
     // Now moon card should be visible
     await waitFor(() => {
