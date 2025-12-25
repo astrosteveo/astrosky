@@ -1,8 +1,40 @@
-import type { ObservingConditions } from '../types'
+import type { ObservingConditions, MoonInfo } from '../types'
 import { GlassCard, StatDisplay, CardDivider } from './GlassCard'
 
 interface ObservingConditionsCardProps {
   weather: ObservingConditions | null
+  moon?: MoonInfo | null
+}
+
+// Bortle scale descriptions and colors
+const bortleScale: Record<number, { name: string; color: string; description: string }> = {
+  1: { name: 'Excellent Dark', color: '#000000', description: 'Zodiacal light, gegenschein visible' },
+  2: { name: 'Typical Dark', color: '#1a1a2e', description: 'Airglow visible, M33 easy naked eye' },
+  3: { name: 'Rural Sky', color: '#2d3a4a', description: 'Some light pollution on horizon' },
+  4: { name: 'Rural/Suburban', color: '#4a5568', description: 'Light domes visible in several directions' },
+  5: { name: 'Suburban Sky', color: '#6b7280', description: 'Milky Way very weak or invisible' },
+  6: { name: 'Bright Suburban', color: '#8b95a5', description: 'Milky Way only visible near zenith' },
+  7: { name: 'Suburban/Urban', color: '#a8b5c4', description: 'Sky grayish-white, Milky Way invisible' },
+  8: { name: 'City Sky', color: '#c4cdd8', description: 'Sky glows white, few constellations' },
+  9: { name: 'Inner City', color: '#e0e5eb', description: 'Only Moon, planets, few stars visible' },
+}
+
+// Estimate Bortle scale from moon illumination and cloud cover
+function estimateBortleScale(moonIllumination: number, cloudCover: number): number {
+  // Base estimate from moon illumination
+  // Full moon (100%) pushes towards Bortle 6-7, new moon (0%) allows Bortle 3-4
+  // Note: True Bortle depends on location light pollution which we don't have
+  let bortle = 4 // Base for typical suburban location
+
+  // Moon impact: full moon adds ~3 levels, new moon subtracts ~1
+  bortle += Math.round((moonIllumination / 100) * 3)
+
+  // Cloud cover impact: high clouds make things worse
+  if (cloudCover > 50) bortle += 1
+  if (cloudCover > 80) bortle += 1
+
+  // Clamp to valid range
+  return Math.max(1, Math.min(9, bortle))
 }
 
 const conditionConfig: Record<string, { color: string; icon: string; bg: string }> = {
@@ -13,13 +45,19 @@ const conditionConfig: Record<string, { color: string; icon: string; bg: string 
   Unknown: { color: '#94a3b8', icon: '❓', bg: 'rgba(148,163,184,0.1)' },
 }
 
-export function ObservingConditionsCard({ weather }: ObservingConditionsCardProps) {
+export function ObservingConditionsCard({ weather, moon }: ObservingConditionsCardProps) {
   if (!weather) {
     return null
   }
 
   const config = conditionConfig[weather.condition] || conditionConfig.Unknown
   const isDataAvailable = weather.cloud_cover >= 0
+
+  // Calculate estimated Bortle scale
+  const moonIllumination = moon?.illumination ?? 50
+  const cloudCover = weather.cloud_cover >= 0 ? weather.cloud_cover : 50
+  const estimatedBortle = estimateBortleScale(moonIllumination, cloudCover)
+  const bortleInfo = bortleScale[estimatedBortle]
 
   return (
     <GlassCard
@@ -47,6 +85,42 @@ export function ObservingConditionsCard({ weather }: ObservingConditionsCardProp
       <p className="text-sm text-[#c4baa6] leading-relaxed mb-4">
         {weather.summary}
       </p>
+
+      {/* Bortle Scale Indicator */}
+      <div className="mb-4 p-3 rounded-lg bg-[rgba(201,162,39,0.03)] border border-[#c9a227]/10">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs text-[#c4baa6]/70 uppercase tracking-wider">Est. Sky Darkness</span>
+          <span className="font-mono text-sm font-semibold text-[#c9a227]">
+            Bortle {estimatedBortle}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 mb-2">
+          {/* Bortle scale bar */}
+          <div className="flex-1 h-2 rounded-full bg-[#1e293b] overflow-hidden flex">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
+              <div
+                key={level}
+                className="flex-1 transition-opacity duration-300"
+                style={{
+                  backgroundColor: bortleScale[level].color,
+                  opacity: level <= estimatedBortle ? 1 : 0.2,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium" style={{ color: estimatedBortle <= 4 ? '#34d399' : estimatedBortle <= 6 ? '#c9a227' : '#e25822' }}>
+            {bortleInfo.name}
+          </span>
+          <span className="text-xs text-[#c4baa6]/60">
+            {estimatedBortle <= 3 ? '🌌' : estimatedBortle <= 5 ? '🌃' : '🏙️'}
+          </span>
+        </div>
+        <p className="text-xs text-[#c4baa6]/50 mt-1">
+          {bortleInfo.description}
+        </p>
+      </div>
 
       {isDataAvailable && (
         <>
