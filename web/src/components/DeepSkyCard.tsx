@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import { GlassCard, CardDivider } from './GlassCard'
 import { ObservationButton } from './ObservationButton'
 import { useObservationsContext } from '../context/ObservationsContext'
+import { useEquipmentContext } from '../context/EquipmentContext'
+import { canViewWithEquipment } from '../types/equipment'
 import type { EquipmentType } from '../types/observations'
 
 interface DeepSkyCardProps {
@@ -29,14 +31,29 @@ const equipmentConfig: Record<string, { icon: string; color: string }> = {
 
 export function DeepSkyCard({ objects, location, placeName }: DeepSkyCardProps) {
   const { addObservation, hasObserved, getObservationsForObject } = useObservationsContext()
+  const { equipment, getMaxAperture } = useEquipmentContext()
   const [magFilter, setMagFilter] = useState<MagnitudeFilter>('all')
   const [groupByConstellation, setGroupByConstellation] = useState(false)
+  const [showOnlyViewable, setShowOnlyViewable] = useState(false)
 
-  // Filter objects by magnitude
+  const maxAperture = getMaxAperture()
+  const hasEquipment = equipment.length > 0
+
+  // Filter objects by magnitude and equipment capability
   const filteredObjects = useMemo(() => {
     const [min, max] = magnitudeFilters[magFilter].range
-    return objects.filter(obj => obj.mag > min && obj.mag <= max)
-  }, [objects, magFilter])
+    let filtered = objects.filter(obj => obj.mag > min && obj.mag <= max)
+
+    // Filter by equipment capability if enabled
+    if (showOnlyViewable && hasEquipment) {
+      filtered = filtered.filter(obj => {
+        const { canView } = canViewWithEquipment(obj.equipment, maxAperture)
+        return canView
+      })
+    }
+
+    return filtered
+  }, [objects, magFilter, showOnlyViewable, hasEquipment, maxAperture])
 
   // Group objects by constellation
   const groupedObjects = useMemo(() => {
@@ -126,6 +143,27 @@ export function DeepSkyCard({ objects, location, placeName }: DeepSkyCardProps) 
           <span>⭐</span>
           <span>Group by Constellation</span>
         </button>
+
+        {/* Equipment Filter Toggle (only show if user has saved equipment) */}
+        {hasEquipment && (
+          <>
+            <div className="h-4 w-px bg-[#c9a227]/20 mx-1" />
+            <button
+              onClick={() => setShowOnlyViewable(!showOnlyViewable)}
+              className={`
+                px-2.5 py-1 rounded-lg text-xs font-mono transition-all
+                flex items-center gap-1.5
+                ${showOnlyViewable
+                  ? 'bg-[#4ecdc4]/20 text-[#4ecdc4] border border-[#4ecdc4]/40'
+                  : 'bg-[#1e293b]/50 text-[#c4baa6]/70 border border-transparent hover:border-[#4ecdc4]/20'
+                }
+              `}
+            >
+              <span>🔭</span>
+              <span>My Gear</span>
+            </button>
+          </>
+        )}
       </div>
 
       {filteredObjects.length === 0 ? (
