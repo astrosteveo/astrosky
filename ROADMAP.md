@@ -2,6 +2,16 @@
 
 ## Recently Completed
 
+### v1.10 - Social Media Export
+- [x] Platform-specific text formatters for Twitter, Instagram, Threads, Bluesky
+- [x] Twitter/X intent URL integration - Opens with pre-filled post
+- [x] Bluesky intent URL integration - Opens with pre-filled post
+- [x] Instagram-optimized square image (1080x1080) with stats visualization
+- [x] Threads support with clipboard copy and app redirect
+- [x] Platform-appropriate hashtags and character limits
+- [x] Emoji-enhanced planet symbols in social posts
+- [x] 13 tests for ShareObservations component
+
 ### v1.9 - Sky Chart Integration
 - [x] Interactive polar projection sky chart - Center = zenith, edge = horizon
 - [x] Planet markers with color-coded visualization
@@ -76,7 +86,7 @@
 
 ### Medium Priority
 - [x] **Sky chart integration** - Interactive star map with object positions ✓ v1.9
-- [ ] **Export to social media** - Generate formatted posts for Twitter/Instagram
+- [x] **Export to social media** - Generate formatted posts for Twitter/Instagram ✓ v1.10
 
 ### Low Priority / Future Ideas
 - [ ] **Social features** - Nearby observers, shared sightings
