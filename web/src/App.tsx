@@ -1,23 +1,13 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { StarField } from './components/StarField'
-import { MoonCard } from './components/MoonCard'
-import { SunTimesCard } from './components/SunTimesCard'
-import { PlanetsCard } from './components/PlanetsCard'
-import { ISSCard } from './components/ISSCard'
-import { MeteorsCard } from './components/MeteorsCard'
-import { DeepSkyCard } from './components/DeepSkyCard'
-import { EventsCard } from './components/EventsCard'
 import { LoadingSkeleton } from './components/LoadingSkeleton'
 import { InstallPrompt } from './components/InstallPrompt'
 import { CurrentSkyStatus } from './components/CurrentSkyStatus'
 import { NextEvent } from './components/NextEvent'
 import { LiveCountdowns } from './components/LiveCountdowns'
 import { ObservingConditionsCard } from './components/ObservingConditionsCard'
-import { ObservationStats } from './components/ObservationStats'
-import { ObservationAnalytics } from './components/ObservationAnalytics'
 import { TonightsBest } from './components/TonightsBest'
-import { NearbyObservationsCard } from './components/NearbyObservationsCard'
 import { WelcomeModal } from './components/WelcomeModal'
 import { ThemeToggle } from './components/ThemeToggle'
 import { TabNavigation, type TabId } from './components/TabNavigation'
@@ -30,10 +20,42 @@ import { ObservationsProvider } from './context/ObservationsContext'
 import { NotificationsProvider } from './context/NotificationsContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { NotificationSettings } from './components/NotificationSettings'
-import { AchievementsCard } from './components/AchievementsCard'
-import { EquipmentProfilesCard } from './components/EquipmentProfilesCard'
 import { EquipmentProvider } from './context/EquipmentContext'
+
+// Lazy-loaded components for less-used tabs to reduce initial bundle size
+// Sky tab components
+const MoonCard = lazy(() => import('./components/MoonCard').then(m => ({ default: m.MoonCard })))
+const SunTimesCard = lazy(() => import('./components/SunTimesCard').then(m => ({ default: m.SunTimesCard })))
+const PlanetsCard = lazy(() => import('./components/PlanetsCard').then(m => ({ default: m.PlanetsCard })))
+
+// Deep Sky tab components
+const DeepSkyCard = lazy(() => import('./components/DeepSkyCard').then(m => ({ default: m.DeepSkyCard })))
+const MeteorsCard = lazy(() => import('./components/MeteorsCard').then(m => ({ default: m.MeteorsCard })))
+const EventsCard = lazy(() => import('./components/EventsCard').then(m => ({ default: m.EventsCard })))
+
+// ISS tab components
+const ISSCard = lazy(() => import('./components/ISSCard').then(m => ({ default: m.ISSCard })))
+
+// Log tab components
+const ObservationStats = lazy(() => import('./components/ObservationStats').then(m => ({ default: m.ObservationStats })))
+const ObservationAnalytics = lazy(() => import('./components/ObservationAnalytics').then(m => ({ default: m.ObservationAnalytics })))
+const NearbyObservationsCard = lazy(() => import('./components/NearbyObservationsCard').then(m => ({ default: m.NearbyObservationsCard })))
+const NotificationSettings = lazy(() => import('./components/NotificationSettings').then(m => ({ default: m.NotificationSettings })))
+const AchievementsCard = lazy(() => import('./components/AchievementsCard').then(m => ({ default: m.AchievementsCard })))
+const EquipmentProfilesCard = lazy(() => import('./components/EquipmentProfilesCard').then(m => ({ default: m.EquipmentProfilesCard })))
+
+// Minimal loading placeholder for lazy components
+function LazyLoadingFallback() {
+  return (
+    <div className="observatory-card p-6 animate-pulse">
+      <div className="h-4 bg-[#c9a227]/10 rounded w-1/3 mb-4" />
+      <div className="space-y-3">
+        <div className="h-3 bg-[#c9a227]/10 rounded w-full" />
+        <div className="h-3 bg-[#c9a227]/10 rounded w-2/3" />
+      </div>
+    </div>
+  )
+}
 
 // Validate latitude is within valid range [-90, 90]
 function isValidLatitude(lat: number): boolean {
@@ -231,85 +253,93 @@ function AppContent() {
 
               {/* Sky Tab */}
               {activeTab === 'sky' && (
-                <motion.div
-                  className="space-y-4"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <motion.div variants={itemVariants}>
-                    <MoonCard moon={data.moon} location={location} placeName={placeName || undefined} />
+                <Suspense fallback={<LazyLoadingFallback />}>
+                  <motion.div
+                    className="space-y-4"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <motion.div variants={itemVariants}>
+                      <MoonCard moon={data.moon} location={location} placeName={placeName || undefined} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <SunTimesCard sun={data.sun} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <PlanetsCard planets={data.planets} location={location} placeName={placeName || undefined} />
+                    </motion.div>
                   </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <SunTimesCard sun={data.sun} />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <PlanetsCard planets={data.planets} location={location} placeName={placeName || undefined} />
-                  </motion.div>
-                </motion.div>
+                </Suspense>
               )}
 
               {/* Deep Sky Tab */}
               {activeTab === 'deepsky' && (
-                <motion.div
-                  className="space-y-4"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <motion.div variants={itemVariants}>
-                    <DeepSkyCard objects={data.deep_sky} location={location} placeName={placeName || undefined} />
+                <Suspense fallback={<LazyLoadingFallback />}>
+                  <motion.div
+                    className="space-y-4"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <motion.div variants={itemVariants}>
+                      <DeepSkyCard objects={data.deep_sky} location={location} placeName={placeName || undefined} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <MeteorsCard meteors={data.meteors} />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <EventsCard events={data.events} />
+                    </motion.div>
                   </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <MeteorsCard meteors={data.meteors} />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <EventsCard events={data.events} />
-                  </motion.div>
-                </motion.div>
+                </Suspense>
               )}
 
               {/* ISS Tab */}
               {activeTab === 'iss' && (
-                <motion.div
-                  className="space-y-4"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <motion.div variants={itemVariants}>
-                    <ISSCard passes={data.iss_passes} />
+                <Suspense fallback={<LazyLoadingFallback />}>
+                  <motion.div
+                    className="space-y-4"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <motion.div variants={itemVariants}>
+                      <ISSCard passes={data.iss_passes} />
+                    </motion.div>
                   </motion.div>
-                </motion.div>
+                </Suspense>
               )}
 
               {/* Log Tab */}
               {activeTab === 'log' && (
-                <motion.div
-                  className="space-y-4"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <motion.div variants={itemVariants}>
-                    <ObservationStats />
+                <Suspense fallback={<LazyLoadingFallback />}>
+                  <motion.div
+                    className="space-y-4"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <motion.div variants={itemVariants}>
+                      <ObservationStats />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <AchievementsCard />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <ObservationAnalytics />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <EquipmentProfilesCard />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <NotificationSettings />
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <NearbyObservationsCard location={location} />
+                    </motion.div>
                   </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <AchievementsCard />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <ObservationAnalytics />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <EquipmentProfilesCard />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <NotificationSettings />
-                  </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <NearbyObservationsCard location={location} />
-                  </motion.div>
-                </motion.div>
+                </Suspense>
               )}
             </motion.div>
           </AnimatePresence>

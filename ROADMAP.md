@@ -2,6 +2,13 @@
 
 ## Recently Completed
 
+### v1.7 - Technical Debt Cleanup
+- [x] TonightsBest component tests - 18 comprehensive tests for recommendation logic
+- [x] Theme cycling tests - 28 tests for ThemeContext and ThemeToggle components
+- [x] Lazy-loading for tabs - Sky, Deep Sky, ISS, and Log tabs load on demand
+- [x] Bundle size optimization - 33% reduction in main bundle (118KB → 77KB gzip)
+- [x] Vendor chunk splitting - React and Framer Motion in separate cacheable chunks
+
 ### v1.6 - Equipment Profiles
 - [x] Equipment profile management - Save binoculars and telescopes
 - [x] Quick presets - 16 common configurations from 7x35 binoculars to 12" Dobsonians
@@ -64,10 +71,10 @@
 ---
 
 ## Technical Debt
-- [ ] Add tests for TonightsBest component
-- [ ] Add tests for theme cycling behavior
-- [ ] Consider lazy-loading for less-used tabs
-- [ ] Optimize bundle size (analyze with vite-bundle-visualizer)
+- [x] Add tests for TonightsBest component ✓ v1.7
+- [x] Add tests for theme cycling behavior ✓ v1.7
+- [x] Consider lazy-loading for less-used tabs ✓ v1.7
+- [x] Optimize bundle size (analyze with vite-bundle-visualizer) ✓ v1.7
 
 ---
 
