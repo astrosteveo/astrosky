@@ -103,6 +103,7 @@
 - [x] Add tests for theme cycling behavior ✓ v1.7
 - [x] Consider lazy-loading for less-used tabs ✓ v1.7
 - [x] Optimize bundle size (analyze with vite-bundle-visualizer) ✓ v1.7
+- [ ] **API/Frontend type sync** - Auto-generate TypeScript types from FastAPI OpenAPI spec (use `openapi-typescript`) to prevent API model mismatches like the missing DSO azimuth field
 
 ---
 
