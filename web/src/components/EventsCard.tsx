@@ -6,6 +6,58 @@ interface EventsCardProps {
   events: AstroEvent[]
 }
 
+// Generate Google Calendar URL
+function getGoogleCalendarUrl(event: AstroEvent): string {
+  const date = new Date(event.date)
+  // Format: YYYYMMDDTHHMMSSZ
+  const formatDate = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
+
+  // Event duration: 2 hours by default
+  const endDate = new Date(date.getTime() + 2 * 60 * 60 * 1000)
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `🌌 ${event.title}`,
+    dates: `${formatDate(date)}/${formatDate(endDate)}`,
+    details: `${event.description}\n\nCelestial bodies involved: ${event.bodies.join(', ')}\n\nEvent type: ${event.type}\n\n🔭 via AstroSky`,
+    ctz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  })
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`
+}
+
+// Generate .ics file content
+function generateIcsFile(event: AstroEvent): void {
+  const date = new Date(event.date)
+  const endDate = new Date(date.getTime() + 2 * 60 * 60 * 1000)
+
+  // Format: YYYYMMDDTHHMMSSZ
+  const formatDate = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
+
+  const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AstroSky//Celestial Events//EN
+BEGIN:VEVENT
+UID:${Date.now()}@astrosky.app
+DTSTAMP:${formatDate(new Date())}
+DTSTART:${formatDate(date)}
+DTEND:${formatDate(endDate)}
+SUMMARY:🌌 ${event.title}
+DESCRIPTION:${event.description}\\n\\nCelestial bodies: ${event.bodies.join(', ')}\\n\\nEvent type: ${event.type}\\n\\n🔭 via AstroSky
+END:VEVENT
+END:VCALENDAR`
+
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `${event.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.ics`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
 const eventTypeConfig: Record<string, { color: string; icon: string }> = {
   eclipse: { color: '#a855f7', icon: '🌑' },
   conjunction: { color: '#fbbf24', icon: '⚹' },
@@ -123,6 +175,27 @@ export function EventsCard({ events }: EventsCardProps) {
                         {body}
                       </span>
                     ))}
+                  </div>
+
+                  {/* Add to Calendar buttons */}
+                  <div className="flex items-center gap-2 mt-3 pt-2 border-t border-[#c9a227]/10">
+                    <span className="text-xs text-[#c4baa6]/50">Add to calendar:</span>
+                    <a
+                      href={getGoogleCalendarUrl(event)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-mono px-2 py-1 rounded bg-[#4285f4]/10 text-[#4285f4] hover:bg-[#4285f4]/20 transition-colors flex items-center gap-1"
+                    >
+                      <span>📅</span>
+                      <span>Google</span>
+                    </a>
+                    <button
+                      onClick={() => generateIcsFile(event)}
+                      className="text-xs font-mono px-2 py-1 rounded bg-[#34d399]/10 text-[#34d399] hover:bg-[#34d399]/20 transition-colors flex items-center gap-1"
+                    >
+                      <span>📥</span>
+                      <span>.ics</span>
+                    </button>
                   </div>
                 </div>
               </div>

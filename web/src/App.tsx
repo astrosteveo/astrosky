@@ -207,7 +207,7 @@ function AppContent() {
                     <CurrentSkyStatus sun={data.sun} />
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <ObservingConditionsCard weather={data.weather} />
+                    <ObservingConditionsCard weather={data.weather} moon={data.moon} />
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <NextEvent data={data} />

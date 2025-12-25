@@ -14,14 +14,65 @@ interface PlanetsCardProps {
 }
 
 // Planet visual configurations
-const planetConfig: Record<string, { color: string; size: number; ring?: boolean; glow: string }> = {
-  Mercury: { color: '#94a3b8', size: 6, glow: 'rgba(148, 163, 184, 0.4)' },
-  Venus: { color: '#fef3c7', size: 10, glow: 'rgba(254, 243, 199, 0.5)' },
-  Mars: { color: '#e25822', size: 8, glow: 'rgba(226, 88, 34, 0.4)' },
-  Jupiter: { color: '#fed7aa', size: 14, glow: 'rgba(254, 215, 170, 0.4)' },
-  Saturn: { color: '#fde68a', size: 12, ring: true, glow: 'rgba(253, 230, 138, 0.4)' },
-  Uranus: { color: '#a5f3fc', size: 10, glow: 'rgba(165, 243, 252, 0.4)' },
-  Neptune: { color: '#93c5fd', size: 10, glow: 'rgba(147, 197, 253, 0.4)' },
+const planetConfig: Record<string, { color: string; size: number; ring?: boolean; glow: string; baseMag: number }> = {
+  Mercury: { color: '#94a3b8', size: 6, glow: 'rgba(148, 163, 184, 0.4)', baseMag: 0 },
+  Venus: { color: '#fef3c7', size: 10, glow: 'rgba(254, 243, 199, 0.5)', baseMag: -4 },
+  Mars: { color: '#e25822', size: 8, glow: 'rgba(226, 88, 34, 0.4)', baseMag: 0.5 },
+  Jupiter: { color: '#fed7aa', size: 14, glow: 'rgba(254, 215, 170, 0.4)', baseMag: -2 },
+  Saturn: { color: '#fde68a', size: 12, ring: true, glow: 'rgba(253, 230, 138, 0.4)', baseMag: 0.5 },
+  Uranus: { color: '#a5f3fc', size: 10, glow: 'rgba(165, 243, 252, 0.4)', baseMag: 5.5 },
+  Neptune: { color: '#93c5fd', size: 10, glow: 'rgba(147, 197, 253, 0.4)', baseMag: 7.8 },
+}
+
+// Calculate visibility rating (1-5 stars) based on altitude, time remaining, and brightness
+function getVisibilityRating(planet: PlanetInfo, now: Date): { stars: number; label: string; color: string } {
+  const config = planetConfig[planet.name]
+  let score = 0
+
+  // Altitude score (0-40 points) - higher is better, peaks around 45-60°
+  const altScore = planet.altitude >= 45 ? 40 :
+                   planet.altitude >= 30 ? 35 :
+                   planet.altitude >= 20 ? 25 :
+                   planet.altitude >= 10 ? 15 : 5
+  score += altScore
+
+  // Time remaining score (0-30 points)
+  if (planet.set_time) {
+    const setTime = new Date(planet.set_time)
+    const hoursRemaining = (setTime.getTime() - now.getTime()) / (1000 * 60 * 60)
+    const timeScore = hoursRemaining >= 4 ? 30 :
+                      hoursRemaining >= 2 ? 25 :
+                      hoursRemaining >= 1 ? 15 :
+                      hoursRemaining >= 0.5 ? 8 : 0
+    score += timeScore
+  } else {
+    score += 20 // No set time means it's up all night
+  }
+
+  // Brightness score (0-30 points) - brighter planets easier to see
+  const magScore = config ? (
+    config.baseMag <= -3 ? 30 :
+    config.baseMag <= -1 ? 25 :
+    config.baseMag <= 1 ? 20 :
+    config.baseMag <= 4 ? 10 : 5
+  ) : 15
+  score += magScore
+
+  // Convert to 1-5 star rating
+  const stars = score >= 85 ? 5 :
+                score >= 70 ? 4 :
+                score >= 50 ? 3 :
+                score >= 30 ? 2 : 1
+
+  const labels: Record<number, { label: string; color: string }> = {
+    5: { label: 'Excellent', color: '#34d399' },
+    4: { label: 'Great', color: '#4ecdc4' },
+    3: { label: 'Good', color: '#c9a227' },
+    2: { label: 'Fair', color: '#fbbf24' },
+    1: { label: 'Challenging', color: '#e25822' },
+  }
+
+  return { stars, ...labels[stars] }
 }
 
 // Planet visual component
@@ -113,6 +164,7 @@ export function PlanetsCard({ planets, location, placeName }: PlanetsCardProps) 
           const objectId = `planet-${planet.name.toLowerCase()}`
           const observed = hasObserved(objectId)
           const count = getObservationsForObject(objectId).length
+          const visibility = getVisibilityRating(planet, now)
 
           return (
             <motion.div
@@ -133,6 +185,14 @@ export function PlanetsCard({ planets, location, placeName }: PlanetsCardProps) 
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-display text-lg font-semibold text-[#f5f0e1]">
                       {planet.name}
+                    </span>
+                    {/* Visibility rating */}
+                    <span
+                      className="text-xs font-mono px-1.5 py-0.5 rounded flex items-center gap-1"
+                      style={{ backgroundColor: `${visibility.color}15`, color: visibility.color }}
+                    >
+                      {'★'.repeat(visibility.stars)}{'☆'.repeat(5 - visibility.stars)}
+                      <span className="ml-0.5 opacity-80">{visibility.label}</span>
                     </span>
                     {observed && (
                       <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#34d399]/10 text-[#34d399] border border-[#34d399]/20">
