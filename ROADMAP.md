@@ -2,6 +2,16 @@
 
 ## Recently Completed
 
+### v1.9 - Sky Chart Integration
+- [x] Interactive polar projection sky chart - Center = zenith, edge = horizon
+- [x] Planet markers with color-coded visualization
+- [x] Deep sky object markers with type-based colors (galaxy, nebula, cluster)
+- [x] Filter toggles for planets and DSO visibility
+- [x] Click-to-select with detailed tooltips (alt/az, magnitude, description)
+- [x] Cardinal direction labels (N/E/S/W) and zenith marker
+- [x] Azimuth data added to backend DSO API response
+- [x] 16 comprehensive tests for SkyChart component
+
 ### v1.8 - Session Notes
 - [x] Session data model - Date, location, equipment, conditions, notes, highlights
 - [x] Smart date handling - Sessions before 6am count as previous night
@@ -65,7 +75,7 @@
 ## Backlog
 
 ### Medium Priority
-- [ ] **Sky chart integration** - Interactive star map with object positions
+- [x] **Sky chart integration** - Interactive star map with object positions ✓ v1.9
 - [ ] **Export to social media** - Generate formatted posts for Twitter/Instagram
 
 ### Low Priority / Future Ideas

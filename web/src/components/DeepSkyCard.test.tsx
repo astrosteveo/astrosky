@@ -14,6 +14,7 @@ const mockObjects: DSOInfo[] = [
     equipment: 'binoculars',
     tip: 'Best viewed from dark skies',
     altitude: 65,
+    azimuth: 45,
   },
   {
     id: 'M42',
@@ -25,6 +26,7 @@ const mockObjects: DSOInfo[] = [
     equipment: 'naked eye',
     tip: 'Look below Orion belt',
     altitude: 45,
+    azimuth: 180,
   },
 ]
 

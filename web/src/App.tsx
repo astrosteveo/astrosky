@@ -28,6 +28,7 @@ import { SessionsProvider } from './context/SessionsContext'
 const MoonCard = lazy(() => import('./components/MoonCard').then(m => ({ default: m.MoonCard })))
 const SunTimesCard = lazy(() => import('./components/SunTimesCard').then(m => ({ default: m.SunTimesCard })))
 const PlanetsCard = lazy(() => import('./components/PlanetsCard').then(m => ({ default: m.PlanetsCard })))
+const SkyChart = lazy(() => import('./components/SkyChart').then(m => ({ default: m.SkyChart })))
 
 // Deep Sky tab components
 const DeepSkyCard = lazy(() => import('./components/DeepSkyCard').then(m => ({ default: m.DeepSkyCard })))
@@ -262,6 +263,9 @@ function AppContent() {
                     initial="hidden"
                     animate="visible"
                   >
+                    <motion.div variants={itemVariants}>
+                      <SkyChart planets={data.planets} deepSky={data.deep_sky} />
+                    </motion.div>
                     <motion.div variants={itemVariants}>
                       <MoonCard moon={data.moon} location={location} placeName={placeName || undefined} />
                     </motion.div>

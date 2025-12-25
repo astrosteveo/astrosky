@@ -56,6 +56,7 @@ export interface DSOInfo {
   equipment: string
   tip: string
   altitude: number
+  azimuth: number
 }
 
 export interface AstroEvent {
