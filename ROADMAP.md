@@ -2,6 +2,11 @@
 
 ## Recently Completed
 
+### v1.4 - Social & Engagement Features
+- [x] Share observations - Visual share cards, Web Share API, copy text
+- [x] Observation photos - Camera/gallery capture, compression, thumbnails
+- [x] Push notifications - ISS passes, meteor peaks, celestial events
+
 ### v1.3 - Enhanced Stargazing Experience
 - [x] Tonight's Best - Smart recommendations with urgency badges
 - [x] Red Night Mode - Preserves dark adaptation at telescope
@@ -30,15 +35,14 @@
 ## Backlog
 
 ### High Priority
-- [ ] **Push notifications** - Alerts for ISS passes, meteor peaks, celestial events
-- [ ] **Observation photos** - Attach images to observation logs
-- [ ] **Share observations** - Export/share observation sessions
-
-### Medium Priority
 - [ ] **Achievement system** - Badges for Messier marathon, planet collection, etc.
 - [ ] **Observation streaks** - Track consecutive observation nights
 - [ ] **Equipment profiles** - Save telescope/binocular specs for personalized recommendations
+
+### Medium Priority
 - [ ] **Sky chart integration** - Interactive star map with object positions
+- [ ] **Session notes** - Add notes and conditions to entire observation sessions
+- [ ] **Export to social media** - Generate formatted posts for Twitter/Instagram
 
 ### Low Priority / Future Ideas
 - [ ] **Social features** - Nearby observers, shared sightings
