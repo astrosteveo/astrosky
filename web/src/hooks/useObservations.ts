@@ -76,7 +76,8 @@ export function useObservations() {
     object: ObservableObject,
     location: { lat: number; lon: number; placeName?: string },
     equipment: EquipmentType,
-    notes?: string
+    notes?: string,
+    photos?: string[]
   ): Observation => {
     const newObservation: Observation = {
       id: generateId(),
@@ -85,6 +86,7 @@ export function useObservations() {
       location,
       equipment,
       notes,
+      photos,
     }
 
     setObservations(prev => [newObservation, ...prev])

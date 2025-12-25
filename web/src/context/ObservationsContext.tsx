@@ -8,7 +8,8 @@ interface ObservationsContextType {
     object: ObservableObject,
     location: { lat: number; lon: number; placeName?: string },
     equipment: EquipmentType,
-    notes?: string
+    notes?: string,
+    photos?: string[]
   ) => Observation
   removeObservation: (id: string) => void
   updateObservation: (id: string, updates: Partial<Omit<Observation, 'id'>>) => void

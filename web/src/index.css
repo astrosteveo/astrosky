@@ -487,3 +487,183 @@
 .light-theme *::after {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
+
+/* ============================================
+   NIGHT MODE - Red theme for dark adaptation
+   ============================================ */
+
+/* Night mode base colors - deep reds to preserve night vision */
+.night-theme {
+  --color-midnight: #0a0000;
+  --color-midnight-light: #120000;
+  --color-midnight-card: #1a0000;
+  --color-parchment: #ff6b6b;
+  --color-parchment-dim: #8b4444;
+  --color-brass: #cc3333;
+  --color-brass-light: #ff4444;
+  --color-brass-glow: rgba(204, 51, 51, 0.3);
+  --color-aurora: #aa2222;
+  --color-star-silver: #993333;
+  --color-success: #993333;
+  --color-warning: #aa4422;
+  --color-urgent: #cc2222;
+}
+
+.night-theme body {
+  background-color: #0a0000;
+  color: #ff6b6b;
+}
+
+.night-theme .observatory-card {
+  background: linear-gradient(
+    180deg,
+    rgba(20, 0, 0, 0.95) 0%,
+    rgba(15, 0, 0, 0.98) 100%
+  );
+  border-color: rgba(153, 51, 51, 0.3);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.night-theme .observatory-card::before {
+  background: radial-gradient(ellipse at 0% 0%, rgba(153, 51, 51, 0.08) 0%, transparent 50%);
+}
+
+.night-theme .observatory-card::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(153, 51, 51, 0.4) 50%,
+    transparent 100%
+  );
+}
+
+/* Hide starfield in night mode for pure darkness */
+.night-theme .starfield {
+  opacity: 0;
+}
+
+/* Night theme text colors - all reds */
+.night-theme .text-\[\#f0f4f8\] { color: #ff6b6b !important; }
+.night-theme .text-\[\#f5f0e1\] { color: #ff6b6b !important; }
+.night-theme .text-\[\#94a3b8\] { color: #993333 !important; }
+.night-theme .text-\[\#c9a227\] { color: #cc3333 !important; }
+.night-theme .text-\[\#4ecdc4\] { color: #aa2222 !important; }
+.night-theme .text-\[\#a855f7\] { color: #bb3333 !important; }
+.night-theme .text-\[\#cbd5e1\] { color: #883333 !important; }
+.night-theme .text-\[\#c4baa6\] { color: #8b4444 !important; }
+.night-theme .text-\[\#c4baa6\]\/60 { color: rgba(139, 68, 68, 0.8) !important; }
+.night-theme .text-\[\#c4baa6\]\/40 { color: rgba(139, 68, 68, 0.6) !important; }
+.night-theme .text-\[\#c4baa6\]\/50 { color: rgba(139, 68, 68, 0.7) !important; }
+.night-theme .text-\[\#c4baa6\]\/70 { color: rgba(139, 68, 68, 0.85) !important; }
+.night-theme .text-\[\#34d399\] { color: #993333 !important; }
+.night-theme .text-\[\#fbbf24\] { color: #aa4422 !important; }
+.night-theme .text-\[\#ef4444\] { color: #cc2222 !important; }
+.night-theme .text-\[\#e25822\] { color: #aa3322 !important; }
+
+/* Night theme background adjustments */
+.night-theme .bg-\[\#0a0a0f\] { background-color: #0a0000 !important; }
+.night-theme .bg-\[rgba\(15\,23\,42\,0\.6\)\] { background-color: rgba(20, 0, 0, 0.8) !important; }
+.night-theme .bg-\[rgba\(15\,23\,42\,0\.9\)\] { background-color: rgba(15, 0, 0, 0.95) !important; }
+.night-theme .bg-\[rgba\(5\,10\,20\,0\.85\)\] { background-color: rgba(10, 0, 0, 0.95) !important; }
+.night-theme .bg-\[\#1e293b\] { background-color: #1a0000 !important; }
+.night-theme .bg-\[rgba\(201\,162\,39\,0\.03\)\] { background-color: rgba(153, 51, 51, 0.08) !important; }
+.night-theme .bg-\[rgba\(201\,162\,39\,0\.1\)\] { background-color: rgba(153, 51, 51, 0.15) !important; }
+.night-theme .bg-\[rgba\(201\,162\,39\,0\.08\)\] { background-color: rgba(153, 51, 51, 0.12) !important; }
+
+/* Status colors in night mode - all red spectrum */
+.night-theme .bg-\[\#34d399\]\/10 { background-color: rgba(153, 51, 51, 0.2) !important; }
+.night-theme .bg-\[\#4ecdc4\]\/10 { background-color: rgba(170, 34, 34, 0.2) !important; }
+.night-theme .bg-\[\#a855f7\]\/20 { background-color: rgba(187, 51, 51, 0.2) !important; }
+
+/* Night theme border adjustments */
+.night-theme .border-\[\#c9a227\] { border-color: #993333 !important; }
+.night-theme .border-\[\#c9a227\]\/10 { border-color: rgba(153, 51, 51, 0.3) !important; }
+.night-theme .border-\[\#c9a227\]\/20 { border-color: rgba(153, 51, 51, 0.4) !important; }
+.night-theme .border-\[\#c9a227\]\/40 { border-color: rgba(153, 51, 51, 0.5) !important; }
+.night-theme .border-\[rgba\(148\,163\,184\,0\.1\)\] { border-color: rgba(153, 51, 51, 0.2) !important; }
+.night-theme .border-\[\#34d399\]\/20 { border-color: rgba(153, 51, 51, 0.3) !important; }
+.night-theme .border-\[\#a855f7\]\/20 { border-color: rgba(187, 51, 51, 0.3) !important; }
+
+/* Tab navigation night mode */
+.night-theme nav.fixed.bottom-0 > div:first-child {
+  background-color: rgba(10, 0, 0, 0.98) !important;
+  border-top-color: rgba(153, 51, 51, 0.3) !important;
+}
+
+/* Button styles in night mode */
+.night-theme .btn-brass {
+  background: rgba(153, 51, 51, 0.15);
+  border-color: rgba(153, 51, 51, 0.4);
+  color: #cc3333;
+}
+
+.night-theme .btn-brass:hover {
+  background: rgba(153, 51, 51, 0.25);
+  border-color: rgba(153, 51, 51, 0.6);
+}
+
+/* Status indicator in night mode */
+.night-theme .status-live {
+  color: #993333;
+}
+
+.night-theme .status-live::before {
+  background: #993333;
+  box-shadow: 0 0 6px #993333;
+}
+
+/* Dividers in night mode */
+.night-theme .divider-brass {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(153, 51, 51, 0.3) 20%,
+    rgba(153, 51, 51, 0.5) 50%,
+    rgba(153, 51, 51, 0.3) 80%,
+    transparent 100%
+  );
+}
+
+/* Scrollbar in night mode */
+.night-theme ::-webkit-scrollbar-track {
+  background: #0a0000;
+}
+
+.night-theme ::-webkit-scrollbar-thumb {
+  background: rgba(153, 51, 51, 0.4);
+}
+
+.night-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(153, 51, 51, 0.6);
+}
+
+/* Data labels in night mode */
+.night-theme .data-label {
+  color: #8b4444;
+}
+
+.night-theme .data-value {
+  color: #ff6b6b;
+}
+
+/* Celestial gradient in night mode */
+.night-theme .text-celestial {
+  background: linear-gradient(
+    135deg,
+    #cc3333 0%,
+    #ff4444 50%,
+    #aa2222 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Smooth transitions for night mode */
+.night-theme *,
+.night-theme *::before,
+.night-theme *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}

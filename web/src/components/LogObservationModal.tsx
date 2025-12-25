@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { ObservableObject, EquipmentType } from '../types/observations'
+import { PhotoCapture } from './PhotoCapture'
 
 interface LogObservationModalProps {
   isOpen: boolean
   onClose: () => void
-  onLog: (equipment: EquipmentType, notes?: string) => void
+  onLog: (equipment: EquipmentType, notes?: string, photos?: string[]) => void
   object: ObservableObject
   placeName?: string
 }
@@ -25,16 +26,18 @@ export function LogObservationModal({
 }: LogObservationModalProps) {
   const [equipment, setEquipment] = useState<EquipmentType>('naked-eye')
   const [notes, setNotes] = useState('')
+  const [photos, setPhotos] = useState<string[]>([])
   const [isLogging, setIsLogging] = useState(false)
 
   const handleLog = () => {
     setIsLogging(true)
-    onLog(equipment, notes.trim() || undefined)
+    onLog(equipment, notes.trim() || undefined, photos.length > 0 ? photos : undefined)
 
     // Brief animation delay before closing
     setTimeout(() => {
       setIsLogging(false)
       setNotes('')
+      setPhotos([])
       setEquipment('naked-eye')
       onClose()
     }, 300)
@@ -136,6 +139,18 @@ export function LogObservationModal({
                   placeholder="Great seeing conditions..."
                   className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 resize-none text-sm"
                   rows={2}
+                />
+              </div>
+
+              {/* Photo capture */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Photos <span className="text-slate-500">(optional)</span>
+                </label>
+                <PhotoCapture
+                  photos={photos}
+                  onPhotosChange={setPhotos}
+                  maxPhotos={3}
                 />
               </div>
 

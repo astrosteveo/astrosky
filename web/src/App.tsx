@@ -16,6 +16,7 @@ import { LiveCountdowns } from './components/LiveCountdowns'
 import { ObservingConditionsCard } from './components/ObservingConditionsCard'
 import { ObservationStats } from './components/ObservationStats'
 import { ObservationAnalytics } from './components/ObservationAnalytics'
+import { TonightsBest } from './components/TonightsBest'
 import { NearbyObservationsCard } from './components/NearbyObservationsCard'
 import { WelcomeModal } from './components/WelcomeModal'
 import { ThemeToggle } from './components/ThemeToggle'
@@ -26,8 +27,10 @@ import { useCurrentTime } from './hooks/useCurrentTime'
 import { formatLocalTime } from './lib/timeUtils'
 import { useReverseGeocode } from './lib/geocoding'
 import { ObservationsProvider } from './context/ObservationsContext'
+import { NotificationsProvider } from './context/NotificationsContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { NotificationSettings } from './components/NotificationSettings'
 
 // Validate latitude is within valid range [-90, 90]
 function isValidLatitude(lat: number): boolean {
@@ -213,6 +216,9 @@ function AppContent() {
                     <NextEvent data={data} />
                   </motion.div>
                   <motion.div variants={itemVariants}>
+                    <TonightsBest data={data} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
                     <LiveCountdowns
                       sun={data.sun}
                       issPass={data.iss_passes[0]}
@@ -291,6 +297,9 @@ function AppContent() {
                     <ObservationAnalytics />
                   </motion.div>
                   <motion.div variants={itemVariants}>
+                    <NotificationSettings />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
                     <NearbyObservationsCard location={location} />
                   </motion.div>
                 </motion.div>
@@ -316,9 +325,11 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <ObservationsProvider>
-          <AppContent />
-        </ObservationsProvider>
+        <NotificationsProvider>
+          <ObservationsProvider>
+            <AppContent />
+          </ObservationsProvider>
+        </NotificationsProvider>
       </ThemeProvider>
     </ErrorBoundary>
   )

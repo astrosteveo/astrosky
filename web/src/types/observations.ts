@@ -28,10 +28,20 @@ export interface Observation {
   }
   equipment: EquipmentType
   notes?: string
+  photos?: string[] // Base64 encoded images or blob URLs
   conditions?: {
     darkness?: string // "Excellent", "Good", etc.
     seeing?: 'poor' | 'fair' | 'good' | 'excellent'
   }
+}
+
+// Notification preferences
+export interface NotificationPreferences {
+  enabled: boolean
+  issPass: boolean
+  meteorPeak: boolean
+  celestialEvent: boolean
+  reminderMinutes: number // How many minutes before event
 }
 
 export interface ObservationStats {
