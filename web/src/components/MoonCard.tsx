@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { GlassCard, CardDivider } from './GlassCard'
 import { ObservationButton } from './ObservationButton'
 import { useObservationsContext } from '../context/ObservationsContext'
+import { useTheme } from '../context/ThemeContext'
 import type { EquipmentType } from '../types/observations'
 
 interface MoonCardProps {
@@ -12,11 +13,30 @@ interface MoonCardProps {
 }
 
 // Elegant moon phase visualization with brass viewfinder frame
-function MoonPhaseViewer({ illumination, phaseName }: { illumination: number; phaseName: string }) {
+function MoonPhaseViewer({ illumination, phaseName, isLightTheme }: { illumination: number; phaseName: string; isLightTheme: boolean }) {
   const isWaxing = phaseName.toLowerCase().includes('waxing')
   const isNew = phaseName.toLowerCase().includes('new')
   const isFull = phaseName.toLowerCase().includes('full')
   const fraction = illumination / 100
+
+  // Theme-aware colors
+  const colors = isLightTheme ? {
+    moonBase: '#334155',      // Darker base for contrast on light bg
+    moonGlow1: '#fef9c3',
+    moonGlow2: '#b8860b',
+    surfaceLight: '#fffbeb',
+    surfaceMid: '#fef3c7',
+    surfaceDark: '#d4a574',
+    craterOpacity: 0.2,
+  } : {
+    moonBase: '#1e293b',      // Original dark base
+    moonGlow1: '#fef9c3',
+    moonGlow2: '#c9a227',
+    surfaceLight: '#fef9c3',
+    surfaceMid: '#fde68a',
+    surfaceDark: '#d4a574',
+    craterOpacity: 0.12,
+  }
 
   return (
     <div className="relative" data-testid="moon-phase-viewer">
@@ -35,16 +55,16 @@ function MoonPhaseViewer({ illumination, phaseName }: { illumination: number; ph
 
           {/* Moon glow */}
           <radialGradient id="moonGlowGold" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#fef9c3" stopOpacity="0.4" />
-            <stop offset="70%" stopColor="#c9a227" stopOpacity="0.1" />
-            <stop offset="100%" stopColor="#c9a227" stopOpacity="0" />
+            <stop offset="0%" stopColor={colors.moonGlow1} stopOpacity="0.4" />
+            <stop offset="70%" stopColor={colors.moonGlow2} stopOpacity="0.1" />
+            <stop offset="100%" stopColor={colors.moonGlow2} stopOpacity="0" />
           </radialGradient>
 
           {/* Moon surface gradient */}
           <radialGradient id="moonSurface" cx="40%" cy="35%" r="60%">
-            <stop offset="0%" stopColor="#fef9c3" />
-            <stop offset="50%" stopColor="#fde68a" />
-            <stop offset="100%" stopColor="#d4a574" />
+            <stop offset="0%" stopColor={colors.surfaceLight} />
+            <stop offset="50%" stopColor={colors.surfaceMid} />
+            <stop offset="100%" stopColor={colors.surfaceDark} />
           </radialGradient>
 
           <clipPath id="moonClipPath">
@@ -92,7 +112,7 @@ function MoonPhaseViewer({ illumination, phaseName }: { illumination: number; ph
         <circle cx="60" cy="60" r="42" fill="url(#moonGlowGold)" />
 
         {/* Moon dark base */}
-        <circle cx="60" cy="60" r="36" fill="#1e293b" />
+        <circle cx="60" cy="60" r="36" fill={colors.moonBase} />
 
         {/* Illuminated portion */}
         <g clipPath="url(#moonClipPath)">
@@ -112,10 +132,10 @@ function MoonPhaseViewer({ illumination, phaseName }: { illumination: number; ph
           )}
 
           {/* Crater details */}
-          <circle cx="48" cy="52" r="5" fill="#e2e8f0" fillOpacity="0.15" />
-          <circle cx="70" cy="68" r="8" fill="#e2e8f0" fillOpacity="0.1" />
-          <circle cx="55" cy="75" r="4" fill="#e2e8f0" fillOpacity="0.08" />
-          <circle cx="72" cy="48" r="3" fill="#e2e8f0" fillOpacity="0.12" />
+          <circle cx="48" cy="52" r="5" fill="#e2e8f0" fillOpacity={colors.craterOpacity} />
+          <circle cx="70" cy="68" r="8" fill="#e2e8f0" fillOpacity={colors.craterOpacity * 0.7} />
+          <circle cx="55" cy="75" r="4" fill="#e2e8f0" fillOpacity={colors.craterOpacity * 0.5} />
+          <circle cx="72" cy="48" r="3" fill="#e2e8f0" fillOpacity={colors.craterOpacity * 0.8} />
         </g>
 
         {/* Crosshairs */}
@@ -130,6 +150,7 @@ function MoonPhaseViewer({ illumination, phaseName }: { illumination: number; ph
 
 export function MoonCard({ moon, location, placeName }: MoonCardProps) {
   const { addObservation, hasObserved, getObservationsForObject } = useObservationsContext()
+  const { theme } = useTheme()
 
   const objectId = 'moon'
   const observed = hasObserved(objectId)
@@ -173,6 +194,7 @@ export function MoonCard({ moon, location, placeName }: MoonCardProps) {
           <MoonPhaseViewer
             illumination={moon.illumination}
             phaseName={moon.phase_name}
+            isLightTheme={theme === 'light'}
           />
         </motion.div>
 

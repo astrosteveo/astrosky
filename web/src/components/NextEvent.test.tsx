@@ -37,7 +37,8 @@ describe('NextEvent', () => {
         max_altitude: 68,
         start_direction: 'NW',
         end_direction: 'SE',
-        brightness: 'bright'
+        brightness: 'bright',
+        magnitude: -3.2
       }
     ],
     meteors: [

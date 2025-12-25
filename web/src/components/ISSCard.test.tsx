@@ -11,6 +11,7 @@ const mockPasses: ISSPass[] = [
     start_direction: 'NW',
     end_direction: 'SE',
     brightness: 'bright',
+    magnitude: -3.5,
   },
   {
     start_time: '2025-12-23T21:20:00Z',
@@ -19,6 +20,7 @@ const mockPasses: ISSPass[] = [
     start_direction: 'W',
     end_direction: 'S',
     brightness: 'dim',
+    magnitude: 1.2,
   },
 ]
 

@@ -80,7 +80,7 @@ export function ISSCard({ passes }: ISSCardProps) {
               </div>
 
               {/* Pass details grid */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-4 gap-3">
                 <div className="bg-[rgba(201,162,39,0.03)] rounded-lg p-2.5">
                   <span className="data-label block mb-1">Duration</span>
                   <p className="font-mono text-[#f5f0e1] font-medium">
@@ -91,6 +91,12 @@ export function ISSCard({ passes }: ISSCardProps) {
                   <span className="data-label block mb-1">Max Alt</span>
                   <p className="font-mono text-[#f5f0e1] font-medium">
                     {pass.max_altitude}<span className="text-[#c4baa6]/60 text-sm ml-1">°</span>
+                  </p>
+                </div>
+                <div className="bg-[rgba(201,162,39,0.03)] rounded-lg p-2.5">
+                  <span className="data-label block mb-1">Magnitude</span>
+                  <p className="font-mono font-medium" style={{ color: brightness.color }}>
+                    {pass.magnitude > 0 ? '+' : ''}{pass.magnitude}
                   </p>
                 </div>
                 <div className="bg-[rgba(201,162,39,0.03)] rounded-lg p-2.5">

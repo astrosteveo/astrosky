@@ -1,13 +1,16 @@
 import type { ReactElement, ReactNode } from 'react'
 import { render, type RenderOptions } from '@testing-library/react'
 import { ObservationsProvider } from '../context/ObservationsContext'
+import { ThemeProvider } from '../context/ThemeContext'
 
 // Wrapper component that provides all contexts needed for testing
 function AllProviders({ children }: { children: ReactNode }) {
   return (
-    <ObservationsProvider>
-      {children}
-    </ObservationsProvider>
+    <ThemeProvider>
+      <ObservationsProvider>
+        {children}
+      </ObservationsProvider>
+    </ThemeProvider>
   )
 }
 
