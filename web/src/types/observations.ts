@@ -52,3 +52,33 @@ export interface ObservationStats {
   firstObservation?: string // ISO date
   lastObservation?: string // ISO date
 }
+
+// Session notes - document an entire observing session (night)
+export type SeeingCondition = 'poor' | 'fair' | 'good' | 'excellent'
+export type TransparencyCondition = 'poor' | 'fair' | 'good' | 'excellent'
+
+export interface SessionConditions {
+  seeing?: SeeingCondition
+  transparency?: TransparencyCondition
+  temperature?: number // Celsius
+  humidity?: number // Percentage
+  cloudCover?: number // Percentage
+  bortleClass?: number // 1-9 scale
+}
+
+export interface ObservingSession {
+  id: string
+  date: string // ISO date (YYYY-MM-DD) - the night of observation
+  startTime?: string // ISO datetime when session started
+  endTime?: string // ISO datetime when session ended
+  location: {
+    lat: number
+    lon: number
+    placeName?: string
+    siteName?: string // Custom name like "Backyard" or "Dark Site #2"
+  }
+  equipment: EquipmentType[] // Multiple equipment can be used in a session
+  conditions?: SessionConditions
+  notes?: string // General session notes
+  highlights?: string // Best sights of the night
+}
