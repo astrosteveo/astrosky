@@ -25,14 +25,31 @@ import { formatLocalTime } from './lib/timeUtils'
 import { useReverseGeocode } from './lib/geocoding'
 import { ObservationsProvider } from './context/ObservationsContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { ErrorBoundary } from './components/ErrorBoundary'
+
+// Validate latitude is within valid range [-90, 90]
+function isValidLatitude(lat: number): boolean {
+  return !isNaN(lat) && lat >= -90 && lat <= 90
+}
+
+// Validate longitude is within valid range [-180, 180]
+function isValidLongitude(lon: number): boolean {
+  return !isNaN(lon) && lon >= -180 && lon <= 180
+}
 
 // Parse URL parameters for manual location override
 function useUrlParams() {
   const params = new URLSearchParams(window.location.search)
-  const lat = params.get('lat')
-  const lon = params.get('lon')
-  if (lat && lon) {
-    return { lat: parseFloat(lat), lon: parseFloat(lon) }
+  const latStr = params.get('lat')
+  const lonStr = params.get('lon')
+  if (latStr && lonStr) {
+    const lat = parseFloat(latStr)
+    const lon = parseFloat(lonStr)
+    if (isValidLatitude(lat) && isValidLongitude(lon)) {
+      return { lat, lon }
+    }
+    // Invalid coordinates - fall back to geolocation
+    console.warn(`Invalid coordinates: lat=${latStr}, lon=${lonStr}. Using geolocation.`)
   }
   return null
 }
@@ -289,11 +306,13 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <ObservationsProvider>
-        <AppContent />
-      </ObservationsProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <ObservationsProvider>
+          <AppContent />
+        </ObservationsProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   )
 }
 
