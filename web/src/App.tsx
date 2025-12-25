@@ -115,31 +115,29 @@ function AppContent() {
       <div className="relative z-10 max-w-5xl mx-auto px-4 py-10 md:py-16">
         {/* Modern Header */}
         <motion.header
-          className="text-center mb-10 relative"
+          className="mb-10 relative"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
-          {/* Theme Toggle */}
-          <div className="absolute right-0 top-0">
+          {/* Title row with theme toggle */}
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
+              <span className="text-[#c9a227] transition-colors">Astro</span>
+              <span className="text-[#f0f4f8] transition-colors">SKY</span>
+            </h1>
             <ThemeToggle />
           </div>
 
-          {/* Main title */}
-          <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-1">
-            <span className="text-[#c9a227] transition-colors">Astro</span>
-            <span className="text-[#f0f4f8] transition-colors">SKY</span>
-          </h1>
-
           {/* Subtitle */}
-          <p className="text-sm text-[#94a3b8] mb-6 transition-colors">
+          <p className="text-sm text-[#94a3b8] mb-6 transition-colors text-center">
             Your personal observatory
           </p>
 
           {/* Location and time info */}
           {lat && lon && (
             <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
