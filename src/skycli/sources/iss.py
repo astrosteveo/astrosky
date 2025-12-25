@@ -18,6 +18,7 @@ class ISSPass(TypedDict):
     start_direction: str
     end_direction: str
     brightness: str  # "Bright!", "Moderate", "Faint"
+    magnitude: float  # Visual magnitude (lower = brighter, e.g., -3.5)
 
 
 N2YO_API_URL = "https://api.n2yo.com/rest/v1/satellite/visualpasses"
@@ -88,13 +89,15 @@ def get_iss_passes(lat: float, lon: float, date: datetime, days: int = 2, min_vi
 
     passes = []
     for p in data.get("passes", []):
+        mag = p.get("mag", 0.0)
         passes.append(ISSPass(
             start_time=datetime.fromtimestamp(p["startUTC"], tz=timezone.utc),
             duration_minutes=p["duration"] // 60,
             max_altitude=p["maxEl"],
             start_direction=_azimuth_to_direction(p["startAz"]),
             end_direction=_azimuth_to_direction(p["endAz"]),
-            brightness=_magnitude_to_brightness(p.get("mag", 0)),
+            brightness=_magnitude_to_brightness(mag),
+            magnitude=round(mag, 1),
         ))
 
     return passes

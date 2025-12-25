@@ -53,6 +53,7 @@ class ISSPass(BaseModel):
     start_direction: str
     end_direction: str
     brightness: str
+    magnitude: float  # Visual magnitude (lower = brighter)
 
 
 class ShowerInfo(BaseModel):

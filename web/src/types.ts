@@ -35,6 +35,7 @@ export interface ISSPass {
   start_direction: string
   end_direction: string
   brightness: string
+  magnitude: number // Visual magnitude (lower = brighter, e.g., -3.5)
 }
 
 export interface ShowerInfo {
