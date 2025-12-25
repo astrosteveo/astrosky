@@ -22,6 +22,7 @@
 - **One-tap logging** - Quickly log what you observe (Moon, planets, deep sky objects)
 - **Equipment tracking** - Record if you used naked eye, binoculars, or telescope
 - **Messier Marathon** - Track your progress through all 110 Messier objects
+- **Personal analytics** - See your observing streaks, peak hours, equipment preferences
 - **Location aware** - Automatically records your city/state
 - **Anonymous sync** - Your observations sync across devices without needing an account
 - **Works offline** - Log observations even without internet (syncs later)
@@ -34,6 +35,7 @@
 - **Auto-refresh** - Data updates every 5 minutes automatically
 
 ### Astronomy Data 🌌
+- **Observing conditions** - Real-time weather-based quality rating (cloud cover, humidity, visibility)
 - **Moon phase** - Current phase, illumination, and rise/set times
 - **Visible planets** - Which planets are up and where to look
 - **ISS passes** - Upcoming International Space Station flyovers
@@ -179,7 +181,7 @@ pip install -e ".[dev]"
 
 # Run tests
 pytest                     # Python (73 tests)
-cd web && npm run test     # Frontend (75 tests)
+cd web && npm run test     # Frontend (76 tests)
 ```
 
 See [CLAUDE.md](CLAUDE.md) for architecture details and development patterns.
