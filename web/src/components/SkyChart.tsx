@@ -114,7 +114,10 @@ export function SkyChart({ planets, deepSky }: SkyChartProps) {
 
     if (showPlanets) {
       planets.forEach((planet) => {
-        if (planet.altitude > 0) {
+        // Ensure altitude and azimuth are valid numbers
+        const hasValidPosition = planet.altitude > 0 &&
+          typeof planet.azimuth === 'number' && !isNaN(planet.azimuth)
+        if (hasValidPosition) {
           result.push({
             id: `planet-${planet.name}`,
             name: planet.name,
@@ -131,7 +134,10 @@ export function SkyChart({ planets, deepSky }: SkyChartProps) {
 
     if (showDSO) {
       deepSky.forEach((dso) => {
-        if (dso.altitude > 0) {
+        // Ensure altitude and azimuth are valid numbers
+        const hasValidPosition = dso.altitude > 0 &&
+          typeof dso.azimuth === 'number' && !isNaN(dso.azimuth)
+        if (hasValidPosition) {
           result.push({
             id: `dso-${dso.id}`,
             name: `${dso.id} - ${dso.name}`,
