@@ -15,6 +15,7 @@ import { NextEvent } from './components/NextEvent'
 import { LiveCountdowns } from './components/LiveCountdowns'
 import { ObservingConditionsCard } from './components/ObservingConditionsCard'
 import { ObservationStats } from './components/ObservationStats'
+import { ObservationAnalytics } from './components/ObservationAnalytics'
 import { NearbyObservationsCard } from './components/NearbyObservationsCard'
 import { WelcomeModal } from './components/WelcomeModal'
 import { ThemeToggle } from './components/ThemeToggle'
@@ -285,6 +286,9 @@ function AppContent() {
                 >
                   <motion.div variants={itemVariants}>
                     <ObservationStats />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <ObservationAnalytics />
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <NearbyObservationsCard location={location} />
