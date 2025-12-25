@@ -65,11 +65,22 @@ export interface AstroEvent {
   bodies: string[]
 }
 
+export interface ObservingConditions {
+  cloud_cover: number // 0-100 percentage, -1 if unknown
+  humidity: number // 0-100 percentage, -1 if unknown
+  visibility: number // km, -1 if unknown
+  wind_speed: number // km/h, -1 if unknown
+  temperature: number // Celsius, -1 if unknown
+  condition: string // Excellent, Good, Fair, Poor, Unknown
+  summary: string // Human-readable summary
+}
+
 export interface SkyReport {
   date: string
   location: Location
   sun: SunTimes
   moon: MoonInfo
+  weather: ObservingConditions | null
   planets: PlanetInfo[]
   iss_passes: ISSPass[]
   meteors: ShowerInfo[]

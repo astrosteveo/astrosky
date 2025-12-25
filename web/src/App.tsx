@@ -13,6 +13,7 @@ import { InstallPrompt } from './components/InstallPrompt'
 import { CurrentSkyStatus } from './components/CurrentSkyStatus'
 import { NextEvent } from './components/NextEvent'
 import { LiveCountdowns } from './components/LiveCountdowns'
+import { ObservingConditionsCard } from './components/ObservingConditionsCard'
 import { ObservationStats } from './components/ObservationStats'
 import { NearbyObservationsCard } from './components/NearbyObservationsCard'
 import { WelcomeModal } from './components/WelcomeModal'
@@ -203,6 +204,9 @@ function AppContent() {
                 >
                   <motion.div variants={itemVariants}>
                     <CurrentSkyStatus sun={data.sun} />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <ObservingConditionsCard weather={data.weather} />
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <NextEvent data={data} />
