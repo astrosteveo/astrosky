@@ -6,6 +6,36 @@ interface ShareObservationsProps {
   stats: ObservationStats
 }
 
+type SocialPlatform = 'twitter' | 'instagram' | 'threads' | 'bluesky'
+
+// Platform-specific configurations
+const PLATFORM_CONFIG = {
+  twitter: {
+    name: 'X / Twitter',
+    icon: '𝕏',
+    maxLength: 280,
+    hashtags: ['astronomy', 'stargazing', 'nightsky'],
+  },
+  instagram: {
+    name: 'Instagram',
+    icon: '📷',
+    maxLength: 2200,
+    hashtags: ['astronomy', 'stargazing', 'nightsky', 'astrophotography', 'universe', 'cosmos'],
+  },
+  threads: {
+    name: 'Threads',
+    icon: '🧵',
+    maxLength: 500,
+    hashtags: ['astronomy', 'stargazing'],
+  },
+  bluesky: {
+    name: 'Bluesky',
+    icon: '🦋',
+    maxLength: 300,
+    hashtags: ['astronomy', 'stargazing'],
+  },
+}
+
 // Generate shareable text summary
 function generateShareText(stats: ObservationStats): string {
   const lines = [
@@ -29,6 +59,98 @@ function generateShareText(stats: ObservationStats): string {
   lines.push(``, `Track your stargazing with AstroSky`)
 
   return lines.join('\n')
+}
+
+// Generate platform-specific formatted text
+function generateSocialText(stats: ObservationStats, platform: SocialPlatform): string {
+  const config = PLATFORM_CONFIG[platform]
+  const hashtags = config.hashtags.map(h => `#${h}`).join(' ')
+
+  // Planet emojis for visual appeal
+  const planetEmojis: Record<string, string> = {
+    Mercury: '☿️', Venus: '♀️', Mars: '♂️', Jupiter: '♃',
+    Saturn: '🪐', Uranus: '⛢', Neptune: '♆',
+  }
+
+  const planetsWithEmojis = stats.planetsObserved
+    .map(p => planetEmojis[p] || p)
+    .join(' ')
+
+  if (platform === 'twitter') {
+    // Compact format for Twitter's 280 char limit
+    let text = `✨ My stargazing stats:\n`
+    text += `🔭 ${stats.totalObservations} observations\n`
+    text += `⭐ ${stats.uniqueObjects} unique objects\n`
+    if (stats.planetsObserved.length > 0) {
+      text += `🪐 Planets: ${planetsWithEmojis}\n`
+    }
+    text += `🌌 ${stats.messierCount}/110 Messier\n\n`
+    text += hashtags
+
+    // Trim if over limit
+    if (text.length > config.maxLength) {
+      text = text.slice(0, config.maxLength - 3) + '...'
+    }
+    return text
+  }
+
+  if (platform === 'instagram') {
+    // Longer, more visual format for Instagram
+    let text = `✨ My AstroSky Observation Stats ✨\n\n`
+    text += `🔭 Total Observations: ${stats.totalObservations}\n`
+    text += `⭐ Unique Objects: ${stats.uniqueObjects}\n`
+    text += `🪐 Planets: ${stats.planetsObserved.length}/7\n`
+    text += `🌌 Messier Objects: ${stats.messierCount}/110\n\n`
+
+    if (stats.planetsObserved.length > 0) {
+      text += `Planets observed: ${planetsWithEmojis}\n\n`
+    }
+
+    if (stats.messierCount >= 50) {
+      text += `🏆 Over halfway through the Messier Marathon!\n\n`
+    }
+
+    if (stats.firstObservation) {
+      const days = Math.floor((Date.now() - new Date(stats.firstObservation).getTime()) / (1000 * 60 * 60 * 24))
+      text += `📅 ${days} days of stargazing\n\n`
+    }
+
+    text += `Track your observations with AstroSky 🌙\n\n`
+    text += hashtags
+    return text
+  }
+
+  if (platform === 'threads' || platform === 'bluesky') {
+    // Medium format
+    let text = `✨ Stargazing stats update!\n\n`
+    text += `🔭 ${stats.totalObservations} observations\n`
+    text += `⭐ ${stats.uniqueObjects} unique objects\n`
+    text += `🪐 ${stats.planetsObserved.length}/7 planets\n`
+    text += `🌌 ${stats.messierCount}/110 Messier\n\n`
+    text += hashtags
+    return text
+  }
+
+  return generateShareText(stats)
+}
+
+// Open Twitter/X with pre-filled tweet
+function openTwitterIntent(text: string): void {
+  const encodedText = encodeURIComponent(text)
+  const url = `https://twitter.com/intent/tweet?text=${encodedText}`
+  window.open(url, '_blank', 'width=550,height=420')
+}
+
+// Open Bluesky with pre-filled post
+function openBlueskyIntent(text: string): void {
+  const encodedText = encodeURIComponent(text)
+  const url = `https://bsky.app/intent/compose?text=${encodedText}`
+  window.open(url, '_blank', 'width=550,height=420')
+}
+
+// Open Threads (no direct intent, so copy and open app)
+function openThreadsIntent(): void {
+  window.open('https://www.threads.net', '_blank')
 }
 
 // Generate a canvas-based share image
@@ -169,10 +291,178 @@ async function generateShareImage(stats: ObservationStats): Promise<Blob> {
   })
 }
 
+// Generate Instagram-optimized square image (1080x1080)
+async function generateInstagramImage(stats: ObservationStats): Promise<Blob> {
+  const size = 1080
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')!
+
+  // Background gradient
+  const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size)
+  gradient.addColorStop(0, '#1a1a2e')
+  gradient.addColorStop(1, '#0a0a0f')
+  ctx.fillStyle = gradient
+  ctx.fillRect(0, 0, size, size)
+
+  // Add more stars for larger canvas
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'
+  for (let i = 0; i < 200; i++) {
+    const x = Math.random() * size
+    const y = Math.random() * size
+    const starSize = Math.random() * 3
+    ctx.beginPath()
+    ctx.arc(x, y, starSize, 0, Math.PI * 2)
+    ctx.fill()
+  }
+
+  // Title
+  ctx.fillStyle = '#c9a227'
+  ctx.font = 'bold 64px system-ui, sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('AstroSky', size/2, 100)
+
+  ctx.fillStyle = '#f0f4f8'
+  ctx.font = '32px system-ui, sans-serif'
+  ctx.fillText('My Observation Stats', size/2, 150)
+
+  // Stats in 2x2 grid
+  const boxSize = 220
+  const gap = 40
+  const gridStartX = (size - (boxSize * 2 + gap)) / 2
+  const gridStartY = 220
+
+  const statsData = [
+    { value: stats.totalObservations.toString(), label: 'Total', emoji: '🔭' },
+    { value: stats.uniqueObjects.toString(), label: 'Unique', emoji: '⭐' },
+    { value: `${stats.planetsObserved.length}/7`, label: 'Planets', emoji: '🪐' },
+    { value: `${stats.messierCount}/110`, label: 'Messier', emoji: '🌌' },
+  ]
+
+  statsData.forEach((stat, i) => {
+    const col = i % 2
+    const row = Math.floor(i / 2)
+    const x = gridStartX + col * (boxSize + gap)
+    const y = gridStartY + row * (boxSize + gap)
+
+    // Box background
+    ctx.fillStyle = 'rgba(201, 162, 39, 0.15)'
+    ctx.strokeStyle = 'rgba(201, 162, 39, 0.4)'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.roundRect(x, y, boxSize, boxSize, 16)
+    ctx.fill()
+    ctx.stroke()
+
+    // Emoji
+    ctx.font = '48px system-ui, sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText(stat.emoji, x + boxSize/2, y + 60)
+
+    // Value
+    ctx.fillStyle = '#f0f4f8'
+    ctx.font = 'bold 56px system-ui, sans-serif'
+    ctx.fillText(stat.value, x + boxSize/2, y + 140)
+
+    // Label
+    ctx.fillStyle = '#94a3b8'
+    ctx.font = '28px system-ui, sans-serif'
+    ctx.fillText(stat.label, x + boxSize/2, y + 190)
+  })
+
+  // Planets section
+  const planetsY = 740
+  if (stats.planetsObserved.length > 0) {
+    ctx.fillStyle = '#94a3b8'
+    ctx.font = '28px system-ui, sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText('Planets Observed', size/2, planetsY)
+
+    ctx.fillStyle = '#c9a227'
+    ctx.font = 'bold 36px system-ui, sans-serif'
+    ctx.fillText(stats.planetsObserved.join('  •  '), size/2, planetsY + 50)
+  }
+
+  // Progress bar
+  const progressY = 860
+  ctx.fillStyle = '#94a3b8'
+  ctx.font = '24px system-ui, sans-serif'
+  ctx.textAlign = 'left'
+  ctx.fillText('Messier Marathon', 100, progressY)
+  ctx.textAlign = 'right'
+  ctx.fillStyle = '#4ecdc4'
+  ctx.fillText(`${Math.round((stats.messierCount/110)*100)}%`, size - 100, progressY)
+
+  // Progress bar background
+  const barWidth = size - 200
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'
+  ctx.beginPath()
+  ctx.roundRect(100, progressY + 15, barWidth, 20, 10)
+  ctx.fill()
+
+  // Progress bar fill
+  const progressWidth = (stats.messierCount / 110) * barWidth
+  const progressGradient = ctx.createLinearGradient(100, 0, 100 + progressWidth, 0)
+  progressGradient.addColorStop(0, '#4ecdc4')
+  progressGradient.addColorStop(1, '#a855f7')
+  ctx.fillStyle = progressGradient
+  ctx.beginPath()
+  ctx.roundRect(100, progressY + 15, progressWidth, 20, 10)
+  ctx.fill()
+
+  // Date range
+  if (stats.firstObservation) {
+    const days = Math.floor((Date.now() - new Date(stats.firstObservation).getTime()) / (1000 * 60 * 60 * 24))
+    ctx.fillStyle = '#94a3b8'
+    ctx.font = '24px system-ui, sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText(`${days} days of stargazing`, size/2, 970)
+  }
+
+  // Footer
+  ctx.fillStyle = '#c9a227'
+  ctx.font = 'bold 28px system-ui, sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('astrosky.app', size/2, 1040)
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      resolve(blob!)
+    }, 'image/png')
+  })
+}
+
 export function ShareObservations({ stats }: ShareObservationsProps) {
   const [sharing, setSharing] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [copiedPlatform, setCopiedPlatform] = useState<SocialPlatform | null>(null)
+
+  const handleSocialShare = async (platform: SocialPlatform) => {
+    const text = generateSocialText(stats, platform)
+
+    if (platform === 'twitter') {
+      openTwitterIntent(text)
+      setShowMenu(false)
+    } else if (platform === 'bluesky') {
+      openBlueskyIntent(text)
+      setShowMenu(false)
+    } else if (platform === 'threads') {
+      await navigator.clipboard.writeText(text)
+      setCopiedPlatform(platform)
+      setTimeout(() => setCopiedPlatform(null), 2000)
+      openThreadsIntent()
+    } else if (platform === 'instagram') {
+      // Copy text and generate square image
+      await navigator.clipboard.writeText(text)
+      setCopiedPlatform(platform)
+      setTimeout(() => setCopiedPlatform(null), 2000)
+
+      const blob = await generateInstagramImage(stats)
+      downloadBlob(blob, 'astrosky-instagram.png')
+    }
+  }
 
   const handleShare = async (type: 'native' | 'image' | 'text') => {
     setSharing(true)
@@ -242,13 +532,58 @@ export function ShareObservations({ stats }: ShareObservationsProps) {
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="absolute right-0 top-full mt-2 bg-[#1a1a2e] border border-[#c9a227]/20 rounded-lg shadow-xl z-20 overflow-hidden min-w-[160px]"
+            className="absolute right-0 top-full mt-2 bg-[#1a1a2e] border border-[#c9a227]/20 rounded-lg shadow-xl z-20 overflow-hidden min-w-[180px]"
           >
+            {/* Social Media Platforms */}
+            <div className="px-3 py-1.5 text-[10px] text-[#94a3b8] uppercase tracking-wider border-b border-[#c9a227]/10">
+              Share to Social
+            </div>
+            <button
+              onClick={() => handleSocialShare('twitter')}
+              className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-[#f0f4f8] hover:bg-[#c9a227]/10 transition-colors"
+            >
+              <span className="w-4 text-center">{PLATFORM_CONFIG.twitter.icon}</span>
+              <span>{PLATFORM_CONFIG.twitter.name}</span>
+            </button>
+            <button
+              onClick={() => handleSocialShare('instagram')}
+              className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-[#f0f4f8] hover:bg-[#c9a227]/10 transition-colors"
+            >
+              <span className="w-4 text-center">{PLATFORM_CONFIG.instagram.icon}</span>
+              <span>
+                {copiedPlatform === 'instagram' ? 'Caption copied! Downloading...' : PLATFORM_CONFIG.instagram.name}
+              </span>
+            </button>
+            <button
+              onClick={() => handleSocialShare('threads')}
+              className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-[#f0f4f8] hover:bg-[#c9a227]/10 transition-colors"
+            >
+              <span className="w-4 text-center">{PLATFORM_CONFIG.threads.icon}</span>
+              <span>
+                {copiedPlatform === 'threads' ? 'Copied! Opening...' : PLATFORM_CONFIG.threads.name}
+              </span>
+            </button>
+            <button
+              onClick={() => handleSocialShare('bluesky')}
+              className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-[#f0f4f8] hover:bg-[#c9a227]/10 transition-colors"
+            >
+              <span className="w-4 text-center">{PLATFORM_CONFIG.bluesky.icon}</span>
+              <span>{PLATFORM_CONFIG.bluesky.name}</span>
+            </button>
+
+            {/* Divider */}
+            <div className="border-t border-[#c9a227]/10 my-1" />
+
+            {/* General Share Options */}
+            <div className="px-3 py-1.5 text-[10px] text-[#94a3b8] uppercase tracking-wider">
+              Other Options
+            </div>
             {'share' in navigator && (
               <button
                 onClick={() => handleShare('native')}
                 className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-[#f0f4f8] hover:bg-[#c9a227]/10 transition-colors"
               >
+                <span className="w-4 text-center">📤</span>
                 <span>Share...</span>
               </button>
             )}
@@ -256,12 +591,14 @@ export function ShareObservations({ stats }: ShareObservationsProps) {
               onClick={() => handleShare('image')}
               className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-[#f0f4f8] hover:bg-[#c9a227]/10 transition-colors"
             >
+              <span className="w-4 text-center">🖼️</span>
               <span>Save as Image</span>
             </button>
             <button
               onClick={() => handleShare('text')}
               className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-[#f0f4f8] hover:bg-[#c9a227]/10 transition-colors"
             >
+              <span className="w-4 text-center">📋</span>
               <span>{copied ? 'Copied!' : 'Copy Text'}</span>
             </button>
           </motion.div>
