@@ -105,7 +105,17 @@ astrosky/
 ## Testing
 
 - **Python**: 73 tests, use `time-machine` for time-dependent tests
-- **Frontend**: 76 tests, Vitest + Testing Library, fake timers for real-time components
+- **Frontend**: 150 tests, Vitest + Testing Library, fake timers for real-time components
+
+## Roadmap Maintenance
+
+**IMPORTANT:** The `ROADMAP.md` file must be kept up to date after each task:
+
+1. When completing a feature or fix, move items from Backlog to "Recently Completed"
+2. Add version numbers (e.g., v1.7) to completed batches
+3. Mark technical debt items as complete with `[x]` and version reference
+4. Add new ideas or discovered tasks to the appropriate priority section
+5. Keep the "Recently Completed" section at the top, ordered by version (newest first)
 
 ## PWA & Service Worker
 
