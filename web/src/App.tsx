@@ -128,7 +128,7 @@ const tabContentVariants = {
 }
 
 // Helper to get next event info for sidebar widget
-function getNextEventInfo(data: { events?: Array<{ name: string; date: string }> }) {
+function getNextEventInfo(data: { events?: Array<{ title: string; date: string }> }) {
   if (!data.events || data.events.length === 0) return null
   const nextEvent = data.events[0]
   if (!nextEvent) return null
@@ -149,7 +149,7 @@ function getNextEventInfo(data: { events?: Array<{ name: string; date: string }>
     timeStr = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }
 
-  return { name: nextEvent.name, time: timeStr }
+  return { name: nextEvent.title, time: timeStr }
 }
 
 function AppContent() {
@@ -185,7 +185,7 @@ function AppContent() {
       <DesktopLayout
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        moonPhase={data?.moon?.phase}
+        moonPhase={data?.moon?.phase_name}
         moonIllumination={data?.moon?.illumination}
         cloudCover={data?.weather?.cloud_cover}
         nextEventName={nextEventInfo?.name}
